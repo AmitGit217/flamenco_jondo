@@ -1,0 +1,150 @@
+Table palo {
+  id serial [primary key] 
+  name varchar(255) [not null, unique]  
+  origin varchar(255) [not null]
+  origin_date timestamp [not null]
+  created_at timestamp 
+  updated_at timestamp 
+
+  Indexes {
+    (name) [name: "unique_palo_name"]
+  }
+}
+
+Table estilo {
+  id serial [primary key] 
+  name varchar(255) [not null, unique]  
+  tonality Tonalities [not null]  
+  key Keys [not null]  
+  origin varchar(255) [not null]
+  origin_date timestamp [not null]
+  created_at timestamp 
+  updated_at timestamp 
+
+  Indexes {
+    (name) [name: "unique_estilo_name"]
+  }
+}
+
+Table palo_estilo {
+  id serial [primary key]
+  palo_id int [not null, ref: > palo.id]  
+  estilo_id int [not null, ref: > estilo.id]  
+  created_at timestamp 
+  updated_at timestamp 
+
+  Indexes {
+    (palo_id, estilo_id) [unique, name: "unique_palo_estilo"]
+    (palo_id) [name: "idx_palo_estilo_palo_id"]
+    (estilo_id) [name: "idx_palo_estilo_estilo_id"]
+  }
+}
+
+Table compas {
+  id serial [primary key] 
+  name varchar(255) [not null, unique] 
+  beats int [not null]  
+  accents "int[]" [not null]  
+  silences "int[]"  
+  time_signatures "string[]" [not null]  
+  bpm int [not null]  
+  created_at timestamp 
+  updated_at timestamp 
+
+  Indexes {
+    (name) [name: "unique_compas_name"]
+  }
+}
+
+Table palo_compas {
+  id serial [primary key]
+  palo_id int [not null, ref: > palo.id]  
+  compas_id int [not null, ref: > compas.id]  
+  created_at timestamp 
+  updated_at timestamp 
+
+  Indexes {
+    (palo_id, compas_id) [unique, name: "unique_palo_compas"]
+    (palo_id) [name: "idx_palo_compas_palo_id"]
+    (compas_id) [name: "idx_palo_compas_compas_id"]
+  }
+}
+
+Table letra {
+  id serial [primary key] 
+  estilo_id int [not null, ref: > estilo.id]  
+  verses text[] [not null]
+  rhyme_scheme "int[]" [not null]  
+  repetition_pattern "int[]" [not null]  
+  structure varchar(255) [not null]  
+  created_at timestamp 
+  updated_at timestamp 
+
+  Indexes {
+    (estilo_id) [name: "idx_letra_estilo_id"]
+  }
+}
+
+Table artist {
+  id serial [primary key] 
+  name varchar(255) [not null, unique]  
+  birth_year int  
+  death_year int  
+  origin varchar(255)  
+  type ArtistType [not null]  
+  created_at timestamp 
+  updated_at timestamp 
+
+  Indexes {
+    (name) [name: "unique_artist_name"]
+  }
+}
+
+Table letra_artist {
+  id serial [primary key]
+  letra_id int [not null, ref: > letra.id]  
+  artist_id int [not null, ref: > artist.id]  
+  recording_url varchar(255)  
+  album varchar(255)  
+  year int  
+  created_at timestamp 
+  updated_at timestamp 
+
+  Indexes {
+    (letra_id, artist_id) [unique, name: "unique_letra_artist"]
+    (letra_id) [name: "idx_letra_artist_letra_id"]
+    (artist_id) [name: "idx_letra_artist_artist_id"]
+  }
+}
+
+Enum artistType {
+  CANTE  
+  GUITARRA  
+  BAILE   
+}
+
+Enum tonalities {
+  PHRYGIUS        
+  DORIANUS        
+  AEOLIUS         
+  MAIOR           
+  MINOR           
+  LOCRIUS         
+  HARMONICUS_MINOR  
+  MELODICUS_MINOR  
+}
+
+Enum keys {
+  A    
+  Bb   
+  B    
+  C    
+  Db  
+  D    
+  Eb   
+  E    
+  F    
+  Gb  
+  G    
+  Ab  
+}

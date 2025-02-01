@@ -2,7 +2,9 @@
   "name": "flamenco_jondo",
   "version": "1.0.0",
   "description": "Where flamencos can share and learn about the most complex human idea",
-  "scripts": {},
+  "scripts": {
+    "dbml_to_sql" : "dbml2sql --postgres -o ./server/prisma/schema.sql ./server/prisma/schema.dbml"
+  },
   "author": "",
   "license": "ISC"
 }
