@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16.4
+    container_name: flamenco_jondo_db
+    environment:
+      POSTGRES_USER: flamenco_jondo_user
+      POSTGRES_PASSWORD: flamenco_jondo_password
+      POSTGRES_DB: flamenco_jondo_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  minio:
+    image: minio/minio
+    container_name: flamenco_jondo_minio
+    environment:
+      MINIO_ROOT_USER: minio_user
+      MINIO_ROOT_PASSWORD: minio_password
+    command: server --console-address ":9001" /data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+
+
+  ###  COMMENTED FOR A REASON
+  # nestjs-server:
+  #   image: nestjs-app
+  #   container_name: flamenco_jondo_server
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.server
+  #   environment:
+  #       DATABASE_URL: "postgresql://flamenco_jondo_user:flamenco_jondo_password@db:5432/flamenco_jondo_db?schema=public"
+  #       S3_ENDPOINT: "http://localhost:9000"
+  #       S3_ACCESS_KEY: "minioadmin"
+  #       S3_SECRET_KEY: "minioadmin"
+  #       S3_SIGNATURE_VERSION: "v4"
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - db
+  #     - minio
+
+volumes:
+  postgres_data:
+  minio_data:

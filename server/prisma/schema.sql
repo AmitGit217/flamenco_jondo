@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml.dbdiagram.io)
 -- Database: PostgreSQL
--- Generated at: 2025-02-01T13:41:39.322Z
+-- Generated at: 2025-02-02T14:28:39.610Z
 
 CREATE TYPE "artistType" AS ENUM (
   'CANTE',
@@ -18,8 +18,6 @@ CREATE TYPE "tonalities" AS ENUM (
   'HARMONICUS_MINOR',
   'MELODICUS_MINOR'
 );
-
-
 
 CREATE TYPE "keys" AS ENUM (
   'A',
