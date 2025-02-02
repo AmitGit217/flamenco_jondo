@@ -1,8 +1,8 @@
 -- SQL dump generated using DBML (dbml.dbdiagram.io)
 -- Database: PostgreSQL
--- Generated at: 2025-02-02T14:47:13.796Z
+-- Generated at: 2025-02-02T15:18:52.712Z
 
-CREATE TYPE "artistType" AS ENUM (
+CREATE TYPE "artisttype" AS ENUM (
   'CANTE',
   'GUITARRA',
   'BAILE'
@@ -46,18 +46,21 @@ CREATE TABLE "palo" (
 CREATE TABLE "estilo" (
   "id" serial PRIMARY KEY,
   "name" varchar(255) UNIQUE NOT NULL,
-  "tonality" Tonalities NOT NULL,
-  "key" Keys NOT NULL,
+  "tonality" tonalities NOT NULL,
+  "key" keys NOT NULL,
   "origin" varchar(255) NOT NULL,
   "origin_date" timestamp NOT NULL,
   "created_at" timestamp,
   "updated_at" timestamp
 );
 
-CREATE TABLE "palo_estilo" (
+CREATE TABLE "artist" (
   "id" serial PRIMARY KEY,
-  "palo_id" int NOT NULL,
-  "estilo_id" int NOT NULL,
+  "name" varchar(255) UNIQUE NOT NULL,
+  "birth_year" int,
+  "death_year" int,
+  "origin" varchar(255),
+  "type" artisttype NOT NULL,
   "created_at" timestamp,
   "updated_at" timestamp
 );
@@ -68,16 +71,8 @@ CREATE TABLE "compas" (
   "beats" int NOT NULL,
   "accents" int[] NOT NULL,
   "silences" int[],
-  "time_signatures" string[] NOT NULL,
+  "time_signatures" text[] NOT NULL,
   "bpm" int NOT NULL,
-  "created_at" timestamp,
-  "updated_at" timestamp
-);
-
-CREATE TABLE "palo_compas" (
-  "id" serial PRIMARY KEY,
-  "palo_id" int NOT NULL,
-  "compas_id" int NOT NULL,
   "created_at" timestamp,
   "updated_at" timestamp
 );
@@ -101,13 +96,18 @@ CREATE TABLE "user" (
   "updated_at" timestamp
 );
 
-CREATE TABLE "artist" (
+CREATE TABLE "palo_estilo" (
   "id" serial PRIMARY KEY,
-  "name" varchar(255) UNIQUE NOT NULL,
-  "birth_year" int,
-  "death_year" int,
-  "origin" varchar(255),
-  "type" ArtistType NOT NULL,
+  "palo_id" int NOT NULL,
+  "estilo_id" int NOT NULL,
+  "created_at" timestamp,
+  "updated_at" timestamp
+);
+
+CREATE TABLE "palo_compas" (
+  "id" serial PRIMARY KEY,
+  "palo_id" int NOT NULL,
+  "compas_id" int NOT NULL,
   "created_at" timestamp,
   "updated_at" timestamp
 );
@@ -127,13 +127,19 @@ CREATE INDEX "unique_palo_name" ON "palo" ("name");
 
 CREATE INDEX "unique_estilo_name" ON "estilo" ("name");
 
+CREATE INDEX "unique_artist_name" ON "artist" ("name");
+
+CREATE INDEX "unique_compas_name" ON "compas" ("name");
+
+CREATE INDEX "idx_letra_estilo_id" ON "letra" ("estilo_id");
+
+CREATE INDEX "unique_user_email" ON "user" ("email");
+
 CREATE UNIQUE INDEX "unique_palo_estilo" ON "palo_estilo" ("palo_id", "estilo_id");
 
 CREATE INDEX "idx_palo_estilo_palo_id" ON "palo_estilo" ("palo_id");
 
 CREATE INDEX "idx_palo_estilo_estilo_id" ON "palo_estilo" ("estilo_id");
-
-CREATE INDEX "unique_compas_name" ON "compas" ("name");
 
 CREATE UNIQUE INDEX "unique_palo_compas" ON "palo_compas" ("palo_id", "compas_id");
 
@@ -141,17 +147,13 @@ CREATE INDEX "idx_palo_compas_palo_id" ON "palo_compas" ("palo_id");
 
 CREATE INDEX "idx_palo_compas_compas_id" ON "palo_compas" ("compas_id");
 
-CREATE INDEX "idx_letra_estilo_id" ON "letra" ("estilo_id");
-
-CREATE INDEX "unique_user_email" ON "user" ("email");
-
-CREATE INDEX "unique_artist_name" ON "artist" ("name");
-
 CREATE UNIQUE INDEX "unique_letra_artist" ON "letra_artist" ("letra_id", "artist_id");
 
 CREATE INDEX "idx_letra_artist_letra_id" ON "letra_artist" ("letra_id");
 
 CREATE INDEX "idx_letra_artist_artist_id" ON "letra_artist" ("artist_id");
+
+ALTER TABLE "letra" ADD FOREIGN KEY ("estilo_id") REFERENCES "estilo" ("id");
 
 ALTER TABLE "palo_estilo" ADD FOREIGN KEY ("palo_id") REFERENCES "palo" ("id");
 
@@ -160,8 +162,6 @@ ALTER TABLE "palo_estilo" ADD FOREIGN KEY ("estilo_id") REFERENCES "estilo" ("id
 ALTER TABLE "palo_compas" ADD FOREIGN KEY ("palo_id") REFERENCES "palo" ("id");
 
 ALTER TABLE "palo_compas" ADD FOREIGN KEY ("compas_id") REFERENCES "compas" ("id");
-
-ALTER TABLE "letra" ADD FOREIGN KEY ("estilo_id") REFERENCES "estilo" ("id");
 
 ALTER TABLE "letra_artist" ADD FOREIGN KEY ("letra_id") REFERENCES "letra" ("id");
 

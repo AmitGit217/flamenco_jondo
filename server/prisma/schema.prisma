@@ -7,21 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model estilo {
-  id          Int           @id @default(autoincrement())
-  name        String        @unique @db.VarChar(255)
-  tonality    tonalities
-  key         keys
-  origin      String        @db.VarChar(255)
-  origin_date DateTime      @db.Timestamp(6)
-  created_at  DateTime?     @db.Timestamp(6)
-  updated_at  DateTime?     @db.Timestamp(6)
-  letra       letra[]
-  palo_estilo palo_estilo[]
-
-  @@index([name], map: "unique_estilo_name")
-}
-
 model letra {
   id                 Int            @id @default(autoincrement())
   estilo_id          Int
@@ -46,6 +31,7 @@ model letra_artist {
   year          Int?
   created_at    DateTime? @db.Timestamp(6)
   updated_at    DateTime? @db.Timestamp(6)
+  artist        artist    @relation(fields: [artist_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   letra         letra     @relation(fields: [letra_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([letra_id, artist_id], map: "unique_letra_artist")
@@ -72,6 +58,7 @@ model palo_compas {
   compas_id  Int
   created_at DateTime? @db.Timestamp(6)
   updated_at DateTime? @db.Timestamp(6)
+  compas     compas    @relation(fields: [compas_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   palo       palo      @relation(fields: [palo_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([palo_id, compas_id], map: "unique_palo_compas")
@@ -103,7 +90,51 @@ model user {
   @@index([email], map: "unique_user_email")
 }
 
-enum artistType {
+model compas {
+  id              Int           @id @default(autoincrement())
+  name            String        @unique @db.VarChar(255)
+  beats           Int
+  accents         Int[]
+  silences        Int[]
+  time_signatures String[]
+  bpm             Int
+  created_at      DateTime?     @db.Timestamp(6)
+  updated_at      DateTime?     @db.Timestamp(6)
+  palo_compas     palo_compas[]
+
+  @@index([name], map: "unique_compas_name")
+}
+
+model artist {
+  id           Int            @id @default(autoincrement())
+  name         String         @unique @db.VarChar(255)
+  birth_year   Int?
+  death_year   Int?
+  origin       String?        @db.VarChar(255)
+  type         artisttype
+  created_at   DateTime?      @db.Timestamp(6)
+  updated_at   DateTime?      @db.Timestamp(6)
+  letra_artist letra_artist[]
+
+  @@index([name], map: "unique_artist_name")
+}
+
+model estilo {
+  id          Int           @id @default(autoincrement())
+  name        String        @unique @db.VarChar(255)
+  tonality    tonalities
+  key         keys
+  origin      String        @db.VarChar(255)
+  origin_date DateTime      @db.Timestamp(6)
+  created_at  DateTime?     @db.Timestamp(6)
+  updated_at  DateTime?     @db.Timestamp(6)
+  letra       letra[]
+  palo_estilo palo_estilo[]
+
+  @@index([name], map: "unique_estilo_name")
+}
+
+enum artisttype {
   CANTE
   GUITARRA
   BAILE
