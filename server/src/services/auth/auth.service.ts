@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { LoginRequestDto, LoginResponseDto } from '@common/dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +13,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(loginRequestDto) {
+  async login(loginRequestDto: LoginRequestDto): Promise<LoginResponseDto> {
     const { email, password } = loginRequestDto;
 
     this.logger.log(`Login attempt for email: ${email}`);
