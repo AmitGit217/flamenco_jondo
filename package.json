@@ -9,7 +9,8 @@
     "restart-db": "docker-compose down --volumes && docker-compose up -d && npm run dbml-to-sql && npm run copy-schema-to-db && npm run execute-schema-to-db",
     "prisma-db-pull": "cd common && npx prisma db pull",
     "prisma-generate-types": "cd common && npx prisma generate",
-    "restart-and-update-prisma": "npm run restart-db && npm run prisma-db-pull && npm run prisma-generate-types"
+    "prisma-seed": "npx prisma db seed",
+    "restart-and-update-prisma": "npm run restart-db && npm run prisma-db-pull && npm run prisma-generate-types && npm run prisma-seed"
   },
   "prisma": {
     "seed": "ts-node ./common/prisma/seed.ts"
