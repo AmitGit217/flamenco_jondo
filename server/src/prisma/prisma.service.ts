@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaClient, Prisma } from '@prisma/client';
 import { prismaQueryErrors } from './static';
+import { data } from 'cypress/types/jquery';
 
 @Injectable()
 export class PrismaService

@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  HttpCode,
-  HttpStatus,
-  UseGuards,
-  Get,
-} from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginRequestDto, LoginResponseDto } from '@common/dto/login.dto';
 
@@ -20,6 +12,8 @@ export class AuthController {
     @Body() loginRequestDto: LoginRequestDto,
   ): Promise<LoginResponseDto> {
     try {
+      console.log('loginRequestDto', loginRequestDto);
+
       return await this.authService.login(loginRequestDto);
     } catch (error) {
       throw error;
