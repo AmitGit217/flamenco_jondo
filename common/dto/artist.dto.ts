@@ -6,7 +6,7 @@ import {
   IsString,
   IsDateString,
 } from "class-validator";
-import { artisttype } from "./prisma.types";
+import { artisttype } from "@prisma/client";
 
 export class CreateArtistRequestDto {
   @IsNotEmpty()

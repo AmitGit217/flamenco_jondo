@@ -3,14 +3,16 @@
   "version": "1.0.0",
   "description": "Where flamencos can share and learn about the most complex human idea",
   "scripts": {
-    "dbml-to-sql": "dbml2sql --postgres -o ./server/prisma/schema.sql ./server/prisma/schema.dbml",
-    "copy-schema-to-db": "docker cp ./server/prisma/schema.sql flamenco_jondo_db:/schema.sql",
+    "dbml-to-sql": "dbml2sql --postgres -o ./common/prisma/schema.sql ./common/prisma/schema.dbml",
+    "copy-schema-to-db": "docker cp ./common/prisma/schema.sql flamenco_jondo_db:/schema.sql",
     "execute-schema-to-db": "docker exec -it flamenco_jondo_db psql -U flamenco_jondo_user -d flamenco_jondo_db -f /schema.sql",
     "restart-db": "docker-compose down --volumes && docker-compose up -d && npm run dbml-to-sql && npm run copy-schema-to-db && npm run execute-schema-to-db",
-    "prisma-db-pull": "cd server && npx prisma db pull",
-    "prisma-generate-types": "cd server && npx prisma generate",
+    "prisma-db-pull": "cd common && npx prisma db pull",
+    "prisma-generate-types": "cd common && npx prisma generate",
     "restart-and-update-prisma": "npm run restart-db && npm run prisma-db-pull && npm run prisma-generate-types"
-
+  },
+  "prisma": {
+    "seed": "ts-node ./common/prisma/seed.ts"
   },
   "author": "",
   "license": "ISC"

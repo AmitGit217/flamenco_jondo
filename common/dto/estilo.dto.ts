@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsOptional, IsDateString, IsEnum } from "class-validator";
-import { tonalities, keys } from "./prisma.types";
+import { tonalities, keys } from "@prisma/client";
 
 export class CreateEstiloRequestDto {
   @IsNotEmpty()
