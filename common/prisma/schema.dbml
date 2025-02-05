@@ -30,16 +30,32 @@ Enum keys {
   Ab  
 }
 
+Enum role {
+  MASTER
+  ADMIN
+  USER
+}
 
+Table user {
+  id serial [primary key]
+  email varchar(255) [not null, unique]
+  password varchar(255) [not null]
+  role role
+  created_at timestamp
+  updated_at timestamp
 
-
-
+  Indexes {
+    (email) [name: "unique_user_email"]
+  }
+}
 
 Table palo {
   id serial [primary key] 
   name varchar(255) [not null, unique]  
   origin varchar(255) [not null]
   origin_date timestamp [not null]
+  user_create_id int [not null, ref: > user.id]
+  user_update_id int [ref: > user.id]
   created_at timestamp 
   updated_at timestamp 
 
@@ -55,6 +71,8 @@ Table estilo {
   key keys [not null]  
   origin varchar(255) [not null]
   origin_date timestamp [not null]
+  user_create_id int [not null, ref: > user.id]
+  user_update_id int [ref: > user.id]
   created_at timestamp 
   updated_at timestamp 
 
@@ -62,6 +80,7 @@ Table estilo {
     (name) [name: "unique_estilo_name"]
   }
 }
+
 Table artist {
   id serial [primary key] 
   name varchar(255) [not null, unique]  
@@ -69,6 +88,8 @@ Table artist {
   death_year int  
   origin varchar(255)  
   type artisttype [not null]  
+  user_create_id int [not null, ref: > user.id]
+  user_update_id int [ref: > user.id]
   created_at timestamp 
   updated_at timestamp 
 
@@ -85,6 +106,8 @@ Table compas {
   silences int[]  
   time_signatures text[] [not null]  
   bpm int [not null]  
+  user_create_id int [not null, ref: > user.id]
+  user_update_id int [ref: > user.id]
   created_at timestamp 
   updated_at timestamp 
 
@@ -100,6 +123,8 @@ Table letra {
   rhyme_scheme int[] [not null]  
   repetition_pattern int[] [not null]  
   structure varchar(255) [not null]  
+  user_create_id int [not null, ref: > user.id]
+  user_update_id int [ref: > user.id]
   created_at timestamp 
   updated_at timestamp 
 
@@ -108,25 +133,12 @@ Table letra {
   }
 }
 
-
-Table user {
-  id serial [primary key]
-  email varchar(255) [not null, unique]
-  password varchar(255) [not null]
-  created_at timestamp
-  updated_at timestamp
-
-  Indexes {
-    (email) [name: "unique_user_email"]
-  }
-}
-
-
-
 Table palo_estilo {
   id serial [primary key]
   palo_id int [not null, ref: > palo.id]  
   estilo_id int [not null, ref: > estilo.id]  
+  user_create_id int [not null, ref: > user.id]
+  user_update_id int [ref: > user.id]
   created_at timestamp 
   updated_at timestamp 
 
@@ -137,12 +149,12 @@ Table palo_estilo {
   }
 }
 
-
-
 Table palo_compas {
   id serial [primary key]
   palo_id int [not null, ref: > palo.id]  
   compas_id int [not null, ref: > compas.id]  
+  user_create_id int [not null, ref: > user.id]
+  user_update_id int [ref: > user.id]
   created_at timestamp 
   updated_at timestamp 
 
@@ -153,7 +165,6 @@ Table palo_compas {
   }
 }
 
-
 Table letra_artist {
   id serial [primary key]
   letra_id int [not null, ref: > letra.id]  
@@ -161,6 +172,8 @@ Table letra_artist {
   recording_url varchar(255)  
   album varchar(255)  
   year int  
+  user_create_id int [not null, ref: > user.id]
+  user_update_id int [ref: > user.id]
   created_at timestamp 
   updated_at timestamp 
 
@@ -170,6 +183,3 @@ Table letra_artist {
     (artist_id) [name: "idx_letra_artist_artist_id"]
   }
 }
-
-
-
