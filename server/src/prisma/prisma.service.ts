@@ -14,7 +14,7 @@ export class PrismaService
 {
   constructor() {
     super();
-    return this.createProxy(this);
+    // return this.createProxy(this);
   }
 
   public async onModuleInit() {

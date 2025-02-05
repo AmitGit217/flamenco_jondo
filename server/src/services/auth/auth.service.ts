@@ -34,7 +34,11 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const token = this.jwtService.sign({ id: user.id, email: user.email, role: user.role });
+    const token = this.jwtService.sign({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    });
     this.logger.log(`Login successful for user ID: ${user.id}`);
 
     return { token };
@@ -45,14 +49,13 @@ export class AuthService {
 
     const user = await this.prismaService.user.findUnique({
       where: { id, email },
+      select: { id: true, email: true, role: true },
     });
 
     if (!user) {
       this.logger.warn(`Validation failed: Invalid token for user ID: ${id}`);
       throw new UnauthorizedException('Invalid token');
     }
-
-    this.logger.log(`User validation successful for user ID: ${user.id}`);
 
     return user;
   }

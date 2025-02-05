@@ -11,6 +11,15 @@ async function main() {
       password: password,
       created_at: new Date(),
       updated_at: new Date(),
+      role: "MASTER",
+    },
+  });
+  await prisma.user.create({
+    data: {
+      email: "test@email.com",
+      password: "123456",
+      created_at: new Date(),
+      updated_at: new Date(),
     },
   });
 }

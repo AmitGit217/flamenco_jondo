@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml.dbdiagram.io)
 -- Database: PostgreSQL
--- Generated at: 2025-02-05T19:32:19.921Z
+-- Generated at: 2025-02-05T20:40:13.300Z
 
 CREATE TYPE "artisttype" AS ENUM (
   'CANTE',
@@ -44,7 +44,7 @@ CREATE TABLE "user" (
   "id" serial PRIMARY KEY,
   "email" varchar(255) UNIQUE NOT NULL,
   "password" varchar(255) NOT NULL,
-  "role" role,
+  "role" role DEFAULT 'USER',
   "created_at" timestamp,
   "updated_at" timestamp
 );

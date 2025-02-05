@@ -160,7 +160,7 @@ model user {
   id                                             Int            @id @default(autoincrement())
   email                                          String         @unique @db.VarChar(255)
   password                                       String         @db.VarChar(255)
-  role                                           role?
+  role                                           role?          @default(USER)
   created_at                                     DateTime?      @db.Timestamp(6)
   updated_at                                     DateTime?      @db.Timestamp(6)
   artist_artist_user_create_idTouser             artist[]       @relation("artist_user_create_idTouser")

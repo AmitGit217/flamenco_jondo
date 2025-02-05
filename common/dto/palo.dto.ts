@@ -1,14 +1,17 @@
-import { IsNotEmpty, IsOptional, IsDateString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsDateString,
+  IsInt,
+  Length,
+} from "class-validator";
 
-export class CreatePaloRequestDto {
+export class UpsertPaloRequestDto {
+  @IsOptional()
+  id?: number;
+
   @IsNotEmpty()
   name: string;
-
-  @IsNotEmpty()
-  description: string;
-
-  @IsNotEmpty()
-  price: number;
 
   @IsNotEmpty()
   origin: string;
@@ -24,6 +27,14 @@ export class CreatePaloRequestDto {
   @IsOptional()
   @IsDateString()
   updated_at?: string;
+
+  @IsOptional()
+  @IsInt()
+  user_created_id?: number;
+
+  @IsOptional()
+  @IsInt()
+  user_update_id?: number;
 }
 
 export class PaloResponseDto {
@@ -31,13 +42,8 @@ export class PaloResponseDto {
   id: number;
 
   @IsNotEmpty()
+  @Length(3, 255)
   name: string;
-
-  @IsNotEmpty()
-  description: string;
-
-  @IsNotEmpty()
-  price: number;
 
   @IsNotEmpty()
   origin: string;
@@ -53,4 +59,12 @@ export class PaloResponseDto {
   @IsOptional()
   @IsDateString()
   updated_at?: string;
+
+  @IsOptional()
+  @IsInt()
+  user_created_id?: number;
+
+  @IsOptional()
+  @IsInt()
+  user_update_id?: number;
 }

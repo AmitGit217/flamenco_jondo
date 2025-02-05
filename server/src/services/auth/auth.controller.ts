@@ -12,8 +12,6 @@ export class AuthController {
     @Body() loginRequestDto: LoginRequestDto,
   ): Promise<LoginResponseDto> {
     try {
-      console.log('loginRequestDto', loginRequestDto);
-
       return await this.authService.login(loginRequestDto);
     } catch (error) {
       throw error;
