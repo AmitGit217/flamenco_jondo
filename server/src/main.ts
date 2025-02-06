@@ -8,7 +8,6 @@ const underline = '\x1b[4m';
 const reset = '\x1b[0m';
 
 async function bootstrap() {
-
   const app = await NestFactory.create(AppModule, { logger });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.enableCors({

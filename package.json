@@ -2,6 +2,11 @@
   "name": "flamenco_jondo",
   "version": "1.0.0",
   "description": "Where flamencos can share and learn about the most complex human idea",
+  "workspaces": [
+    "server",
+    "client",
+    "common"
+  ],
   "scripts": {
     "run:dev": "cd server && npm run dev",
     "dbml-to-sql": "dbml2sql --postgres -o ./common/prisma/schema.sql ./common/prisma/schema.dbml",
@@ -22,6 +27,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/winston": "^2.4.4",
+    "dotenv-cli": "^8.0.0",
     "winston": "^3.17.0"
   }
 }

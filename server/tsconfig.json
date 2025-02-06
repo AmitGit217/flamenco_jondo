@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
+    "strict": true,
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES2021",
+    "target": "es2017",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
@@ -17,8 +18,11 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
+    "moduleResolution": "node",
     "paths": {
       "@common/*": ["../common/*"]
-    }
-  }
+    },
+    "types": ["cypress"]
+  },
+  "include": ["**/*.ts", "cypress/**/*.ts"]
 }
