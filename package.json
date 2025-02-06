@@ -2,11 +2,6 @@
   "name": "flamenco_jondo",
   "version": "1.0.0",
   "description": "Where flamencos can share and learn about the most complex human idea",
-  "workspaces": [
-    "server",
-    "client",
-    "common"
-  ],
   "scripts": {
     "run:dev": "cd server && npm run dev",
     "dbml-to-sql": "dbml2sql --postgres -o ./common/prisma/schema.sql ./common/prisma/schema.dbml",
@@ -17,7 +12,7 @@
     "prisma-generate-types": "cd common && npx prisma generate",
     "prisma-seed": "npx prisma db seed",
     "restart-and-update-prisma": "npm run restart-db && npm run prisma-db-pull && npm run prisma-generate-types && npm run prisma-seed",
-    "start:dev": "npm run restart-and-update-prisma && npm run run:dev",
+    "start:dev": "npm run restart-and-update-prisma  && npm run run:dev",
     "test:e2e": "cd server && npx cypress run "
   },
   "prisma": {

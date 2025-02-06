@@ -2,11 +2,17 @@ import { faker } from '@faker-js/faker';
 import { UpsertPaloRequestDto } from '@common/dto/palo.dto';
 import { LoginRequestDto, LoginResponseDto } from '@common/dto/login.dto';
 let authToken: string;
+let userAuthToken: string;
 
 describe('Palo Upsert API', () => {
   const adminCredentials = {
     email: 'amit217@yandex.com', // Set your actual MASTER user email
     password: '21780Amit', // Set your actual MASTER user password
+  };
+
+  const userCredentials = {
+    email: 'test@email.com',
+    password: '123456',
   };
 
   let createdPaloId: number;
@@ -27,6 +33,24 @@ describe('Palo Upsert API', () => {
       expect(response.status).to.eq(200);
       expect(response.body).to.have.property('token');
       authToken = response.body.token;
+    });
+  });
+
+  it('should allow USER user to log in', () => {
+    const loginRequest: LoginRequestDto = {
+      email: userCredentials.email,
+      password: userCredentials.password,
+    };
+
+    cy.request<LoginResponseDto>({
+      method: 'POST',
+      url: '/auth/login',
+      body: loginRequest,
+      headers: { 'Content-Type': 'application/json' },
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body).to.have.property('token');
+      userAuthToken = response.body.token;
     });
   });
 
@@ -71,16 +95,14 @@ describe('Palo Upsert API', () => {
         'Content-Type': 'application/json',
       },
     }).then((response) => {
-      expect(response.status).to.eq(200);
+      expect(response.status).to.eq(201);
       expect(response.body).to.have.property('id', createdPaloId);
     });
   });
 
   // ❌ Test: Fail with invalid data
   it('should return 400 for invalid palo data', () => {
-    const invalidPalo = {
-      name: '', // Missing required fields
-    };
+    const invalidPalo = {};
 
     cy.request({
       method: 'POST',
@@ -129,7 +151,7 @@ describe('Palo Upsert API', () => {
       url: '/palo/upsert',
       body: paloWithUnauthorizedRole,
       headers: {
-        Authorization: `Bearer ${authToken}`, // Assume this token is from a non-MASTER user
+        Authorization: `Bearer ${userAuthToken}`, // Assume this token is from a non-MASTER user
         'Content-Type': 'application/json',
       },
       failOnStatusCode: false, // Allow 4xx responses

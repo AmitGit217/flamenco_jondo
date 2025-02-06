@@ -6,7 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { PaloModule } from './services/palo/palo.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, PaloModule],
+  imports: [AuthModule, PaloModule, PrismaModule],
   controllers: [AppController],
   providers: [AppService],
 })

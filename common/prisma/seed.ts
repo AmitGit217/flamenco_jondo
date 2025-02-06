@@ -14,10 +14,11 @@ async function main() {
       role: "MASTER",
     },
   });
+  const password2 = await bcrypt.hash("123456", 10);
   await prisma.user.create({
     data: {
       email: "test@email.com",
-      password: "123456",
+      password: password2,
       created_at: new Date(),
       updated_at: new Date(),
     },
