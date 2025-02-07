@@ -7,33 +7,28 @@ export class PaloService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async upsertPalo(dto: UpsertPaloRequestDto, userId: number) {
-    const upsertData = {
-      name: dto.name,
-      origin: dto.origin,
-      origin_date: new Date(dto.origin_date),
-      updated_at: new Date(),
-      user_update_id: userId,
-    };
-
+    const timestamp = new Date();
     if (!dto.id) {
-      // Create new palo
-      return await this.prismaService.palo.create({
+      return this.prismaService.palo.create({
         data: {
-          ...upsertData,
-          created_at: new Date(),
+          name: dto.name,
+          origin: dto.origin,
+          origin_date: new Date(dto.origin_date),
+          created_at: timestamp,
+          updated_at: timestamp,
           user_create_id: userId,
+          user_update_id: userId,
         },
       });
     }
-
-    // Update existing palo
-    return await this.prismaService.palo.upsert({
+    return this.prismaService.palo.update({
       where: { id: dto.id },
-      update: upsertData,
-      create: {
-        ...upsertData,
-        created_at: new Date(),
-        user_create_id: userId,
+      data: {
+        name: dto.name,
+        origin: dto.origin,
+        origin_date: new Date(dto.origin_date),
+        updated_at: timestamp,
+        user_update_id: userId,
       },
     });
   }
