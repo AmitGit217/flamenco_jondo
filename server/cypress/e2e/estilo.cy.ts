@@ -1,18 +1,22 @@
 import { faker } from '@faker-js/faker';
 import {
-  UpsertPaloRequestDto,
-  UpsertPaloResponseDto,
-} from '@common/dto/palo.dto';
+  UpsertEstiloRequestDto,
+  UpsertEstiloResponseDto,
+} from '@common/dto/estilo.dto';
+import { UpsertPaloRequestDto } from '@common/dto/palo.dto';
+import { tonalities } from '@common/index';
 import { LoginRequestDto, LoginResponseDto } from '@common/dto/login.dto';
 import { expectTypeOf } from 'expect-type';
 
 let authToken: string;
 let userAuthToken: string;
+let createdPaloId: number;
+let createdEstiloId: number;
 
-describe('Palo Upsert API', () => {
+describe('Estilo Upsert API', () => {
   const adminCredentials = {
-    email: 'amit217@yandex.com', // Set your actual MASTER user email
-    password: '21780Amit', // Set your actual MASTER user password
+    email: 'amit217@yandex.com', // Replace with MASTER user email
+    password: '21780Amit', // Replace with MASTER user password
   };
 
   const userCredentials = {
@@ -20,9 +24,7 @@ describe('Palo Upsert API', () => {
     password: '123456',
   };
 
-  let createdPaloId: number;
-
-  // ✅ Test: Login as MASTER user
+  // ✅ 1. Login as MASTER user
   it('should allow MASTER user to log in', () => {
     const loginRequest: LoginRequestDto = {
       email: adminCredentials.email,
@@ -41,7 +43,8 @@ describe('Palo Upsert API', () => {
     });
   });
 
-  it('should allow USER user to log in', () => {
+  // ✅ 2. Login as regular USER
+  it('should allow USER to log in', () => {
     const loginRequest: LoginRequestDto = {
       email: userCredentials.email,
       password: userCredentials.password,
@@ -59,8 +62,8 @@ describe('Palo Upsert API', () => {
     });
   });
 
-  // ✅ Test: Create a new Palo
-  it('should create a new palo', () => {
+  // ✅ 3. Create a new Palo (since Estilo needs a Palo)
+  it('should create a new Palo', () => {
     const newPalo: UpsertPaloRequestDto = {
       name: faker.music.genre() + ' Palo',
       origin: faker.location.city(),
@@ -78,43 +81,74 @@ describe('Palo Upsert API', () => {
     }).then((response) => {
       expect(response.status).to.eq(201);
       expect(response.body).to.have.property('id');
-      expectTypeOf(response.body).toMatchTypeOf<UpsertPaloResponseDto>();
       createdPaloId = response.body.id;
     });
   });
 
-  // ✅ Test: Update an existing Palo
-  it('should update an existing palo', () => {
-    const updatedPalo: UpsertPaloRequestDto = {
-      id: createdPaloId,
-      name: faker.music.genre() + ' Updated Palo',
+  // ✅ 4. Create a new Estilo
+  it('should create a new Estilo', () => {
+    const newEstilo: UpsertEstiloRequestDto = {
+      name: faker.music.genre() + ' Estilo',
+      tonality: tonalities.MAIOR, // Replace with valid enum value from Prisma
+      key: 'C', // Replace with valid enum value from Prisma
       origin: faker.location.city(),
       origin_date: faker.date.past().toISOString(),
+      palo_id: createdPaloId,
+      artist_id: null,
+      user_created_id: 1, // Assume admin user ID
     };
 
     cy.request({
       method: 'POST',
-      url: '/palo/upsert',
-      body: updatedPalo,
+      url: '/estilo',
+      body: newEstilo,
       headers: {
         Authorization: `Bearer ${authToken}`,
         'Content-Type': 'application/json',
       },
     }).then((response) => {
       expect(response.status).to.eq(201);
-      expect(response.body).to.have.property('id', createdPaloId);
-      expectTypeOf(response.body).toMatchTypeOf<UpsertPaloResponseDto>();
+      expect(response.body).to.have.property('id');
+      createdEstiloId = response.body.id;
     });
   });
 
-  // ❌ Test: Fail with invalid data
-  it('should return 400 for invalid palo data', () => {
-    const invalidPalo = {};
+  // ✅ 5. Update the existing Estilo
+  it('should update an existing Estilo', () => {
+    const updatedEstilo: UpsertEstiloRequestDto = {
+      id: createdEstiloId,
+      name: faker.music.genre() + ' Updated Estilo',
+      tonality: tonalities.LOCRIUS, // Replace with valid enum value
+      key: 'G', // Replace with valid enum value
+      origin: faker.location.city(),
+      origin_date: faker.date.past().toISOString(),
+      palo_id: createdPaloId,
+      artist_id: null,
+      user_update_id: 1, // Assume admin user ID
+    };
 
     cy.request({
       method: 'POST',
-      url: '/palo/upsert',
-      body: invalidPalo,
+      url: '/estilo',
+      body: updatedEstilo,
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        'Content-Type': 'application/json',
+      },
+    }).then((response) => {
+      expect(response.status).to.eq(201);
+      expect(response.body).to.have.property('id', createdEstiloId);
+    });
+  });
+
+  // ❌ 6. Fail with invalid Estilo data
+  it('should return 400 for invalid Estilo data', () => {
+    const invalidEstilo = {};
+
+    cy.request({
+      method: 'POST',
+      url: '/estilo',
+      body: invalidEstilo,
       headers: {
         Authorization: `Bearer ${authToken}`,
         'Content-Type': 'application/json',
@@ -125,18 +159,19 @@ describe('Palo Upsert API', () => {
     });
   });
 
-  // ❌ Test: Fail without authentication
+  // ❌ 7. Fail without authentication
   it('should return 401 Unauthorized when no token is provided', () => {
-    const paloWithoutAuth = {
-      name: faker.music.genre() + ' Palo',
+    const estiloWithoutAuth = {
+      name: faker.music.genre() + ' Estilo',
       origin: faker.location.city(),
       origin_date: faker.date.past().toISOString(),
+      palo_id: createdPaloId,
     };
 
     cy.request({
       method: 'POST',
-      url: '/palo/upsert',
-      body: paloWithoutAuth,
+      url: '/estilo',
+      body: estiloWithoutAuth,
       headers: { 'Content-Type': 'application/json' },
       failOnStatusCode: false, // Allow 4xx responses
     }).then((response) => {
@@ -144,21 +179,21 @@ describe('Palo Upsert API', () => {
     });
   });
 
-  // ❌ Test: Fail when user is not MASTER role
+  // ❌ 8. Fail when user is not MASTER role
   it('should return 403 Forbidden when user is not MASTER', () => {
-    const paloWithUnauthorizedRole = {
-      name: faker.music.genre() + ' Palo',
-      description: faker.lorem.sentence(),
+    const estiloWithUnauthorizedRole = {
+      name: faker.music.genre() + ' Estilo',
       origin: faker.location.city(),
       origin_date: faker.date.past().toISOString(),
+      palo_id: createdPaloId,
     };
 
     cy.request({
       method: 'POST',
-      url: '/palo/upsert',
-      body: paloWithUnauthorizedRole,
+      url: '/estilo',
+      body: estiloWithUnauthorizedRole,
       headers: {
-        Authorization: `Bearer ${userAuthToken}`, // Assume this token is from a non-MASTER user
+        Authorization: `Bearer ${userAuthToken}`, // Regular user token
         'Content-Type': 'application/json',
       },
       failOnStatusCode: false, // Allow 4xx responses

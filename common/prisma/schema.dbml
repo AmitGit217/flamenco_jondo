@@ -149,6 +149,22 @@ Table palo_estilo {
   }
 }
 
+Table artist_estilo {
+  id serial [primary key]
+  artist_id int [not null, ref: > artist.id]  
+  estilo_id int [not null, ref: > estilo.id]  
+  user_create_id int [not null, ref: > user.id]
+  user_update_id int [ref: > user.id]
+  created_at timestamp 
+  updated_at timestamp 
+
+  Indexes {
+    (artist_id, estilo_id) [unique, name: "unique_artist_estilo"]
+    (artist_id) [name: "idx_artist_estilo_artist_id"]
+    (estilo_id) [name: "idx_artist_estilo_estilo_id"]
+  }
+}
+
 Table palo_compas {
   id serial [primary key]
   palo_id int [not null, ref: > palo.id]  
