@@ -4,7 +4,7 @@ import {
   OnModuleDestroy,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient, Prisma } from '@common/index';
 import { prismaQueryErrors } from './static';
 
 @Injectable()
@@ -70,4 +70,6 @@ export class PrismaService
       );
     }
   }
+
+  
 }

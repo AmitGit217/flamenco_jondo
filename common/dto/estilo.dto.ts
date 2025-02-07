@@ -10,6 +10,7 @@ import { tonalities, keys } from "@prisma/client";
 
 export class UpsertEstiloRequestDto {
   @IsOptional()
+  @IsInt()
   id?: number;
 
   @IsNotEmpty()
@@ -45,9 +46,17 @@ export class UpsertEstiloRequestDto {
   @IsOptional()
   @IsDateString()
   updated_at?: string;
+
+  @IsOptional()
+  @IsInt()
+  user_created_id?: number;
+
+  @IsOptional()
+  @IsInt()
+  user_update_id?: number;
 }
 
-export class EstiloResponseDto {
+export class UpsertEstiloResponseDto {
   @IsNotEmpty()
   id: number;
 
