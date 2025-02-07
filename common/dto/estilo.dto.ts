@@ -1,7 +1,17 @@
-import { IsNotEmpty, IsOptional, IsDateString, IsEnum } from "class-validator";
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsDateString,
+  IsEnum,
+  IsInt,
+  IsString,
+} from "class-validator";
 import { tonalities, keys } from "@prisma/client";
 
-export class CreateEstiloRequestDto {
+export class UpsertEstiloRequestDto {
+  @IsOptional()
+  id?: number;
+
   @IsNotEmpty()
   name: string;
 
@@ -19,6 +29,14 @@ export class CreateEstiloRequestDto {
   @IsNotEmpty()
   @IsDateString()
   origin_date: string;
+
+  @IsOptional()
+  @IsInt()
+  palo_id?: number;
+
+  @IsOptional()
+  @IsInt()
+  artist_id?: number;
 
   @IsOptional()
   @IsDateString()
@@ -43,6 +61,14 @@ export class EstiloResponseDto {
   @IsNotEmpty()
   @IsEnum(keys)
   key: keys;
+
+  @IsOptional()
+  @IsString()
+  artist_name?: string;
+
+  @IsOptional()
+  @IsString()
+  palo_name?: string;
 
   @IsNotEmpty()
   origin: string;

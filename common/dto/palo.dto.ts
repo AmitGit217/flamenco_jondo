@@ -37,7 +37,7 @@ export class UpsertPaloRequestDto {
   user_update_id?: number;
 }
 
-export class PaloResponseDto {
+export class UpsertPaloResponseDto {
   @IsNotEmpty()
   id: number;
 

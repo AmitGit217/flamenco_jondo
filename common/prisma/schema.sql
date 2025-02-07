@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml.dbdiagram.io)
 -- Database: PostgreSQL
--- Generated at: 2025-02-07T20:11:30.186Z
+-- Generated at: 2025-02-07T20:24:36.983Z
 
 CREATE TYPE "artisttype" AS ENUM (
   'CANTE',
@@ -123,6 +123,16 @@ CREATE TABLE "palo_estilo" (
   "updated_at" timestamp
 );
 
+CREATE TABLE "artist_estilo" (
+  "id" serial PRIMARY KEY,
+  "artist_id" int NOT NULL,
+  "estilo_id" int NOT NULL,
+  "user_create_id" int NOT NULL,
+  "user_update_id" int,
+  "created_at" timestamp,
+  "updated_at" timestamp
+);
+
 CREATE TABLE "palo_compas" (
   "id" serial PRIMARY KEY,
   "palo_id" int NOT NULL,
@@ -163,6 +173,12 @@ CREATE UNIQUE INDEX "unique_palo_estilo" ON "palo_estilo" ("palo_id", "estilo_id
 CREATE INDEX "idx_palo_estilo_palo_id" ON "palo_estilo" ("palo_id");
 
 CREATE INDEX "idx_palo_estilo_estilo_id" ON "palo_estilo" ("estilo_id");
+
+CREATE UNIQUE INDEX "unique_artist_estilo" ON "artist_estilo" ("artist_id", "estilo_id");
+
+CREATE INDEX "idx_artist_estilo_artist_id" ON "artist_estilo" ("artist_id");
+
+CREATE INDEX "idx_artist_estilo_estilo_id" ON "artist_estilo" ("estilo_id");
 
 CREATE UNIQUE INDEX "unique_palo_compas" ON "palo_compas" ("palo_id", "compas_id");
 
@@ -205,6 +221,14 @@ ALTER TABLE "palo_estilo" ADD FOREIGN KEY ("estilo_id") REFERENCES "estilo" ("id
 ALTER TABLE "palo_estilo" ADD FOREIGN KEY ("user_create_id") REFERENCES "user" ("id");
 
 ALTER TABLE "palo_estilo" ADD FOREIGN KEY ("user_update_id") REFERENCES "user" ("id");
+
+ALTER TABLE "artist_estilo" ADD FOREIGN KEY ("artist_id") REFERENCES "artist" ("id");
+
+ALTER TABLE "artist_estilo" ADD FOREIGN KEY ("estilo_id") REFERENCES "estilo" ("id");
+
+ALTER TABLE "artist_estilo" ADD FOREIGN KEY ("user_create_id") REFERENCES "user" ("id");
+
+ALTER TABLE "artist_estilo" ADD FOREIGN KEY ("user_update_id") REFERENCES "user" ("id");
 
 ALTER TABLE "palo_compas" ADD FOREIGN KEY ("palo_id") REFERENCES "palo" ("id");
 

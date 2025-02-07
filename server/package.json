@@ -37,6 +37,7 @@
     "class-validator": "^0.14.1",
     "cypress": "^14.0.1",
     "dotenv-cli": "^8.0.0",
+    "expect-type": "^1.1.0",
     "nest-winston": "^1.10.2",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",

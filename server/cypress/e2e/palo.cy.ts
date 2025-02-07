@@ -1,6 +1,11 @@
 import { faker } from '@faker-js/faker';
-import { UpsertPaloRequestDto } from '@common/dto/palo.dto';
+import {
+  UpsertPaloRequestDto,
+  UpsertPaloResponseDto,
+} from '@common/dto/palo.dto';
 import { LoginRequestDto, LoginResponseDto } from '@common/dto/login.dto';
+import { expectTypeOf } from 'expect-type';
+
 let authToken: string;
 let userAuthToken: string;
 
@@ -73,6 +78,7 @@ describe('Palo Upsert API', () => {
     }).then((response) => {
       expect(response.status).to.eq(201);
       expect(response.body).to.have.property('id');
+      expectTypeOf(response.body).toMatchTypeOf<UpsertPaloResponseDto>();
       createdPaloId = response.body.id;
     });
   });
@@ -97,6 +103,7 @@ describe('Palo Upsert API', () => {
     }).then((response) => {
       expect(response.status).to.eq(201);
       expect(response.body).to.have.property('id', createdPaloId);
+      expectTypeOf(response.body).toMatchTypeOf<UpsertPaloResponseDto>();
     });
   });
 
