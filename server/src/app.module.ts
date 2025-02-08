@@ -5,9 +5,10 @@ import { AuthModule } from './services/auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { PaloModule } from './services/palo/palo.module';
 import { EstiloModule } from './services/estilo/estilo.module';
+import { ArtistModule } from './services/artist/artist.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, PaloModule, EstiloModule],
+  imports: [PrismaModule, AuthModule, PaloModule, EstiloModule, ArtistModule],
   controllers: [AppController],
   providers: [AppService],
 })

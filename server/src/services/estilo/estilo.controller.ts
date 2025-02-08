@@ -9,7 +9,7 @@ import { Roles, RolesGuard } from '../../gurads/role.guard';
 export class EstiloController {
   constructor(private readonly estiloService: EstiloService) {}
 
-  @Post()
+  @Post('upsert')
   @Roles('MASTER')
   async upsert(@Body() dto: UpsertEstiloRequestDto) {
     return this.estiloService.upsert(dto);
