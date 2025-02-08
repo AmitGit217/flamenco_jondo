@@ -1,12 +1,15 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { UpsertEstiloRequestDto } from '@common/dto/estilo.dto';
+import {
+  UpsertEstiloRequestDto,
+  UpsertEstiloResponseDto,
+} from '@common/dto/estilo.dto';
 
 @Injectable()
 export class EstiloService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async upsert(dto: UpsertEstiloRequestDto) {
+  async upsert(dto: UpsertEstiloRequestDto): Promise<UpsertEstiloResponseDto> {
     const timestamp = new Date();
 
     const upsertData = {
@@ -25,7 +28,7 @@ export class EstiloService {
     };
 
     if (!dto.id) {
-      return this.prisma.estilo.create({
+      const createdEstilo = await this.prisma.estilo.create({
         data: {
           ...upsertData,
           created_at: timestamp,
@@ -46,9 +49,22 @@ export class EstiloService {
             : undefined,
         },
       });
+
+      return {
+        ...createdEstilo,
+        origin_date: createdEstilo.origin_date
+          ? createdEstilo.origin_date.toISOString()
+          : null,
+        created_at: createdEstilo.created_at
+          ? createdEstilo.created_at.toISOString()
+          : null,
+        updated_at: createdEstilo.updated_at
+          ? createdEstilo.updated_at.toISOString()
+          : null,
+      };
     }
 
-    return this.prisma.estilo.update({
+    const updatedEstilo = await this.prisma.estilo.update({
       where: { id: dto.id },
       data: {
         ...upsertData,
@@ -67,5 +83,18 @@ export class EstiloService {
         },
       },
     });
+
+    return {
+      ...updatedEstilo,
+      origin_date: updatedEstilo.origin_date
+        ? updatedEstilo.origin_date.toISOString()
+        : null,
+      created_at: updatedEstilo.created_at
+        ? updatedEstilo.created_at.toISOString()
+        : null,
+      updated_at: updatedEstilo.updated_at
+        ? updatedEstilo.updated_at.toISOString()
+        : null,
+    };
   }
 }

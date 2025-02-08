@@ -6,7 +6,9 @@ import {
   IsString,
   IsDateString,
 } from "class-validator";
-import { artisttype } from "@prisma/client";
+import { artisttype, estilo } from "@prisma/client";
+import { Type } from "class-transformer";
+import { UpsertEstiloRequestDto } from "./estilo.dto";
 
 export class UpsertArtistRequestDto {
   @IsOptional()
@@ -31,6 +33,7 @@ export class UpsertArtistRequestDto {
   @IsEnum(artisttype)
   type: artisttype;
 
+
   @IsOptional()
   @IsDateString()
   created_at?: string;
@@ -38,6 +41,14 @@ export class UpsertArtistRequestDto {
   @IsOptional()
   @IsDateString()
   updated_at?: string;
+
+  @IsOptional()
+  @IsInt()
+  user_created_id?: number;
+
+  @IsOptional()
+  @IsInt()
+  user_update_id?: number;
 }
 
 export class UpsertArtistResponseDto {
@@ -64,10 +75,21 @@ export class UpsertArtistResponseDto {
   type: artisttype;
 
   @IsOptional()
+  estilos?: Array<estilo>;
+
+  @IsOptional()
   @IsDateString()
   created_at?: string;
 
   @IsOptional()
   @IsDateString()
   updated_at?: string;
+
+  @IsOptional()
+  @IsInt()
+  user_created_id?: number;
+
+  @IsOptional()
+  @IsInt()
+  user_update_id?: number;
 }
