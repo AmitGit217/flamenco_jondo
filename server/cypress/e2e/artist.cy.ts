@@ -1,19 +1,16 @@
+import { expectTypeOf } from 'expect-type';
 import { faker } from '@faker-js/faker';
 import {
-  UpsertEstiloRequestDto,
-  UpsertEstiloResponseDto,
-} from '@common/dto/estilo.dto';
-import { UpsertPaloRequestDto } from '@common/dto/palo.dto';
-import { tonalities } from '@common/index';
+  UpsertArtistRequestDto,
+  UpsertArtistResponseDto,
+} from '@common/dto/artist.dto';
 import { LoginRequestDto, LoginResponseDto } from '@common/dto/login.dto';
-import { expectTypeOf } from 'expect-type';
 
 let authToken: string;
 let userAuthToken: string;
-let createdPaloId: number;
-let createdEstiloId: number;
+let createdArtistId: number;
 
-describe('Estilo Upsert API', () => {
+describe('Artist Upsert API', () => {
   const adminCredentials = {
     email: 'amit217@yandex.com', // Replace with MASTER user email
     password: '21780Amit', // Replace with MASTER user password
@@ -39,6 +36,7 @@ describe('Estilo Upsert API', () => {
     }).then((response) => {
       expect(response.status).to.eq(200);
       expect(response.body).to.have.property('token');
+      expectTypeOf(response.body).toMatchTypeOf<LoginResponseDto>();
       authToken = response.body.token;
     });
   });
@@ -58,50 +56,26 @@ describe('Estilo Upsert API', () => {
     }).then((response) => {
       expect(response.status).to.eq(200);
       expect(response.body).to.have.property('token');
+      expectTypeOf(response.body).toMatchTypeOf<LoginResponseDto>();
       userAuthToken = response.body.token;
     });
   });
 
-  // ✅ 3. Create a new Palo (since Estilo needs a Palo)
-  it('should create a new Palo', () => {
-    const newPalo: UpsertPaloRequestDto = {
-      name: faker.music.genre() + ' Palo',
+  // ✅ 3. Create a new Artist
+  it('should create a new Artist', () => {
+    const newArtist: UpsertArtistRequestDto = {
+      name: faker.person.fullName(),
+      birth_year: faker.number.int({ min: 1900, max: 2022 }),
+      death_year: faker.number.int({ min: 2023, max: 2025 }),
       origin: faker.location.city(),
-      origin_date: faker.date.past().toISOString(),
-    };
-
-    cy.request({
-      method: 'POST',
-      url: '/palo/upsert',
-      body: newPalo,
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-        'Content-Type': 'application/json',
-      },
-    }).then((response) => {
-      expect(response.status).to.eq(201);
-      expect(response.body).to.have.property('id');
-      createdPaloId = response.body.id;
-    });
-  });
-
-  // ✅ 4. Create a new Estilo
-  it('should create a new Estilo', () => {
-    const newEstilo: UpsertEstiloRequestDto = {
-      name: faker.music.genre() + ' Estilo',
-      tonality: tonalities.MAIOR, // Replace with valid enum value from Prisma
-      key: 'C', // Replace with valid enum value from Prisma
-      origin: faker.location.city(),
-      origin_date: faker.date.past().toISOString(),
-      palo_id: createdPaloId,
-      artist_id: null,
+      type: 'GUITARRA', // Replace with valid enum value from Prisma
       user_created_id: 1, // Assume admin user ID
     };
 
-    cy.request({
+    cy.request<UpsertArtistResponseDto>({
       method: 'POST',
-      url: '/estilo/upsert',
-      body: newEstilo,
+      url: '/artist/upsert',
+      body: newArtist,
       headers: {
         Authorization: `Bearer ${authToken}`,
         'Content-Type': 'application/json',
@@ -109,46 +83,46 @@ describe('Estilo Upsert API', () => {
     }).then((response) => {
       expect(response.status).to.eq(201);
       expect(response.body).to.have.property('id');
-      createdEstiloId = response.body.id;
+      expectTypeOf(response.body).toMatchTypeOf<UpsertArtistResponseDto>();
+      createdArtistId = response.body.id;
     });
   });
 
-  // ✅ 5. Update the existing Estilo
-  it('should update an existing Estilo', () => {
-    const updatedEstilo: UpsertEstiloRequestDto = {
-      id: createdEstiloId,
-      name: faker.music.genre() + ' Updated Estilo',
-      tonality: tonalities.LOCRIUS, // Replace with valid enum value
-      key: 'G', // Replace with valid enum value
+  // ✅ 4. Update the existing Artist
+  it('should update an existing Artist', () => {
+    const updatedArtist: UpsertArtistRequestDto = {
+      id: createdArtistId,
+      name: faker.person.fullName(),
+      birth_year: faker.number.int({ min: 1900, max: 2000 }),
+      death_year: faker.number.int({ min: 2021, max: 2025 }),
       origin: faker.location.city(),
-      origin_date: faker.date.past().toISOString(),
-      palo_id: createdPaloId,
-      artist_id: null,
+      type: 'CANTE', // Replace with valid enum value from Prisma
       user_update_id: 1, // Assume admin user ID
     };
 
-    cy.request({
+    cy.request<UpsertArtistResponseDto>({
       method: 'POST',
-      url: '/estilo/upsert',
-      body: updatedEstilo,
+      url: '/artist/upsert',
+      body: updatedArtist,
       headers: {
         Authorization: `Bearer ${authToken}`,
         'Content-Type': 'application/json',
       },
     }).then((response) => {
       expect(response.status).to.eq(201);
-      expect(response.body).to.have.property('id', createdEstiloId);
+      expect(response.body).to.have.property('id', createdArtistId);
+      expectTypeOf(response.body).toMatchTypeOf<UpsertArtistResponseDto>();
     });
   });
 
-  // ❌ 6. Fail with invalid Estilo data
-  it('should return 400 for invalid Estilo data', () => {
-    const invalidEstilo = {};
+  // ❌ 5. Fail with invalid Artist data
+  it('should return 400 for invalid Artist data', () => {
+    const invalidArtist = {};
 
     cy.request({
       method: 'POST',
-      url: '/estilo/upsert',
-      body: invalidEstilo,
+      url: '/artist/upsert',
+      body: invalidArtist,
       headers: {
         Authorization: `Bearer ${authToken}`,
         'Content-Type': 'application/json',
@@ -159,19 +133,19 @@ describe('Estilo Upsert API', () => {
     });
   });
 
-  // ❌ 7. Fail without authentication
+  // ❌ 6. Fail without authentication
   it('should return 401 Unauthorized when no token is provided', () => {
-    const estiloWithoutAuth = {
-      name: faker.music.genre() + ' Estilo',
+    const artistWithoutAuth = {
+      name: faker.person.fullName(),
       origin: faker.location.city(),
-      origin_date: faker.date.past().toISOString(),
-      palo_id: createdPaloId,
+      birth_year: faker.number.int({ min: 1900, max: 2022 }),
+      type: 'CANTE',
     };
 
     cy.request({
       method: 'POST',
-      url: '/estilo/upsert',
-      body: estiloWithoutAuth,
+      url: '/artist/upsert',
+      body: artistWithoutAuth,
       headers: { 'Content-Type': 'application/json' },
       failOnStatusCode: false, // Allow 4xx responses
     }).then((response) => {
@@ -179,19 +153,19 @@ describe('Estilo Upsert API', () => {
     });
   });
 
-  // ❌ 8. Fail when user is not MASTER role
+  // ❌ 7. Fail when user is not MASTER role
   it('should return 403 Forbidden when user is not MASTER', () => {
-    const estiloWithUnauthorizedRole = {
-      name: faker.music.genre() + ' Estilo',
+    const artistWithUnauthorizedRole = {
+      name: faker.person.fullName(),
       origin: faker.location.city(),
-      origin_date: faker.date.past().toISOString(),
-      palo_id: createdPaloId,
+      birth_year: faker.number.int({ min: 1900, max: 2022 }),
+      type: 'CANTE',
     };
 
     cy.request({
       method: 'POST',
-      url: '/estilo/upsert',
-      body: estiloWithUnauthorizedRole,
+      url: '/artist/upsert',
+      body: artistWithUnauthorizedRole,
       headers: {
         Authorization: `Bearer ${userAuthToken}`, // Regular user token
         'Content-Type': 'application/json',
