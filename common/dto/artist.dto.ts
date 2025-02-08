@@ -8,7 +8,10 @@ import {
 } from "class-validator";
 import { artisttype } from "@prisma/client";
 
-export class CreateArtistRequestDto {
+export class UpsertArtistRequestDto {
+  @IsOptional()
+  id?: number;
+
   @IsNotEmpty()
   name: string;
 
@@ -37,7 +40,7 @@ export class CreateArtistRequestDto {
   updated_at?: string;
 }
 
-export class ArtistResponseDto {
+export class UpsertArtistResponseDto {
   @IsNotEmpty()
   id: number;
 
