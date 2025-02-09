@@ -173,7 +173,6 @@ Table palo_compas {
   user_update_id int [ref: > user.id]
   created_at timestamp 
   updated_at timestamp 
-
   Indexes {
     (palo_id, compas_id) [unique, name: "unique_palo_compas"]
     (palo_id) [name: "idx_palo_compas_palo_id"]
@@ -197,5 +196,23 @@ Table letra_artist {
     (letra_id, artist_id) [unique, name: "unique_letra_artist"]
     (letra_id) [name: "idx_letra_artist_letra_id"]
     (artist_id) [name: "idx_letra_artist_artist_id"]
+  }
+}
+
+
+
+Table letra_palo {
+  id serial [primary key]
+  letra_id int [not null, ref: > letra.id]  
+  palo_id int [not null, ref: > palo.id]  
+  user_create_id int [not null, ref: > user.id]
+  user_update_id int [ref: > user.id]
+  created_at timestamp 
+  updated_at timestamp 
+
+  Indexes {
+    (letra_id, palo_id) [unique, name: "unique_letra_palo"]
+    (letra_id) [name: "idx_letra_palo_letra_id"]
+    (palo_id) [name: "idx_letra_palo_palo_id"]
   }
 }

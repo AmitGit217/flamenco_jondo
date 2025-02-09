@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsOptional, IsArray, IsDateString } from "class-validator";
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsArray,
+  IsDateString,
+  IsInt,
+} from "class-validator";
 
 export class UpsertLetraRequestDto {
   @IsOptional()
@@ -35,6 +41,14 @@ export class UpsertLetraRequestDto {
   @IsOptional()
   @IsDateString()
   updated_at?: string;
+
+  @IsOptional()
+  @IsInt()
+  user_created_id?: number;
+
+  @IsOptional()
+  @IsInt()
+  user_update_id?: number;
 }
 
 export class UpsrtLetraResponseDto {
