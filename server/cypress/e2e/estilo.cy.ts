@@ -4,7 +4,7 @@ import {
   UpsertEstiloResponseDto,
 } from '@common/dto/estilo.dto';
 import { UpsertPaloRequestDto } from '@common/dto/palo.dto';
-import { tonalities } from '@common/index';
+import { tonalities } from '@prisma/client';
 import { LoginRequestDto, LoginResponseDto } from '@common/dto/login.dto';
 import { expectTypeOf } from 'expect-type';
 

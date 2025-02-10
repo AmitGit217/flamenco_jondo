@@ -5,7 +5,7 @@ import {
   UpsrtLetraResponseDto,
 } from '@common/dto/letra.dto';
 import { LoginRequestDto, LoginResponseDto } from '@common/dto/login.dto';
-import { tonalities } from '@common/index';
+import { tonalities } from '@prisma/client';
 
 let authToken: string;
 let userAuthToken: string;

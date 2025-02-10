@@ -4,7 +4,7 @@ import {
   OnModuleDestroy,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { PrismaClient, Prisma } from '@common/index';
+import { PrismaClient, Prisma } from '@prisma/client';
 import { prismaQueryErrors } from './static';
 
 @Injectable()
@@ -14,6 +14,7 @@ export class PrismaService
 {
   constructor() {
     super();
+    console.log('Available Prisma Models at Runtime:', Object.keys(this));
     return this.createProxy(this);
   }
 

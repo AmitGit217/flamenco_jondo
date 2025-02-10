@@ -13,9 +13,8 @@ export class LetraService {
     try {
       const timestamp = new Date();
 
-      // ✅ Step 1: Upsert Letra (without `include`)
       const letra = await this.prisma.letra.upsert({
-        where: { id: dto.id || -1 }, // ✅ Use -1 for safe upsert
+        where: { id: dto.id || -1 },
         update: {
           verses: dto.verses,
           rhyme_scheme: dto.rhyme_scheme,
@@ -56,14 +55,14 @@ export class LetraService {
         },
       });
 
-      const letraArtists = await this.prisma.letra_artist.findMany({
-        where: { letra_id: letra.id },
-        select: { artist_id: true },
-      });
-
       const letraPalos = await this.prisma.letra_palo.findMany({
         where: { letra_id: letra.id },
         select: { palo_id: true },
+      });
+
+      const letraArtists = await this.prisma.letra_artist.findMany({
+        where: { letra_id: letra.id },
+        select: { artist_id: true },
       });
 
       return {

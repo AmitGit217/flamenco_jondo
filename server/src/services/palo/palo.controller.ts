@@ -3,7 +3,7 @@ import { PaloService } from './palo.service';
 import { UpsertPaloRequestDto } from '@common/dto/palo.dto';
 import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
 import { GetCurrentUser } from '../utils/getCurretUser';
-import { user } from '@common/index';
+import { user } from '@prisma/client';
 import { Roles, RolesGuard } from '../../gurads/role.guard';
 
 @Controller('palo')
