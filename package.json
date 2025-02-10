@@ -8,7 +8,7 @@
     "copy-schema-to-db": "docker cp ./common/prisma/schema.sql flamenco_jondo_db:/schema.sql",
     "execute-schema-to-db": "docker exec -it flamenco_jondo_db psql -U flamenco_jondo_user -d flamenco_jondo_db -f /schema.sql",
     "restart-db": "docker-compose down --volumes && docker-compose up -d && npm run dbml-to-sql && npm run copy-schema-to-db && npm run execute-schema-to-db",
-    "prisma-db-pull": "cd common && npx prisma db pull && cd ../server && npx prisma db pull",
+    "prisma-db-pull": "cd common && npx prisma db pull && cd ../server && cpx ../common/prisma/schema.prisma ./src/prisma",
     "prisma-generate-types": "cd common && npx prisma generate",
     "prisma-seed": "npx prisma db seed",
     "restart-and-update-prisma": "npm run restart-db && npm run prisma-db-pull && npm run prisma-generate-types && npm run prisma-seed",
@@ -23,6 +23,7 @@
   "dependencies": {
     "@prisma/client": "^6.3.1",
     "@types/winston": "^2.4.4",
+    "cpx": "^1.5.0",
     "dotenv-cli": "^8.0.0",
     "winston": "^3.17.0"
   }
