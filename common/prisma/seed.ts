@@ -1,7 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  datasourceUrl:
+    "postgresql://flamenco_jondo_user:flamenco_jondo_password@localhost:5432/flamenco_jondo_db",
+});
 
 async function main() {
   const password = await bcrypt.hash("21780Amit", 10);

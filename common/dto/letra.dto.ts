@@ -1,8 +1,23 @@
-import { IsNotEmpty, IsOptional, IsArray, IsDateString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsArray,
+  IsDateString,
+  IsInt,
+} from "class-validator";
 
-export class CreateLetraRequestDto {
-  @IsNotEmpty()
-  estilo_id: number;
+export class UpsertLetraRequestDto {
+  @IsOptional()
+  id?: number;
+
+  @IsOptional()
+  estilo_id?: number;
+
+  @IsOptional()
+  artist_id?: number;
+
+  @IsOptional()
+  palo_id?: number;
 
   @IsNotEmpty()
   @IsArray()
@@ -26,14 +41,28 @@ export class CreateLetraRequestDto {
   @IsOptional()
   @IsDateString()
   updated_at?: string;
+
+  @IsOptional()
+  @IsInt()
+  user_created_id?: number;
+
+  @IsOptional()
+  @IsInt()
+  user_update_id?: number;
 }
 
-export class LetraResponseDto {
+export class UpsrtLetraResponseDto {
   @IsNotEmpty()
   id: number;
 
   @IsNotEmpty()
   estilo_id: number;
+
+  @IsOptional()
+  artist_id?: number;
+
+  @IsOptional()
+  palo_id?: number;
 
   @IsNotEmpty()
   @IsArray()

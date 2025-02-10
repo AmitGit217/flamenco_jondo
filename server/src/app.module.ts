@@ -7,6 +7,7 @@ import { PaloModule } from './services/palo/palo.module';
 import { EstiloModule } from './services/estilo/estilo.module';
 import { ArtistModule } from './services/artist/artist.module';
 import { CompasModule } from './services/compas/compas.module';
+import { LetraModule } from './services/letra/letra.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CompasModule } from './services/compas/compas.module';
     EstiloModule,
     ArtistModule,
     CompasModule,
+    LetraModule,
   ],
   controllers: [AppController],
   providers: [AppService],

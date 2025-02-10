@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml.dbdiagram.io)
 -- Database: PostgreSQL
--- Generated at: 2025-02-09T15:16:46.406Z
+-- Generated at: 2025-02-10T20:21:28.659Z
 
 CREATE TYPE "artisttype" AS ENUM (
   'CANTE',
@@ -156,6 +156,16 @@ CREATE TABLE "letra_artist" (
   "updated_at" timestamp
 );
 
+CREATE TABLE "letra_palo" (
+  "id" serial PRIMARY KEY,
+  "letra_id" int NOT NULL,
+  "palo_id" int NOT NULL,
+  "user_create_id" int NOT NULL,
+  "user_update_id" int,
+  "created_at" timestamp,
+  "updated_at" timestamp
+);
+
 CREATE INDEX "unique_user_email" ON "user" ("email");
 
 CREATE INDEX "unique_palo_name" ON "palo" ("name");
@@ -191,6 +201,12 @@ CREATE UNIQUE INDEX "unique_letra_artist" ON "letra_artist" ("letra_id", "artist
 CREATE INDEX "idx_letra_artist_letra_id" ON "letra_artist" ("letra_id");
 
 CREATE INDEX "idx_letra_artist_artist_id" ON "letra_artist" ("artist_id");
+
+CREATE UNIQUE INDEX "unique_letra_palo" ON "letra_palo" ("letra_id", "palo_id");
+
+CREATE INDEX "idx_letra_palo_letra_id" ON "letra_palo" ("letra_id");
+
+CREATE INDEX "idx_letra_palo_palo_id" ON "letra_palo" ("palo_id");
 
 ALTER TABLE "palo" ADD FOREIGN KEY ("user_create_id") REFERENCES "user" ("id");
 
@@ -245,3 +261,11 @@ ALTER TABLE "letra_artist" ADD FOREIGN KEY ("artist_id") REFERENCES "artist" ("i
 ALTER TABLE "letra_artist" ADD FOREIGN KEY ("user_create_id") REFERENCES "user" ("id");
 
 ALTER TABLE "letra_artist" ADD FOREIGN KEY ("user_update_id") REFERENCES "user" ("id");
+
+ALTER TABLE "letra_palo" ADD FOREIGN KEY ("letra_id") REFERENCES "letra" ("id");
+
+ALTER TABLE "letra_palo" ADD FOREIGN KEY ("palo_id") REFERENCES "palo" ("id");
+
+ALTER TABLE "letra_palo" ADD FOREIGN KEY ("user_create_id") REFERENCES "user" ("id");
+
+ALTER TABLE "letra_palo" ADD FOREIGN KEY ("user_update_id") REFERENCES "user" ("id");

@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { role } from '@common/index';
+import { role } from '@prisma/client';
 import { SetMetadata } from '@nestjs/common';
 
 @Injectable()
