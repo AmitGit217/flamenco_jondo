@@ -68,3 +68,13 @@ export class UpsertPaloResponseDto {
   @IsInt()
   user_update_id?: number;
 }
+
+export class DeletePaloRequestDto {
+  @IsNotEmpty()
+  id: number;
+}
+
+export class DeletePaloResponseDto {
+  @IsNotEmpty()
+  id: number;
+}

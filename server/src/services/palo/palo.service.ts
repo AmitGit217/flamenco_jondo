@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { DeletePaloResponseDto } from '../../../../common/dto/palo.dto';
 import {
   UpsertPaloRequestDto,
   UpsertPaloResponseDto,
+  DeletePaloRequestDto,
 } from '@common/dto/palo.dto';
 
 @Injectable()
@@ -44,6 +46,23 @@ export class PaloService {
       };
     } catch (error) {
       throw new Error(`Failed to upsert Palo: ${error.message}`);
+    }
+  }
+
+  async deletePalo(
+    dto: DeletePaloRequestDto,
+    userId: number,
+  ): Promise<DeletePaloResponseDto> {
+    try {
+      await this.prismaService.palo.delete({
+        where: { id: dto.id },
+      });
+
+      return {
+        id: dto.id,
+      };
+    } catch (error) {
+      throw new Error(`Failed to delete Palo: ${error.message}`);
     }
   }
 }
