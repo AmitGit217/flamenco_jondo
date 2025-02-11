@@ -166,4 +166,19 @@ describe('Palo Upsert API', () => {
       expect(response.status).to.eq(403);
     });
   });
+
+  // ✅ Test: Delete a Palo
+  it('should delete a Palo', () => {
+    cy.request({
+      method: 'DELETE',
+      url: '/palo/delete',
+      body: { id: createdPaloId },
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        'Content-Type': 'application/json',
+      },
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+    });
+  });
 });
