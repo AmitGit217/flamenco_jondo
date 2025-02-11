@@ -3,6 +3,7 @@ import { faker } from '@faker-js/faker';
 import {
   UpsertArtistRequestDto,
   UpsertArtistResponseDto,
+  DeleteArtistResponseDto,
 } from '@common/dto/artist.dto';
 import { LoginRequestDto, LoginResponseDto } from '@common/dto/login.dto';
 
@@ -173,6 +174,23 @@ describe('Artist Upsert API', () => {
       failOnStatusCode: false, // Allow 4xx responses
     }).then((response) => {
       expect(response.status).to.eq(403);
+    });
+  });
+
+  // ✅ Test: Delete a Artist
+  it('should delete a Artist', () => {
+    cy.request({
+      method: 'DELETE',
+      url: '/artist/delete',
+      body: { id: createdArtistId },
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        'Content-Type': 'application/json',
+      },
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      expectTypeOf(response.body).toMatchTypeOf<DeleteArtistResponseDto>();
+      expect(response.body).to.have.property('id', createdArtistId);
     });
   });
 });

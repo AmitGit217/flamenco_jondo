@@ -3,6 +3,8 @@ import { PrismaService } from '../../prisma/prisma.service';
 import {
   UpsertArtistRequestDto,
   UpsertArtistResponseDto,
+  DeleteArtistRequestDto,
+  DeleteArtistResponseDto,
 } from '@common/dto/artist.dto';
 
 @Injectable()
@@ -53,6 +55,23 @@ export class ArtistService {
     } catch (error) {
       throw new BadRequestException(
         `Failed to upsert artist: ${error.message}`,
+      );
+    }
+  }
+
+  async delete(dto: DeleteArtistRequestDto): Promise<DeleteArtistResponseDto> {
+    try {
+      
+      await this.prisma.artist.delete({
+        where: { id: dto.id },
+      });
+
+      return {
+        id: dto.id,
+      };
+    } catch (error) {
+      throw new BadRequestException(
+        `Failed to delete artist: ${error.message}`,
       );
     }
   }

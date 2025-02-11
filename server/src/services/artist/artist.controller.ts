@@ -1,6 +1,9 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Delete } from '@nestjs/common';
 import { ArtistService } from './artist.service';
-import { UpsertArtistRequestDto } from '@common/dto/artist.dto';
+import {
+  DeleteArtistRequestDto,
+  UpsertArtistRequestDto,
+} from '@common/dto/artist.dto';
 import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
 import { Roles, RolesGuard } from '../../gurads/role.guard';
 
@@ -13,5 +16,11 @@ export class ArtistController {
   @Roles('MASTER')
   async upsert(@Body() dto: UpsertArtistRequestDto) {
     return this.ArtistaService.upsert(dto);
+  }
+
+  @Delete('delete')
+  @Roles('MASTER')
+  async delete(@Body() dto: DeleteArtistRequestDto) {
+    return this.ArtistaService.delete(dto);
   }
 }
