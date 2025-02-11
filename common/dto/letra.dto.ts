@@ -87,3 +87,13 @@ export class UpsrtLetraResponseDto {
   @IsDateString()
   updated_at?: string;
 }
+
+export class DeleteLetraRequestDto {
+  @IsNotEmpty()
+  id: number;
+}
+
+export class DeleteLetraResponseDto {
+  @IsNotEmpty()
+  id: number;
+}

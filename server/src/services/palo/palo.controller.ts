@@ -25,10 +25,7 @@ export class PaloController {
 
   @Delete('delete')
   @Roles('MASTER')
-  async deletePalo(
-    @Body() dto: DeletePaloRequestDto,
-    @GetCurrentUser() user: user,
-  ) {
-    return this.paloService.deletePalo(dto, user.id);
+  async deletePalo(@Body() dto: DeletePaloRequestDto) {
+    return this.paloService.deletePalo(dto);
   }
 }

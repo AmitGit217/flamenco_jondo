@@ -3,6 +3,7 @@ import { faker } from '@faker-js/faker';
 import {
   UpsertLetraRequestDto,
   UpsrtLetraResponseDto,
+  DeleteLetraResponseDto,
 } from '@common/dto/letra.dto';
 import { LoginRequestDto, LoginResponseDto } from '@common/dto/login.dto';
 import { tonalities } from '@prisma/client';
@@ -185,6 +186,23 @@ describe('Letra Upsert API', () => {
       expect(response.status).to.eq(201);
       expect(response.body).to.have.property('id', createdLetraId);
       expectTypeOf(response.body).toMatchTypeOf<UpsrtLetraResponseDto>();
+    });
+  });
+
+  // ✅ 7. Delete the Letra
+  it('should delete a Letra', () => {
+    cy.request({
+      method: 'DELETE',
+      url: '/letra/delete',
+      body: { id: createdLetraId },
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        'Content-Type': 'application/json',
+      },
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      expectTypeOf(response.body).toMatchTypeOf<DeleteLetraResponseDto>();
+      expect(response.body).to.have.property('id', createdLetraId);
     });
   });
 });
