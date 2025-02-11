@@ -94,3 +94,13 @@ export class UpsertEstiloResponseDto {
   @IsDateString()
   updated_at?: string;
 }
+
+export class DeleteEstiloRequestDto {
+  @IsNotEmpty()
+  id: number;
+}
+
+export class DeleteEstiloResponseDto {
+  @IsNotEmpty()
+  id: number;
+}
