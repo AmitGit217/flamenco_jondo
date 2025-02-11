@@ -3,6 +3,8 @@ import { PrismaService } from '../../prisma/prisma.service';
 import {
   UpsertLetraRequestDto,
   UpsrtLetraResponseDto,
+  DeleteLetraRequestDto,
+  DeleteLetraResponseDto,
 } from '@common/dto/letra.dto';
 
 @Injectable()
@@ -79,6 +81,29 @@ export class LetraService {
       };
     } catch (error) {
       throw new BadRequestException(`Failed to upsert Letra: ${error.message}`);
+    }
+  }
+
+  async delete(dto: DeleteLetraRequestDto): Promise<DeleteLetraResponseDto> {
+    try {
+      await Promise.all([
+        this.prisma.letra_palo.deleteMany({
+          where: { letra_id: dto.id },
+        }),
+        this.prisma.letra_artist.deleteMany({
+          where: { letra_id: dto.id },
+        }),
+      ]);
+
+      await this.prisma.letra.delete({
+        where: { id: dto.id },
+      });
+
+      return {
+        id: dto.id,
+      };
+    } catch (error) {
+      throw new BadRequestException(`Failed to delete Letra: ${error.message}`);
     }
   }
 }

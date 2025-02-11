@@ -49,10 +49,7 @@ export class PaloService {
     }
   }
 
-  async deletePalo(
-    dto: DeletePaloRequestDto,
-    userId: number,
-  ): Promise<DeletePaloResponseDto> {
+  async deletePalo(dto: DeletePaloRequestDto): Promise<DeletePaloResponseDto> {
     try {
       await this.prismaService.palo.delete({
         where: { id: dto.id },

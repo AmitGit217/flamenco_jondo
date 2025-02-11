@@ -1,6 +1,6 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Delete } from '@nestjs/common';
 import { EstiloService } from './estilo.service';
-import { UpsertEstiloRequestDto } from '@common/dto/estilo.dto';
+import { DeleteEstiloRequestDto, UpsertEstiloRequestDto } from '@common/dto/estilo.dto';
 import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
 import { Roles, RolesGuard } from '../../gurads/role.guard';
 
@@ -13,5 +13,11 @@ export class EstiloController {
   @Roles('MASTER')
   async upsert(@Body() dto: UpsertEstiloRequestDto) {
     return this.estiloService.upsert(dto);
+  }
+
+  @Delete('delete')
+  @Roles('MASTER')
+  async delete(@Body() dto: DeleteEstiloRequestDto) {
+    return this.estiloService.delete(dto);
   }
 }

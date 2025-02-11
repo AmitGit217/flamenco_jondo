@@ -55,7 +55,7 @@ export class UpsertCompasRequestDto {
   updated_at?: string;
 }
 
-export class CompasResponseDto {
+export class UpsertCompasResponseDto {
   @IsNotEmpty()
   id: number;
 
@@ -96,4 +96,14 @@ export class CompasResponseDto {
   @IsOptional()
   @IsDateString()
   updated_at?: string;
+}
+
+export class DeleteCompasRequestDto {
+  @IsNotEmpty()
+  id: number;
+}
+
+export class DeleteCompasResponseDto {
+  @IsNotEmpty()
+  id: number;
 }

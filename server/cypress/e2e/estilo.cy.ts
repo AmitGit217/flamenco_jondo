@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import {
   UpsertEstiloRequestDto,
-  UpsertEstiloResponseDto,
+  DeleteEstiloResponseDto,
 } from '@common/dto/estilo.dto';
 import { UpsertPaloRequestDto } from '@common/dto/palo.dto';
 import { tonalities } from '@prisma/client';
@@ -199,6 +199,23 @@ describe('Estilo Upsert API', () => {
       failOnStatusCode: false, // Allow 4xx responses
     }).then((response) => {
       expect(response.status).to.eq(403);
+    });
+  });
+
+  // ✅ Test: Delete a Estilo
+  it('should delete a Estilo', () => {
+    cy.request({
+      method: 'DELETE',
+      url: '/estilo/delete',
+      body: { id: createdEstiloId },
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        'Content-Type': 'application/json',
+      },
+    }).then((response) => {
+      expectTypeOf(response.body).toMatchTypeOf<DeleteEstiloResponseDto>();
+      expect(response.body).to.have.property('id', createdEstiloId);
+      expect(response.status).to.eq(200);
     });
   });
 });

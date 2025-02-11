@@ -1,8 +1,10 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Delete } from '@nestjs/common';
 import { CompasService } from './compas.service';
 import {
   UpsertCompasRequestDto,
-  CompasResponseDto,
+  UpsertCompasResponseDto,
+  DeleteCompasRequestDto,
+  DeleteCompasResponseDto,
 } from '@common/dto/compas.dto';
 import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
 import { Roles, RolesGuard } from '../../gurads/role.guard';
@@ -16,7 +18,13 @@ export class CompasController {
   @Roles('MASTER')
   async upsert(
     @Body() dto: UpsertCompasRequestDto,
-  ): Promise<CompasResponseDto> {
+  ): Promise<UpsertCompasResponseDto> {
     return this.compasService.upsert(dto);
+  }
+
+  @Delete('delete')
+  @Roles('MASTER')
+  async delete(@Body() dto: DeleteCompasRequestDto) {
+    return this.compasService.delete(dto);
   }
 }

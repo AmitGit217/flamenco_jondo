@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import {
+  DeletePaloResponseDto,
   UpsertPaloRequestDto,
   UpsertPaloResponseDto,
 } from '@common/dto/palo.dto';
@@ -178,6 +179,8 @@ describe('Palo Upsert API', () => {
         'Content-Type': 'application/json',
       },
     }).then((response) => {
+      expectTypeOf(response.body).toMatchTypeOf<DeletePaloResponseDto>();
+      expect(response.body).to.have.property('id', createdPaloId);
       expect(response.status).to.eq(200);
     });
   });
