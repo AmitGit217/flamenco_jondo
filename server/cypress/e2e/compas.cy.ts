@@ -2,7 +2,9 @@ import { expectTypeOf } from 'expect-type';
 import { faker } from '@faker-js/faker';
 import {
   UpsertCompasRequestDto,
-  CompasResponseDto,
+  UpsertCompasResponseDto,
+  DeleteCompasRequestDto,
+  DeleteCompasResponseDto,
 } from '@common/dto/compas.dto';
 import { LoginRequestDto, LoginResponseDto } from '@common/dto/login.dto';
 
@@ -73,7 +75,7 @@ describe('Compas Upsert API', () => {
       user_create_id: 1, // Assume admin user ID
     };
 
-    cy.request<CompasResponseDto>({
+    cy.request<UpsertCompasResponseDto>({
       method: 'POST',
       url: '/compas/upsert',
       body: newCompas,
@@ -84,7 +86,7 @@ describe('Compas Upsert API', () => {
     }).then((response) => {
       expect(response.status).to.eq(201);
       expect(response.body).to.have.property('id');
-      expectTypeOf(response.body).toMatchTypeOf<CompasResponseDto>();
+      expectTypeOf(response.body).toMatchTypeOf<UpsertCompasResponseDto>();
       createdCompasId = response.body.id;
     });
   });
@@ -103,7 +105,7 @@ describe('Compas Upsert API', () => {
       user_update_id: 1, // Assume admin user ID
     };
 
-    cy.request<CompasResponseDto>({
+    cy.request<UpsertCompasResponseDto>({
       method: 'POST',
       url: '/compas/upsert',
       body: updatedCompas,
@@ -114,7 +116,7 @@ describe('Compas Upsert API', () => {
     }).then((response) => {
       expect(response.status).to.eq(201);
       expect(response.body).to.have.property('id', createdCompasId);
-      expectTypeOf(response.body).toMatchTypeOf<CompasResponseDto>();
+      expectTypeOf(response.body).toMatchTypeOf<UpsertCompasResponseDto>();
     });
   });
 
@@ -180,6 +182,23 @@ describe('Compas Upsert API', () => {
       failOnStatusCode: false, // Allow 4xx responses
     }).then((response) => {
       expect(response.status).to.eq(403);
+    });
+  });
+
+  // ✅ Test: Delete a Compas
+  it('should delete a Compas', () => {
+    cy.request({
+      method: 'DELETE',
+      url: '/compas/delete',
+      body: { id: createdCompasId },
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        'Content-Type': 'application/json',
+      },
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      expectTypeOf(response.body).toMatchTypeOf<DeleteCompasResponseDto>();
+      expect(response.body).to.have.property('id', createdCompasId);
     });
   });
 });

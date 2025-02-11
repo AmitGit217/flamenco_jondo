@@ -2,14 +2,16 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import {
   UpsertCompasRequestDto,
-  CompasResponseDto,
+  UpsertCompasResponseDto,
+  DeleteCompasRequestDto,
+  DeleteCompasResponseDto,
 } from '@common/dto/compas.dto';
 
 @Injectable()
 export class CompasService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async upsert(dto: UpsertCompasRequestDto): Promise<CompasResponseDto> {
+  async upsert(dto: UpsertCompasRequestDto): Promise<UpsertCompasResponseDto> {
     try {
       const timestamp = new Date();
 
@@ -69,6 +71,22 @@ export class CompasService {
     } catch (error) {
       throw new BadRequestException(
         `Failed to upsert Compás: ${error.message}`,
+      );
+    }
+  }
+
+  async delete(dto: DeleteCompasRequestDto): Promise<DeleteCompasResponseDto> {
+    try {
+      await this.prisma.compas.delete({
+        where: { id: dto.id },
+      });
+
+      return {
+        id: dto.id,
+      };
+    } catch (error) {
+      throw new BadRequestException(
+        `Failed to delete Compás: ${error.message}`,
       );
     }
   }

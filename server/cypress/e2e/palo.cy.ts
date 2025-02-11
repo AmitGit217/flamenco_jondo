@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import {
+  DeletePaloResponseDto,
   UpsertPaloRequestDto,
   UpsertPaloResponseDto,
 } from '@common/dto/palo.dto';
@@ -164,6 +165,23 @@ describe('Palo Upsert API', () => {
       failOnStatusCode: false, // Allow 4xx responses
     }).then((response) => {
       expect(response.status).to.eq(403);
+    });
+  });
+
+  // ✅ Test: Delete a Palo
+  it('should delete a Palo', () => {
+    cy.request({
+      method: 'DELETE',
+      url: '/palo/delete',
+      body: { id: createdPaloId },
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        'Content-Type': 'application/json',
+      },
+    }).then((response) => {
+      expectTypeOf(response.body).toMatchTypeOf<DeletePaloResponseDto>();
+      expect(response.body).to.have.property('id', createdPaloId);
+      expect(response.status).to.eq(200);
     });
   });
 });

@@ -3,6 +3,8 @@ import { PrismaService } from '../../prisma/prisma.service';
 import {
   UpsertEstiloRequestDto,
   UpsertEstiloResponseDto,
+  DeleteEstiloRequestDto,
+  DeleteEstiloResponseDto,
 } from '@common/dto/estilo.dto';
 
 @Injectable()
@@ -88,6 +90,27 @@ export class EstiloService {
     } catch (error) {
       throw new BadRequestException(
         `Failed to upsert estilo: ${error.message}`,
+      );
+    }
+  }
+
+  async delete(dto: DeleteEstiloRequestDto): Promise<DeleteEstiloResponseDto> {
+    try {
+      await this.prisma.palo_estilo.deleteMany({
+        where: {
+          estilo_id: dto.id,
+        },
+      });
+      await this.prisma.estilo.delete({
+        where: { id: dto.id },
+      });
+
+      return {
+        id: dto.id,
+      };
+    } catch (error) {
+      throw new BadRequestException(
+        `Failed to delete estilo: ${error.message}`,
       );
     }
   }

@@ -1,8 +1,9 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Delete } from '@nestjs/common';
 import { LetraService } from './letra.service';
 import {
   UpsertLetraRequestDto,
   UpsrtLetraResponseDto,
+  DeleteLetraRequestDto,
 } from '@common/dto/letra.dto';
 import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
 import { Roles, RolesGuard } from '../../gurads/role.guard';
@@ -18,5 +19,11 @@ export class LetraController {
     @Body() dto: UpsertLetraRequestDto,
   ): Promise<UpsrtLetraResponseDto> {
     return this.letraService.upsert(dto);
+  }
+
+  @Delete('delete')
+  @Roles('MASTER')
+  async delete(@Body() dto: DeleteLetraRequestDto) {
+    return this.letraService.delete(dto);
   }
 }

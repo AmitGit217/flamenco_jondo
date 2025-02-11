@@ -1,6 +1,9 @@
-import { Controller, Body, Post, UseGuards, Req } from '@nestjs/common';
+import { Controller, Body, Post, UseGuards, Delete } from '@nestjs/common';
 import { PaloService } from './palo.service';
-import { UpsertPaloRequestDto } from '@common/dto/palo.dto';
+import {
+  DeletePaloRequestDto,
+  UpsertPaloRequestDto,
+} from '@common/dto/palo.dto';
 import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
 import { GetCurrentUser } from '../utils/getCurretUser';
 import { user } from '@prisma/client';
@@ -18,5 +21,11 @@ export class PaloController {
     @GetCurrentUser() user: user,
   ) {
     return this.paloService.upsertPalo(dto, user.id);
+  }
+
+  @Delete('delete')
+  @Roles('MASTER')
+  async deletePalo(@Body() dto: DeletePaloRequestDto) {
+    return this.paloService.deletePalo(dto);
   }
 }
