@@ -5,6 +5,7 @@ import {
   IsDateString,
   IsInt,
 } from "class-validator";
+import { Express } from "express";
 
 export class UpsertLetraRequestDto {
   @IsOptional()
@@ -37,6 +38,9 @@ export class UpsertLetraRequestDto {
   @IsOptional()
   @IsDateString()
   created_at?: string;
+
+  @IsOptional()
+  recording_file?: Express.Multer.File;
 
   @IsOptional()
   @IsDateString()

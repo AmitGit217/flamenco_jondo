@@ -21,14 +21,14 @@ async function bootstrap() {
   });
 
   Logger.log(`${blue}🚀 NODE_ENV: ${process.env.NODE_ENV}`, 'Bootstrap');
-  // Logger.log(
-  //   `${blue}🚀 Application is running on: ${underline}http://localhost:${port}${reset}`,
-  //   'Bootstrap',
-  // );
-  // Logger.log(
-  //   `${blue}🚀 S3 endpoint: ${underline}${process.env.S3_ENDPOINT}${reset}`,
-  //   'Bootstrap',
-  // );
+  Logger.log(
+    `${blue}🚀 Application is running on: ${underline}http://localhost:${port}${reset}`,
+    'Bootstrap',
+  );
+  Logger.log(
+    `${blue}🚀 S3 endpoint: ${underline}${process.env.S3_ENDPOINT}${reset}`,
+    'Bootstrap',
+  );
 }
 
 bootstrap();
