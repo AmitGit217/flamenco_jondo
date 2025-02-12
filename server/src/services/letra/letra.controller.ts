@@ -1,12 +1,23 @@
-import { Controller, Post, Body, UseGuards, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Delete,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 import { LetraService } from './letra.service';
 import {
   UpsertLetraRequestDto,
   UpsrtLetraResponseDto,
   DeleteLetraRequestDto,
+  UpsertLetraArtistRequestDto,
+  UpsertLetraArtistResponseDto,
 } from '@common/dto/letra.dto';
 import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
 import { Roles, RolesGuard } from '../../gurads/role.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('letra')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -25,5 +36,15 @@ export class LetraController {
   @Roles('MASTER')
   async delete(@Body() dto: DeleteLetraRequestDto) {
     return this.letraService.delete(dto);
+  }
+
+  @Post('upsert-artist')
+  @Roles('MASTER')
+  @UseInterceptors(FileInterceptor('recording_file'))
+  async upsertArtist(
+    @Body() dto: UpsertLetraArtistRequestDto,
+    @UploadedFile() recording_file: Express.Multer.File,
+  ): Promise<UpsertLetraArtistResponseDto> {
+    return this.letraService.upsertArtist(dto, recording_file);
   }
 }

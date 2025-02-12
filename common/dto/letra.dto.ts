@@ -40,9 +40,6 @@ export class UpsertLetraRequestDto {
   created_at?: string;
 
   @IsOptional()
-  recording_file?: Express.Multer.File;
-
-  @IsOptional()
   @IsDateString()
   updated_at?: string;
 
@@ -100,4 +97,29 @@ export class DeleteLetraRequestDto {
 export class DeleteLetraResponseDto {
   @IsNotEmpty()
   id: number;
+}
+
+export class UpsertLetraArtistRequestDto {
+  @IsNotEmpty()
+  letra_id: number;
+
+  @IsNotEmpty()
+  artist_id: number;
+
+  @IsOptional()
+  recording_file?: Express.Multer.File;
+
+  @IsOptional()
+  album?: string;
+
+  @IsOptional()
+  year?: number;
+}
+
+export class UpsertLetraArtistResponseDto {
+  @IsNotEmpty()
+  letra_id: number;
+
+  @IsNotEmpty()
+  artist_id: number;
 }

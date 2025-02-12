@@ -8,6 +8,7 @@ import { EstiloModule } from './services/estilo/estilo.module';
 import { ArtistModule } from './services/artist/artist.module';
 import { CompasModule } from './services/compas/compas.module';
 import { LetraModule } from './services/letra/letra.module';
+import { StorageModule } from './services/storage/storage.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { LetraModule } from './services/letra/letra.module';
     ArtistModule,
     CompasModule,
     LetraModule,
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

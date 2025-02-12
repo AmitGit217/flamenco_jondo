@@ -5,11 +5,17 @@ import {
   UpsrtLetraResponseDto,
   DeleteLetraRequestDto,
   DeleteLetraResponseDto,
+  UpsertLetraArtistRequestDto,
+  UpsertLetraArtistResponseDto,
 } from '@common/dto/letra.dto';
+import { StorageService } from '../storage/storage.service';
 
 @Injectable()
 export class LetraService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly storageService: StorageService,
+  ) {}
 
   async upsert(dto: UpsertLetraRequestDto): Promise<UpsrtLetraResponseDto> {
     try {
@@ -104,6 +110,55 @@ export class LetraService {
       };
     } catch (error) {
       throw new BadRequestException(`Failed to delete Letra: ${error.message}`);
+    }
+  }
+
+  async upsertArtist(
+    dto: UpsertLetraArtistRequestDto,
+    recording_file: Express.Multer.File,
+  ): Promise<UpsertLetraArtistResponseDto> {
+    try {
+      const recording_url = await this.storageService.uploadFile(
+        `letra_artist/${dto.letra_id}/${dto.artist_id}/${recording_file.originalname}`,
+        recording_file.buffer,
+      );
+
+      const timestamp = new Date();
+      await this.prisma.letra_artist.upsert({
+        where: {
+          letra_id_artist_id: {
+            letra_id: dto.letra_id,
+            artist_id: dto.artist_id,
+          },
+        },
+        update: {
+          recording_url: recording_url,
+          updated_at: timestamp,
+        },
+        create: {
+          recording_url: recording_url,
+          created_at: timestamp,
+          updated_at: timestamp,
+          letra: {
+            connect: { id: dto.letra_id },
+          },
+          artist: {
+            connect: { id: dto.artist_id },
+          },
+          user_letra_artist_user_create_idTouser: {
+            connect: { id: 1 }, // Replace with actual user ID from your auth context
+          },
+        },
+      });
+
+      return {
+        letra_id: dto.letra_id,
+        artist_id: dto.artist_id,
+      };
+    } catch (error) {
+      throw new BadRequestException(
+        `Failed to upsert Letra Artist: ${error.message}`,
+      );
     }
   }
 }

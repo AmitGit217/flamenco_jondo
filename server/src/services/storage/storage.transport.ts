@@ -21,7 +21,7 @@ export class S3Transport extends Transport {
 
     // Upload the log message to the S3 bucket
     this.storageService
-      .uploadFile(this.bucketName, `logs/${info.level}.log`, logMessage)
+      .uploadFile(`logs/${info.level}.log`, logMessage)
       .then(() => callback())
       .catch((err) => console.error('Failed to upload log to S3', err));
   }

@@ -4,9 +4,12 @@ import {
   UpsertLetraRequestDto,
   UpsrtLetraResponseDto,
   DeleteLetraResponseDto,
+  UpsertLetraArtistResponseDto,
 } from '@common/dto/letra.dto';
 import { LoginRequestDto, LoginResponseDto } from '@common/dto/login.dto';
 import { tonalities } from '@prisma/client';
+import { UpsertLetraArtistRequestDto } from '../../../common/dto/letra.dto';
+import fs from 'fs';
 
 let authToken: string;
 let userAuthToken: string;
@@ -186,6 +189,36 @@ describe('Letra Upsert API', () => {
       expect(response.status).to.eq(201);
       expect(response.body).to.have.property('id', createdLetraId);
       expectTypeOf(response.body).toMatchTypeOf<UpsrtLetraResponseDto>();
+    });
+  });
+
+  // ✅ 7. Create a new Letra Artist
+  it('should create a new Letra Artist', () => {
+    const newLetraArtist: UpsertLetraArtistRequestDto = {
+      letra_id: createdLetraId,
+      artist_id: createdArtistId,
+      recording_file: {
+        fieldname: 'recording_file',
+        originalname: 'test.mp3',
+        encoding: '7bit',
+        mimetype: 'audio/mpeg',
+        buffer: fs.readFileSync('../assets/test.mp3'),
+        size: fs.statSync('../assets/test.mp3').size,
+      } as Express.Multer.File,
+    };
+
+    cy.request<UpsertLetraArtistResponseDto>({
+      method: 'POST',
+      url: '/letra/upsert-artist',
+      body: newLetraArtist,
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        'Content-Type': 'application/json',
+      },
+    }).then((response) => {
+      expect(response.status).to.eq(201);
+      expect(response.body).to.have.property('id', createdLetraId);
+      expectTypeOf(response.body).toMatchTypeOf<UpsertLetraArtistResponseDto>();
     });
   });
 

@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Global, Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
-import { bucketName } from './static';
 
+@Global()
 @Injectable()
 export class StorageService {
   private readonly s3: AWS.S3;
+  private readonly bucketName: string;
 
   constructor() {
     this.s3 = new AWS.S3({
@@ -14,50 +15,56 @@ export class StorageService {
       s3ForcePathStyle: true, // Needed for MinIO or S3 compatible storage
       signatureVersion: process.env.S3_SIGNATURE_VERSION || 'v4', // Signature version from env vars
     });
+    this.bucketName = process.env.BUCKET_NAME;
   }
 
-  async uploadFile(bucketName: bucketName, key: string, body: Buffer | ReadableStream | string): Promise<AWS.S3.ManagedUpload.SendData> {
+  async uploadFile(
+    key: string,
+    body: Buffer | ReadableStream | string,
+  ): Promise<string> {
     // Check if the bucket exists
     try {
-      await this.s3.headBucket({ Bucket: bucketName }).promise();
+      await this.s3.headBucket({ Bucket: this.bucketName }).promise();
     } catch (error: any) {
       if (error.statusCode === 404) {
         // If the bucket does not exist, create it
-        await this.createBucket(bucketName);
+        await this.createBucket(this.bucketName);
       } else {
         throw new Error(`Error checking if bucket exists: ${error.message}`);
       }
     }
 
     // Upload the file
-    return this.s3
+    const file = this.s3
       .upload({
-        Bucket: bucketName,
+        Bucket: this.bucketName,
         Key: key,
         Body: body,
       })
       .promise();
+
+    return (await file).Location;
   }
 
-  async getFile(bucketName: bucketName, key: string): Promise<AWS.S3.GetObjectOutput> {
+  async getFile(key: string): Promise<AWS.S3.GetObjectOutput> {
     return this.s3
       .getObject({
-        Bucket: bucketName,
+        Bucket: this.bucketName,
         Key: key,
       })
       .promise();
   }
 
-  async deleteFile(bucketName: bucketName, key: string): Promise<AWS.S3.DeleteObjectOutput> {
+  async deleteFile(key: string): Promise<AWS.S3.DeleteObjectOutput> {
     return this.s3
       .deleteObject({
-        Bucket: bucketName,
+        Bucket: this.bucketName,
         Key: key,
       })
       .promise();
   }
 
-  async createBucket(bucketName: bucketName): Promise<AWS.S3.CreateBucketOutput> {
+  async createBucket(bucketName: string): Promise<AWS.S3.CreateBucketOutput> {
     return this.s3.createBucket({ Bucket: bucketName }).promise();
   }
 
