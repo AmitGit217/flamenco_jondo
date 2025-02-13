@@ -97,3 +97,28 @@ export class DeleteLetraResponseDto {
   @IsNotEmpty()
   id: number;
 }
+
+export class UpsertLetraArtistRequestDto {
+  @IsNotEmpty()
+  letra_id: number;
+
+  @IsNotEmpty()
+  artist_id: number;
+
+  @IsOptional()
+  recording_file?: string;
+
+  @IsOptional()
+  album?: string;
+
+  @IsOptional()
+  year?: number;
+}
+
+export class UpsertLetraArtistResponseDto {
+  @IsNotEmpty()
+  letra_id: number;
+
+  @IsNotEmpty()
+  artist_id: number;
+}
