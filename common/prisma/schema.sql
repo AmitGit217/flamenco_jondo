@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml.dbdiagram.io)
 -- Database: PostgreSQL
--- Generated at: 2025-02-13T20:03:01.463Z
+-- Generated at: 2025-02-13T20:16:52.336Z
 
 CREATE TYPE "artisttype" AS ENUM (
   'CANTE',
@@ -166,6 +166,15 @@ CREATE TABLE "letra_palo" (
   "updated_at" timestamp
 );
 
+CREATE TABLE "feedback" (
+  "id" serial PRIMARY KEY,
+  "user_id" int,
+  "email" varchar(255),
+  "comment" text,
+  "created_at" timestamp,
+  "updated_at" timestamp
+);
+
 CREATE INDEX "unique_user_email" ON "user" ("email");
 
 CREATE INDEX "unique_palo_name" ON "palo" ("name");
@@ -207,6 +216,8 @@ CREATE UNIQUE INDEX "unique_letra_palo" ON "letra_palo" ("letra_id", "palo_id");
 CREATE INDEX "idx_letra_palo_letra_id" ON "letra_palo" ("letra_id");
 
 CREATE INDEX "idx_letra_palo_palo_id" ON "letra_palo" ("palo_id");
+
+CREATE INDEX "idx_feedback_user_id" ON "feedback" ("user_id");
 
 ALTER TABLE "palo" ADD FOREIGN KEY ("user_create_id") REFERENCES "user" ("id");
 
@@ -269,3 +280,5 @@ ALTER TABLE "letra_palo" ADD FOREIGN KEY ("palo_id") REFERENCES "palo" ("id");
 ALTER TABLE "letra_palo" ADD FOREIGN KEY ("user_create_id") REFERENCES "user" ("id");
 
 ALTER TABLE "letra_palo" ADD FOREIGN KEY ("user_update_id") REFERENCES "user" ("id");
+
+ALTER TABLE "feedback" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
