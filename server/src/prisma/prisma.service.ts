@@ -14,7 +14,6 @@ export class PrismaService
 {
   constructor() {
     super();
-    console.log('Available Prisma Models at Runtime:', Object.keys(this));
     return this.createProxy(this);
   }
 

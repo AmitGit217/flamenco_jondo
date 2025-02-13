@@ -5,11 +5,17 @@ import {
   UpsrtLetraResponseDto,
   DeleteLetraRequestDto,
   DeleteLetraResponseDto,
+  UpsertLetraArtistRequestDto,
+  UpsertLetraArtistResponseDto,
 } from '@common/dto/letra.dto';
+import { StorageService } from '../storage/storage.service';
 
 @Injectable()
 export class LetraService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly storageService: StorageService,
+  ) {}
 
   async upsert(dto: UpsertLetraRequestDto): Promise<UpsrtLetraResponseDto> {
     try {
@@ -86,6 +92,13 @@ export class LetraService {
 
   async delete(dto: DeleteLetraRequestDto): Promise<DeleteLetraResponseDto> {
     try {
+      // Get all recording URLs before deletion
+      const letraArtists = await this.prisma.letra_artist.findMany({
+        where: { letra_id: dto.id },
+        select: { recording_url: true },
+      });
+
+      // Delete all database records
       await Promise.all([
         this.prisma.letra_palo.deleteMany({
           where: { letra_id: dto.id },
@@ -99,11 +112,70 @@ export class LetraService {
         where: { id: dto.id },
       });
 
+      // Delete all associated files
+      await Promise.all(
+        letraArtists
+          .filter((la) => la.recording_url)
+          .map((la) => this.storageService.deleteFile(la.recording_url)),
+      );
+
       return {
         id: dto.id,
       };
     } catch (error) {
       throw new BadRequestException(`Failed to delete Letra: ${error.message}`);
+    }
+  }
+
+  async upsertArtist(
+    dto: UpsertLetraArtistRequestDto,
+  ): Promise<UpsertLetraArtistResponseDto> {
+    try {
+      const recording_file = Buffer.from(dto.recording_file, 'base64');
+      const timestamp = new Date().getTime();
+      const filename = `recording_${timestamp}.mp3`;
+
+      const recording_url = await this.storageService.uploadFile(
+        `letra_artist/${dto.letra_id}/${dto.artist_id}/${filename}`,
+        recording_file,
+      );
+
+      const timestamp_date = new Date();
+      await this.prisma.letra_artist.upsert({
+        where: {
+          letra_id_artist_id: {
+            letra_id: dto.letra_id,
+            artist_id: dto.artist_id,
+          },
+        },
+        update: {
+          recording_url: recording_url,
+          updated_at: timestamp_date,
+        },
+        create: {
+          recording_url: recording_url,
+          created_at: timestamp_date,
+          updated_at: timestamp_date,
+          letra: {
+            connect: { id: dto.letra_id },
+          },
+          artist: {
+            connect: { id: dto.artist_id },
+          },
+          user_letra_artist_user_create_idTouser: {
+            connect: { id: 1 }, // Replace with actual user ID from your auth context
+          },
+        },
+      });
+
+      return {
+        letra_id: dto.letra_id,
+        artist_id: dto.artist_id,
+      };
+    } catch (error) {
+      throw new BadRequestException(
+        `Failed to upsert Letra Artist: ${error.message}`,
+      );
     }
   }
 }
