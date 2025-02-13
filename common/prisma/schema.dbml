@@ -216,3 +216,18 @@ Table letra_palo {
     (palo_id) [name: "idx_letra_palo_palo_id"]
   }
 }
+
+
+
+Table feedback {
+  id serial [primary key]
+  user_id int [ref: > user.id] 
+  email varchar(255)  
+  comment text  
+  created_at timestamp 
+  updated_at timestamp 
+
+  Indexes {
+    (user_id) [name: "idx_feedback_user_id"]
+  }
+}

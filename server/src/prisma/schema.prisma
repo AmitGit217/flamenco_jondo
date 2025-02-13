@@ -175,6 +175,7 @@ model user {
   compas_compas_user_update_idTouser               compas[]        @relation("compas_user_update_idTouser")
   estilo_estilo_user_create_idTouser               estilo[]        @relation("estilo_user_create_idTouser")
   estilo_estilo_user_update_idTouser               estilo[]        @relation("estilo_user_update_idTouser")
+  feedback                                         feedback[]
   letra_letra_user_create_idTouser                 letra[]         @relation("letra_user_create_idTouser")
   letra_letra_user_update_idTouser                 letra[]         @relation("letra_user_update_idTouser")
   letra_artist_letra_artist_user_create_idTouser   letra_artist[]  @relation("letra_artist_user_create_idTouser")
@@ -225,6 +226,18 @@ model letra_palo {
   @@unique([letra_id, palo_id], map: "unique_letra_palo")
   @@index([letra_id], map: "idx_letra_palo_letra_id")
   @@index([palo_id], map: "idx_letra_palo_palo_id")
+}
+
+model feedback {
+  id         Int       @id @default(autoincrement())
+  user_id    Int?
+  email      String?   @db.VarChar(255)
+  comment    String?
+  created_at DateTime? @db.Timestamp(6)
+  updated_at DateTime? @db.Timestamp(6)
+  user       user?     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_feedback_user_id")
 }
 
 enum artisttype {
