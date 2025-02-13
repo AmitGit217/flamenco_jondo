@@ -15,14 +15,13 @@ export class StorageService {
       s3ForcePathStyle: true, // Needed for MinIO or S3 compatible storage
       signatureVersion: process.env.S3_SIGNATURE_VERSION || 'v4', // Signature version from env vars
     });
-    this.bucketName = process.env.BUCKET_NAME;
+    this.bucketName = process.env.S3_BUCKET_NAME;
   }
 
   async uploadFile(
     key: string,
     body: Buffer | ReadableStream | string,
   ): Promise<string> {
-    // Check if the bucket exists
     try {
       await this.s3.headBucket({ Bucket: this.bucketName }).promise();
     } catch (error: any) {
@@ -56,6 +55,9 @@ export class StorageService {
   }
 
   async deleteFile(key: string): Promise<AWS.S3.DeleteObjectOutput> {
+    if (key.includes('http')) {
+      key = key.split('/').pop();
+    }
     return this.s3
       .deleteObject({
         Bucket: this.bucketName,

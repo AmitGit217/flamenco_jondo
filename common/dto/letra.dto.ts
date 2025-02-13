@@ -5,7 +5,6 @@ import {
   IsDateString,
   IsInt,
 } from "class-validator";
-import { Express } from "express";
 
 export class UpsertLetraRequestDto {
   @IsOptional()
@@ -107,7 +106,7 @@ export class UpsertLetraArtistRequestDto {
   artist_id: number;
 
   @IsOptional()
-  recording_file?: Express.Multer.File;
+  recording_file?: string;
 
   @IsOptional()
   album?: string;

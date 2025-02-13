@@ -40,11 +40,9 @@ export class LetraController {
 
   @Post('upsert-artist')
   @Roles('MASTER')
-  @UseInterceptors(FileInterceptor('recording_file'))
   async upsertArtist(
     @Body() dto: UpsertLetraArtistRequestDto,
-    @UploadedFile() recording_file: Express.Multer.File,
   ): Promise<UpsertLetraArtistResponseDto> {
-    return this.letraService.upsertArtist(dto, recording_file);
+    return this.letraService.upsertArtist(dto);
   }
 }

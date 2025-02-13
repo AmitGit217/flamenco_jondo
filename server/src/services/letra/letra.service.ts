@@ -92,6 +92,13 @@ export class LetraService {
 
   async delete(dto: DeleteLetraRequestDto): Promise<DeleteLetraResponseDto> {
     try {
+      // Get all recording URLs before deletion
+      const letraArtists = await this.prisma.letra_artist.findMany({
+        where: { letra_id: dto.id },
+        select: { recording_url: true },
+      });
+
+      // Delete all database records
       await Promise.all([
         this.prisma.letra_palo.deleteMany({
           where: { letra_id: dto.id },
@@ -105,6 +112,13 @@ export class LetraService {
         where: { id: dto.id },
       });
 
+      // Delete all associated files
+      await Promise.all(
+        letraArtists
+          .filter((la) => la.recording_url)
+          .map((la) => this.storageService.deleteFile(la.recording_url)),
+      );
+
       return {
         id: dto.id,
       };
@@ -115,15 +129,18 @@ export class LetraService {
 
   async upsertArtist(
     dto: UpsertLetraArtistRequestDto,
-    recording_file: Express.Multer.File,
   ): Promise<UpsertLetraArtistResponseDto> {
     try {
+      const recording_file = Buffer.from(dto.recording_file, 'base64');
+      const timestamp = new Date().getTime();
+      const filename = `recording_${timestamp}.mp3`;
+
       const recording_url = await this.storageService.uploadFile(
-        `letra_artist/${dto.letra_id}/${dto.artist_id}/${recording_file.originalname}`,
-        recording_file.buffer,
+        `letra_artist/${dto.letra_id}/${dto.artist_id}/${filename}`,
+        recording_file,
       );
 
-      const timestamp = new Date();
+      const timestamp_date = new Date();
       await this.prisma.letra_artist.upsert({
         where: {
           letra_id_artist_id: {
@@ -133,12 +150,12 @@ export class LetraService {
         },
         update: {
           recording_url: recording_url,
-          updated_at: timestamp,
+          updated_at: timestamp_date,
         },
         create: {
           recording_url: recording_url,
-          created_at: timestamp,
-          updated_at: timestamp,
+          created_at: timestamp_date,
+          updated_at: timestamp_date,
           letra: {
             connect: { id: dto.letra_id },
           },
