@@ -9,7 +9,7 @@ import { ArtistModule } from './services/artist/artist.module';
 import { CompasModule } from './services/compas/compas.module';
 import { LetraModule } from './services/letra/letra.module';
 import { StorageModule } from './services/storage/storage.module';
-
+import { FeedbackModule } from './services/feedback/feedback.module';
 @Module({
   imports: [
     PrismaModule,
@@ -20,6 +20,7 @@ import { StorageModule } from './services/storage/storage.module';
     CompasModule,
     LetraModule,
     StorageModule,
+    FeedbackModule,
   ],
   controllers: [AppController],
   providers: [AppService],
