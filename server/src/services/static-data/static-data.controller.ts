@@ -7,7 +7,8 @@ export class StaticDataController {
 
   @Get('tableByType')
   getTableByType(
-    @Query('type') type: 'palo' | 'estilo' | 'artist' | 'compas' | 'letra',
+    @Query('type')
+    type: 'palo' | 'estilo' | 'artist' | 'compas' | 'letra' | 'letra_artist',
   ) {
     return this.staticDataService.getTableByType(type);
   }

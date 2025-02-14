@@ -52,3 +52,14 @@ describe('Static Data API', () => {
     );
   });
 });
+
+describe('Static Data API', () => {
+  it('should return letras_artist', () => {
+    cy.request('GET', '/static-data/tableByType?type=letra_artist').then(
+      (response) => {
+        expect(response.status).to.eq(200);
+        expect(response.body).to.have.property('letra_artist');
+      },
+    );
+  });
+});

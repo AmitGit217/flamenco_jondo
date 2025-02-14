@@ -131,3 +131,11 @@ export class GetLetrasResponseDto {
   @Type(() => UpsrtLetraResponseDto)
   letras: UpsrtLetraResponseDto[];
 }
+
+export class GetLetraArtistResponseDto {
+  @IsNotEmpty()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UpsertLetraArtistResponseDto)
+  letras: UpsertLetraArtistResponseDto[];
+}

@@ -4,14 +4,18 @@ import { GetPalosResponseDto } from '@common/dto/palo.dto';
 import { GetEstilosResponseDto } from '@common/dto/estilo.dto';
 import { GetArtistsResponseDto } from '@common/dto/artist.dto';
 import { GetCompasResponseDto } from '@common/dto/compas.dto';
-import { GetLetrasResponseDto } from '@common/dto/letra.dto';
+import {
+  GetLetraArtistResponseDto,
+  GetLetrasResponseDto,
+} from '@common/dto/letra.dto';
 
 type StaticDataResponseDto =
   | GetPalosResponseDto
   | GetEstilosResponseDto
   | GetArtistsResponseDto
   | GetCompasResponseDto
-  | GetLetrasResponseDto;
+  | GetLetrasResponseDto
+  | GetLetraArtistResponseDto;
 
 @Injectable()
 export class StaticDataService {
