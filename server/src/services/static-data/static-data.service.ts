@@ -17,7 +17,10 @@ type StaticDataResponseDto =
 export class StaticDataService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getTableByType(type: string): Promise<StaticDataResponseDto> {
-    return this.prisma[type].findMany();
+  async getTableByType(
+    type: string,
+  ): Promise<{ [key: string]: StaticDataResponseDto }> {
+    const data = await this.prisma[type].findMany();
+    return { [type]: data };
   }
 }
