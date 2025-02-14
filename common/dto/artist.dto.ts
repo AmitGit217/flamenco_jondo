@@ -4,9 +4,12 @@ import {
   IsEnum,
   IsInt,
   IsString,
-  IsDateString,
+        IsDateString,
+  IsArray,
+  ValidateNested,
 } from "class-validator";
 import { artisttype, estilo } from "@prisma/client";
+import { Type } from "class-transformer";
 
 export class UpsertArtistRequestDto {
   @IsOptional()
@@ -99,4 +102,19 @@ export class DeleteArtistRequestDto {
 export class DeleteArtistResponseDto {
   @IsNotEmpty()
   id: number;
+}
+
+export class Artist {
+  @IsNotEmpty()
+  id: number;
+
+  name: string;
+}
+
+export class GetArtistsResponseDto {
+  @IsNotEmpty()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Artist)
+  artists: Artist[];
 }

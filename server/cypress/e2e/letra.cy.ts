@@ -100,7 +100,7 @@ describe('Letra Upsert API', () => {
   it('should create a new Estilo', () => {
     const newEstilo = {
       name: faker.music.genre() + ' Estilo',
-      tonality: tonalities.MAIOR, // Replace with valid enum value from Prisma
+      tonality: tonalities.MAYOR, // Replace with valid enum value from Prisma
       key: 'C', // Replace with valid enum value from Prisma
       origin: faker.location.city(),
       origin_date: faker.date.past().toISOString(),

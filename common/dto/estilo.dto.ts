@@ -5,7 +5,10 @@ import {
   IsEnum,
   IsInt,
   IsString,
+  IsArray,
+  ValidateNested,
 } from "class-validator";
+import { Type } from "class-transformer";
 import { tonalities, keys } from "@prisma/client";
 
 export class UpsertEstiloRequestDto {
@@ -103,4 +106,20 @@ export class DeleteEstiloRequestDto {
 export class DeleteEstiloResponseDto {
   @IsNotEmpty()
   id: number;
+}
+
+export class Estilo {
+  @IsNotEmpty()
+  id: number;
+
+  @IsNotEmpty()
+  name: string;
+}
+
+export class GetEstilosResponseDto {
+  @IsNotEmpty()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Estilo)
+  estiols: Estilo[];
 }

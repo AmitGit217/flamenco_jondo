@@ -5,14 +5,13 @@ Enum artisttype {
 }
 
 Enum tonalities {
-  PHRYGIUS        
-  DORIANUS        
-  AEOLIUS         
-  MAIOR           
-  MINOR           
-  LOCRIUS         
-  HARMONICUS_MINOR  
-  MELODICUS_MINOR  
+  LOCRIO
+  FRIGIO
+  MENOR
+  DORICO
+  MXIOLIDIO
+  MAYOR
+  LIDIO
 }
 
 Enum keys {

@@ -4,8 +4,9 @@ import {
   IsArray,
   IsDateString,
   IsInt,
+  ValidateNested,
 } from "class-validator";
-
+import { Type } from "class-transformer";
 export class UpsertLetraRequestDto {
   @IsOptional()
   id?: number;
@@ -121,4 +122,20 @@ export class UpsertLetraArtistResponseDto {
 
   @IsNotEmpty()
   artist_id: number;
+}
+
+export class GetLetrasResponseDto {
+  @IsNotEmpty()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UpsrtLetraResponseDto)
+  letras: UpsrtLetraResponseDto[];
+}
+
+export class GetLetraArtistResponseDto {
+  @IsNotEmpty()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UpsertLetraArtistResponseDto)
+  letras: UpsertLetraArtistResponseDto[];
 }
