@@ -5,7 +5,9 @@ import {
   IsArray,
   IsString,
   IsDateString,
+  ValidateNested,
 } from "class-validator";
+import { Type } from "class-transformer";
 
 export class UpsertCompasRequestDto {
   @IsOptional()
@@ -106,4 +108,20 @@ export class DeleteCompasRequestDto {
 export class DeleteCompasResponseDto {
   @IsNotEmpty()
   id: number;
+}
+
+export class Compas {
+  @IsNotEmpty()
+  id: number;
+
+  @IsNotEmpty()
+  name: string;
+}
+
+export class GetCompasResponseDto {
+  @IsNotEmpty()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Compas)
+  compas: Compas[];
 }
