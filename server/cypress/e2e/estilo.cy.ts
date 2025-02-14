@@ -89,7 +89,7 @@ describe('Estilo Upsert API', () => {
   it('should create a new Estilo', () => {
     const newEstilo: UpsertEstiloRequestDto = {
       name: faker.music.genre() + ' Estilo',
-      tonality: tonalities.MAIOR, // Replace with valid enum value from Prisma
+      tonality: tonalities.MAYOR, // Replace with valid enum value from Prisma
       key: 'C', // Replace with valid enum value from Prisma
       origin: faker.location.city(),
       origin_date: faker.date.past().toISOString(),
@@ -118,7 +118,7 @@ describe('Estilo Upsert API', () => {
     const updatedEstilo: UpsertEstiloRequestDto = {
       id: createdEstiloId,
       name: faker.music.genre() + ' Updated Estilo',
-      tonality: tonalities.LOCRIUS, // Replace with valid enum value
+      tonality: tonalities.LOCRIO, // Replace with valid enum value
       key: 'G', // Replace with valid enum value
       origin: faker.location.city(),
       origin_date: faker.date.past().toISOString(),

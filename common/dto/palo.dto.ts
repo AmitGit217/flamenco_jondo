@@ -1,9 +1,12 @@
+import { Type } from "class-transformer";
 import {
   IsNotEmpty,
   IsOptional,
   IsDateString,
   IsInt,
   Length,
+  ValidateNested,
+  IsArray,
 } from "class-validator";
 
 export class UpsertPaloRequestDto {
@@ -77,4 +80,20 @@ export class DeletePaloRequestDto {
 export class DeletePaloResponseDto {
   @IsNotEmpty()
   id: number;
+}
+
+export class Palo {
+  @IsNotEmpty()
+  id: number;
+
+  @IsNotEmpty()
+  name: string;
+
+}
+export class GetPalosResponseDto {
+  @IsNotEmpty()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Palo)
+  palos: Palo[];
 }

@@ -10,6 +10,7 @@ import { CompasModule } from './services/compas/compas.module';
 import { LetraModule } from './services/letra/letra.module';
 import { StorageModule } from './services/storage/storage.module';
 import { FeedbackModule } from './services/feedback/feedback.module';
+import { StaticDataModule } from './services/static-data/static-data.module';
 @Module({
   imports: [
     PrismaModule,
@@ -21,6 +22,7 @@ import { FeedbackModule } from './services/feedback/feedback.module';
     LetraModule,
     StorageModule,
     FeedbackModule,
+    StaticDataModule,
   ],
   controllers: [AppController],
   providers: [AppService],
