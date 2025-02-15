@@ -1,0 +1,50 @@
+// Header
+header {
+  h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    font-size: 1rem;
+    opacity: 0.8;
+  }
+
+  @media (min-width: 768px) {
+    h1 {
+      font-size: 2.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    h1 {
+      font-size: 3rem;
+    }
+  }
+}
+
+// Main Content
+main {
+  margin-top: 1rem;
+}
+
+// Buttons
+.button {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #646cff;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.25s;
+  margin-top: 1rem;
+
+  &:hover {
+    background-color: #535bf2;
+  }
+
+  
+}
