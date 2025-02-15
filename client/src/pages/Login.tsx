@@ -4,16 +4,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import "../style/Login.scss";
-
+import { login } from "../api/login";
+import { LoginRequestDto } from '@common/dto/login.dto';
 const schema = yup.object({
   email: yup.string().email("Invalid email format").required("Email is required"),
   password: yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
 });
 
-interface LoginFormData {
-  email: string;
-  password: string;
-}
 
 const Login = () => {
   const navigate = useNavigate();
@@ -24,18 +21,20 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<LoginFormData>({
+  } = useForm<LoginRequestDto>({
     resolver: yupResolver(schema),
     mode: "onChange", // Validate on change for better UX
   });
 
-  const onSubmit = (data: LoginFormData) => {
+  const onSubmit = (data: LoginRequestDto) => {
     setLoading(true);
-    setTimeout(() => {
-      console.log("Logged in:", data);
+    login(data.email, data.password).then((response) => {
+      console.log(response);
       setLoading(false);
-      navigate("/dashboard"); // Redirect after successful login
-    }, 2000);
+    }).catch((error) => {
+      console.error(error);
+      setLoading(false);
+    });
   };
 
   return (
