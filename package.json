@@ -14,7 +14,8 @@
     "restart-and-update-prisma": "npm run restart-db && npm run prisma-db-pull && npm run prisma-generate-types && npm run prisma-seed",
     "start:dev": "npm run restart-and-update-prisma  && npm run run:dev",
     "test:e2e": "cd server && npx cypress run ",
-    "test:e2e:open": "cd server && npx cypress open"
+    "test:e2e:open": "cd server && npx cypress open",
+    "start:client": "cd client && npm run dev"
   },
   "prisma": {
     "seed": "ts-node ./common/prisma/seed.ts"
