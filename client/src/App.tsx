@@ -6,7 +6,6 @@ function App() {
     <div className="container">
       <header>
         <h1>Flamenco Jondo</h1>
-        <p>Where flamencos share and learn about the most complex human idea.</p>
       </header>
 
       <main>
