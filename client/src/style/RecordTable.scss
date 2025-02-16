@@ -1,73 +1,107 @@
 .record-table {
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  
-    h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  h1 {
+    font-size: 26px;
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: bold;
+  }
+
+  .add-button {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 10px 18px;
+    background: #28a745;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.3s, transform 0.2s ease-in-out;
+
+    &:hover {
+      background: #218838;
+      transform: translateY(-2px);
     }
-  
-    .add-button {
-      display: inline-block;
-      margin-bottom: 15px;
-      padding: 8px 15px;
-      background: #28a745;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+
+    th, td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background: #007bff;
       color: white;
-      border-radius: 5px;
-      text-decoration: none;
-      transition: background 0.3s;
-  
+      font-size: 16px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    tbody tr {
+      transition: background 0.3s ease-in-out;
+
+      &:nth-child(even) {
+        background: #f8f9fa;
+      }
+
       &:hover {
-        background: #218838;
+        background: rgba(0, 123, 255, 0.1);
       }
     }
-  
-    table {
-      width: 100%;
-      border-collapse: collapse;
-  
-      th, td {
-        padding: 10px;
-        border: 1px solid #ddd;
+
+    .edit-button {
+      padding: 8px 12px;
+      background: #ffc107;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+
+      &:hover {
+        background: #e0a800;
+        transform: translateY(-2px);
       }
-  
-      th {
-        background: #007bff;
-        color: white;
-      }
-  
-      .edit-button {
-        margin-right: 5px;
-        padding: 5px 10px;
-        background: #ffc107;
-        color: white;
-        border: none;
-        cursor: pointer;
-        text-decoration: none;
-        border-radius: 5px;
-        
-        &:hover {
-          background: #e0a800;
-        }
-      }
-  
-      .delete-button {
-        padding: 5px 10px;
-        background: #dc3545;
-        color: white;
-        border: none;
-        cursor: pointer;
-        border-radius: 5px;
-        
-        &:hover {
-          background: #c82333;
-        }
+    }
+
+    .delete-button {
+      padding: 8px 12px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+
+      &:hover {
+        background: #c82333;
+        transform: translateY(-2px);
       }
     }
   }
-  
+}
