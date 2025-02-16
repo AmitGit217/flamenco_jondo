@@ -33,7 +33,7 @@ export class UpsertPaloRequestDto {
 
   @IsOptional()
   @IsInt()
-  user_created_id?: number;
+  user_create_id?: number;
 
   @IsOptional()
   @IsInt()
@@ -65,7 +65,7 @@ export class UpsertPaloResponseDto {
 
   @IsOptional()
   @IsInt()
-  user_created_id?: number;
+  user_create_id?: number;
 
   @IsOptional()
   @IsInt()
@@ -88,7 +88,6 @@ export class Palo {
 
   @IsNotEmpty()
   name: string;
-
 }
 export class GetPalosResponseDto {
   @IsNotEmpty()

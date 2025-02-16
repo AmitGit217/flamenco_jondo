@@ -4,7 +4,7 @@ import {
   IsEnum,
   IsInt,
   IsString,
-        IsDateString,
+  IsDateString,
   IsArray,
   ValidateNested,
 } from "class-validator";
@@ -44,7 +44,7 @@ export class UpsertArtistRequestDto {
 
   @IsOptional()
   @IsInt()
-  user_created_id?: number;
+  user_create_id?: number;
 
   @IsOptional()
   @IsInt()
@@ -87,7 +87,7 @@ export class UpsertArtistResponseDto {
 
   @IsOptional()
   @IsInt()
-  user_created_id?: number;
+  user_create_id?: number;
 
   @IsOptional()
   @IsInt()

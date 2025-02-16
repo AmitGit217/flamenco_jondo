@@ -51,7 +51,7 @@ export class LetraService {
             connect: { id: dto.estilo_id || -1 },
           },
           user_letra_user_create_idTouser: {
-            connect: { id: dto.user_created_id || -1 },
+            connect: { id: dto.user_create_id || -1 },
           },
           ...(dto.user_update_id
             ? {

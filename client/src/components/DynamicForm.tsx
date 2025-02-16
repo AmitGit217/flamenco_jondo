@@ -37,7 +37,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ model, record, onClose, onSuc
     const url = `/${model}/upsert`;
 
     try {
-      await apiClient.post(url, {...formData, user_created_id: JSON.parse(localStorage.getItem("user") || "{}").id, user_update_id: JSON.parse(localStorage.getItem("user") || "{}").id});
+      await apiClient.post(url, {...formData, user_create_id: JSON.parse(localStorage.getItem("user") || "{}").id, user_update_id: JSON.parse(localStorage.getItem("user") || "{}").id});
       onSuccess();
       onClose();
     } catch (error) {

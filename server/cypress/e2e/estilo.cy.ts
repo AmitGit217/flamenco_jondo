@@ -95,7 +95,7 @@ describe('Estilo Upsert API', () => {
       origin_date: faker.date.past().toISOString(),
       palo_id: createdPaloId,
       artist_id: null,
-      user_created_id: 1, // Assume admin user ID
+      user_create_id: 1, // Assume admin user ID
     };
 
     cy.request({
