@@ -1,11 +1,13 @@
 // import "./index.scss";
 import "./style/App.scss";
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <div className="container">
         <header>
           <h1>Flamenco Jondo</h1>
@@ -22,13 +24,19 @@ function App() {
               </div>
             </main>
           } />
+          
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            {/* Add other protected routes here */}
+          </Route>
         </Routes>
 
         <footer>
           <p>© 2025 Flamenco Jondo</p>
         </footer>
       </div>
-    </Router>
+    </BrowserRouter>
   );
 }
 

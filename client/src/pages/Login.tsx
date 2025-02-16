@@ -32,7 +32,7 @@ const Login = () => {
       console.log(response);
       setLoading(false);
       localStorage.setItem("token", response.token);
-      navigate("/");
+      navigate("/dashboard");
     }).catch((error) => {
       console.error(error);
       setLoading(false);
