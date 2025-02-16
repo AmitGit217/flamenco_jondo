@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../api/Api";
 import { formSchemas } from "../utils/formSchemas";
+import { UpsertArtistRequestDto } from "@common/dto/artist.dto";
+import { UpsertPaloRequestDto } from "@common/dto/palo.dto";
+import { UpsertEstiloRequestDto } from "@common/dto/estilo.dto";
+import { UpsertLetraRequestDto } from "@common/dto/letra.dto";
+import { UpsertCompasRequestDto } from "@common/dto/compas.dto";
 
-export interface FormData {
-  id?: number;
-  name: string;
-  origin?: string;
-  origin_date?: string;
-  tonality?: string;
-  key?: string;
-  [key: string]: string | number | undefined;
-}
+export type FormData = (UpsertArtistRequestDto | UpsertCompasRequestDto | UpsertEstiloRequestDto | UpsertLetraRequestDto | UpsertPaloRequestDto) & {
+  [key: string]: string | number | string[] | number[] | undefined;
+};
 
 interface DynamicFormProps {
   model: string;
@@ -35,19 +34,22 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ model, record, onClose, onSuc
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const url = record ? `/${model}/${record.id}` : `/${model}`;
+    const url = `/${model}/upsert`;
 
     try {
-      if (record) {
-        await apiClient.patch(url, formData);
-      } else {
-        await apiClient.post(url, formData);
-      }
+      await apiClient.post(url, {...formData, user_created_id: JSON.parse(localStorage.getItem("user") || "{}").id, user_update_id: JSON.parse(localStorage.getItem("user") || "{}").id});
       onSuccess();
       onClose();
     } catch (error) {
       console.error("Error saving data:", error);
     }
+  };
+
+  const getInputValue = (value: string | number | string[] | number[] | undefined): string => {
+    if (Array.isArray(value)) {
+      return value.join(',');
+    }
+    return value?.toString() || '';
   };
 
   return (
@@ -61,7 +63,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ model, record, onClose, onSuc
               <input
                 type={field.type}
                 name={field.name}
-                value={formData[field.name] || ""}
+                value={getInputValue(formData[field.name])}
                 onChange={handleChange}
                 required={field.required}
               />

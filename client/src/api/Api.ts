@@ -7,19 +7,12 @@ class ApiClient {
     this.baseUrl = baseUrl;
   }
 
-  private async request<T>(
-    endpoint: string,
-    method: string,
-    data?: T,
-    token?: string
-  ) {
+  private async request<T>(endpoint: string, method: string, data?: T) {
     const headers: HeadersInit = {
       "Content-Type": "application/json",
     };
 
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
-    }
+    headers["Authorization"] = `Bearer ${localStorage.getItem("token")}`;
 
     const options: RequestInit = {
       method,
@@ -39,20 +32,20 @@ class ApiClient {
     }
   }
 
-  public get(endpoint: string, token?: string) {
-    return this.request(endpoint, "GET", null, token);
+  public get(endpoint: string) {
+    return this.request(endpoint, "GET", null);
   }
 
-  public post<T>(endpoint: string, data: T, token?: string) {
-    return this.request<T>(endpoint, "POST", data, token);
+  public post<T>(endpoint: string, data: T) {
+    return this.request<T>(endpoint, "POST", data);
   }
 
-  public patch<T>(endpoint: string, data: T, token?: string) {
-    return this.request<T>(endpoint, "PATCH", data, token);
+  public patch<T>(endpoint: string, data: T) {
+    return this.request<T>(endpoint, "PATCH", data);
   }
 
-  public delete(endpoint: string, token?: string) {
-    return this.request(endpoint, "DELETE", null, token);
+  public delete(endpoint: string) {
+    return this.request(endpoint, "DELETE", null);
   }
 }
 

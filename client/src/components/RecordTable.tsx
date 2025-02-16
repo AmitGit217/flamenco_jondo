@@ -6,10 +6,21 @@ import Modal from "./Modal";
 import DynamicForm from "./DynamicForm";
 import { FormData } from './DynamicForm';
 
-interface Record extends FormData {
+interface Record {
   id: number;
   created_at: string;
-  updated_at: string ;
+  updated_at: string;
+  name?: string;
+  origin?: string;
+  origin_date?: string;
+  tonality?: string;
+  key?: string;
+  verses?: string[];
+  rhyme_scheme?: number[];
+  repetition_pattern?: number[];
+  structure?: string;
+  estilo_id?: number;
+  palo_id?: number;
 }
 
 const RecordTable = () => {
