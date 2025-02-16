@@ -2,16 +2,22 @@ import  { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getStaticDataByType } from "../api/static-data";
 import "../style/RecordTable.scss";
+import Modal from "./Modal";
+import DynamicForm from "./DynamicForm";
+import { FormData } from './DynamicForm';
 
-interface Record {
+interface Record extends FormData {
   id: number;
   created_at: string;
-  updated_at: string | null;
+  updated_at: string ;
 }
 
 const RecordTable = () => {
   const { model } = useParams<{ model: string }>();
   const [records, setRecords] = useState<Record[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<Record | null>(null);
+
 
   useEffect(() => {
     if (!model) return;
@@ -37,9 +43,9 @@ const RecordTable = () => {
   return (
     <div className="record-table">
       <h1>{model.charAt(0).toUpperCase() + model.slice(1)} Records</h1>
-      <Link to={`/dashboard/${model}/add`} className="add-button">
+      <button className="add-button" onClick={() => {setIsModalOpen(true);}}  >
         + Add Record
-      </Link>
+      </button>
 
       <table>
         <thead>
@@ -56,7 +62,7 @@ const RecordTable = () => {
               <td>{new Date(record.created_at).toLocaleString()}</td>
               <td>{record.updated_at ? new Date(record.updated_at).toLocaleString() : "N/A"}</td>
               <td>
-                <Link to={`/dashboard/${model}/edit/${record.id}`} className="edit-button">
+                <Link to={`/dashboard/${model}/edit/${record.id}`} className="edit-button" onClick={() => {setIsModalOpen(true); setSelectedRecord(record)}}>
                   ✏️ Edit
                 </Link>
                 <button onClick={() => handleDelete(record.id)} className="delete-button">
@@ -67,6 +73,9 @@ const RecordTable = () => {
           ))}
         </tbody>
       </table>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <DynamicForm model={model} record={selectedRecord as FormData} onClose={() => setIsModalOpen(false)} onSuccess={() => window.location.reload()} />
+      </Modal>
     </div>
   );
 };
