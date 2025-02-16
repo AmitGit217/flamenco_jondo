@@ -31,6 +31,8 @@ const Login = () => {
     login(data.email, data.password).then((response) => {
       console.log(response);
       setLoading(false);
+      localStorage.setItem("token", response.token);
+      navigate("/");
     }).catch((error) => {
       console.error(error);
       setLoading(false);
