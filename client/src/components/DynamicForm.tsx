@@ -29,7 +29,12 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ model, record, onClose, onSuc
   }, [record]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+   
+  if(e.target.type === "number") {
+      setFormData({ ...formData, [e.target.name]: parseInt(e.target.value) });
+    } else {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -37,7 +42,19 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ model, record, onClose, onSuc
     const url = `/${model}/upsert`;
 
     try {
-      await apiClient.post(url, {...formData, user_create_id: JSON.parse(localStorage.getItem("user") || "{}").id, user_update_id: JSON.parse(localStorage.getItem("user") || "{}").id});
+      const processedData = { ...formData };
+      schema.forEach(field => {
+        const value = processedData[field.name];
+        if (field.processing === "array" && value) {
+          processedData[field.name] = value.toString().split("-").map(Number);
+        }
+      });
+
+      await apiClient.post(url, {
+        ...processedData,
+        user_create_id: JSON.parse(localStorage.getItem("user") || "{}").id,
+        user_update_id: JSON.parse(localStorage.getItem("user") || "{}").id
+      });
       onSuccess();
       onClose();
     } catch (error) {

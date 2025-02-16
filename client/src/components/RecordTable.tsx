@@ -44,7 +44,7 @@ const RecordTable = () => {
   const handleDelete = (id: number) => {
     if (!window.confirm("Are you sure you want to delete this record?")) return;
 
-    fetch(`/api/${model}/${id}`, { method: "DELETE" })
+    fetch(`/${model}/${id}`, { method: "DELETE" })
       .then((res) => res.json())
       .then(() => {
         setRecords(records.filter((record) => record.id !== id));

@@ -3,6 +3,7 @@ interface FormField {
   type: "text" | "date" | "number";
   label: string;
   required: boolean;
+  processing?: "array" | "object" | undefined;
 }
 
 export const formSchemas: Record<string, FormField[]> = {
@@ -36,8 +37,29 @@ export const formSchemas: Record<string, FormField[]> = {
   ],
   compas: [
     { name: "name", type: "text", label: "Compas Name", required: true },
-    { name: "origin", type: "text", label: "Origin", required: true },
-    { name: "origin_date", type: "date", label: "Origin Date", required: true },
+    { name: "beats", type: "number", label: "Beats", required: true },
+    {
+      name: "accents",
+      type: "text",
+      label: "Accents (comma-separated integers)",
+      required: true,
+      processing: "array",
+    },
+    {
+      name: "silences",
+      type: "text",
+      label: "Silences (comma-separated integers)",
+      required: true,
+      processing: "array",
+    },
+    {
+      name: "time_signatures",
+      type: "text",
+      label: "Time Signatures (comma-separated)",
+      required: true,
+      processing: "array",
+    },
+    { name: "bpm", type: "number", label: "BPM", required: true },
   ],
   artista: [
     { name: "name", type: "text", label: "Artista Name", required: true },
