@@ -1,0 +1,73 @@
+.record-table {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+  
+    .add-button {
+      display: inline-block;
+      margin-bottom: 15px;
+      padding: 8px 15px;
+      background: #28a745;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: background 0.3s;
+  
+      &:hover {
+        background: #218838;
+      }
+    }
+  
+    table {
+      width: 100%;
+      border-collapse: collapse;
+  
+      th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+      }
+  
+      th {
+        background: #007bff;
+        color: white;
+      }
+  
+      .edit-button {
+        margin-right: 5px;
+        padding: 5px 10px;
+        background: #ffc107;
+        color: white;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        border-radius: 5px;
+        
+        &:hover {
+          background: #e0a800;
+        }
+      }
+  
+      .delete-button {
+        padding: 5px 10px;
+        background: #dc3545;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        
+        &:hover {
+          background: #c82333;
+        }
+      }
+    }
+  }
+  

@@ -19,7 +19,7 @@ const Dashboard = () => {
         <Link to="/dashboard/compas" className="dashboard-link">Compas</Link>
         <Link to="/dashboard/letra" className="dashboard-link">Letra</Link>
         <Link to="/dashboard/estilo" className="dashboard-link">Estilo</Link>
-        <Link to="/dashboard/artista" className="dashboard-link">Artista</Link>
+        <Link to="/dashboard/artist" className="dashboard-link">Artista</Link>
       </nav>
     </div>
   );
