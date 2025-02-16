@@ -1,106 +1,113 @@
 .record-table {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 25px;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  max-width: 1000px;
+  margin: 50px auto;
+  padding: 30px;
+  background: #ffffff; // Solid white background for better readability
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   text-align: center;
   transition: all 0.3s ease-in-out;
 
   &:hover {
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
   }
 
   h1 {
     font-size: 26px;
     margin-bottom: 20px;
-    color: #333;
-    font-weight: bold;
+    color: #222;
+    font-weight: 700;
   }
 
   .add-button {
     display: inline-block;
     margin-bottom: 20px;
-    padding: 10px 18px;
-    background: #28a745;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #198754 0%, #28a745 100%);
     color: white;
     font-size: 16px;
     font-weight: bold;
-    border-radius: 6px;
+    border-radius: 8px;
     text-decoration: none;
-    transition: background 0.3s, transform 0.2s ease-in-out;
+    transition: all 0.3s ease-in-out;
 
     &:hover {
-      background: #218838;
+      background: linear-gradient(135deg, #156c43 0%, #218838 100%);
       transform: translateY(-2px);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
     }
   }
 
   table {
     width: 100%;
     border-collapse: collapse;
-    border-radius: 8px;
+    border-radius: 10px;
     overflow: hidden;
-    background: white;
+    background: #ffffff; // Ensuring a solid background for contrast
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 
     th, td {
-      padding: 12px 15px;
-      border-bottom: 1px solid #ddd;
+      padding: 14px 18px;
+      border-bottom: 1px solid #dee2e6;
       text-align: left;
+      font-size: 15px;
+      color: #222; // Dark text for better readability
     }
 
     th {
-      background: #007bff;
+      background: linear-gradient(135deg, #004085 0%, #007bff 100%);
       color: white;
-      font-size: 16px;
+      font-size: 17px;
       text-transform: uppercase;
       font-weight: bold;
+      letter-spacing: 0.5px;
     }
 
     tbody tr {
       transition: background 0.3s ease-in-out;
 
       &:nth-child(even) {
-        background: #f8f9fa;
+        background: #f8f9fa; // Light gray row for better contrast
       }
 
       &:hover {
-        background: rgba(0, 123, 255, 0.1);
+        background: rgba(0, 123, 255, 0.12);
       }
     }
 
     .edit-button {
-      padding: 8px 12px;
-      background: #ffc107;
-      color: white;
+      padding: 8px 14px;
+      background: linear-gradient(135deg, #d39e00 0%, #ffc107 100%);
+      color: #222; // Darker text for better contrast
       border: none;
       cursor: pointer;
       font-size: 14px;
       border-radius: 6px;
       font-weight: bold;
-      transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+      transition: all 0.3s ease-in-out;
 
       &:hover {
-        background: #e0a800;
+        background: linear-gradient(135deg, #b88400 0%, #e0a800 100%);
         transform: translateY(-2px);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
       }
     }
 
     .delete-button {
-      padding: 8px 12px;
-      background: #dc3545;
+      padding: 8px 14px;
+      background: linear-gradient(135deg, #a71d2a 0%, #dc3545 100%);
       color: white;
       border: none;
       cursor: pointer;
       font-size: 14px;
       border-radius: 6px;
       font-weight: bold;
-      transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+      transition: all 0.3s ease-in-out;
 
       &:hover {
-        background: #c82333;
+        background: linear-gradient(135deg, #8a1f2b 0%, #c82333 100%);
         transform: translateY(-2px);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
       }
     }
   }
