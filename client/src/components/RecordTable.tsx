@@ -1,40 +1,41 @@
-import  { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import {  useParams } from "react-router-dom";
 import { getStaticDataByType } from "../api/static-data";
 import "../style/RecordTable.scss";
 import Modal from "./Modal";
 import DynamicForm from "./DynamicForm";
-import { FormData } from './DynamicForm';
+import { FormData } from "./DynamicForm";
 
 interface Record {
+  [key: string]: string | number | string[] | number[] | undefined;
   id: number;
   created_at: string;
   updated_at: string;
-  name?: string;
-  origin?: string;
-  origin_date?: string;
-  tonality?: string;
-  key?: string;
-  verses?: string[];
-  rhyme_scheme?: number[];
-  repetition_pattern?: number[];
-  structure?: string;
-  estilo_id?: number;
-  palo_id?: number;
 }
+
+const isDateString = (value: string | number | string[] | number[] | undefined): boolean => {
+  if (!value || Array.isArray(value)) return false;
+  const date = new Date(value);
+  return !isNaN(date.getTime());
+};
 
 const RecordTable = () => {
   const { model } = useParams<{ model: string }>();
   const [records, setRecords] = useState<Record[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<Record | null>(null);
-
+  const [columns, setColumns] = useState<string[]>([]); // Store dynamic columns
 
   useEffect(() => {
     if (!model) return;
-    
+
     getStaticDataByType(model)
-      .then((data: Record[]) => setRecords(data))
+      .then((data: Record[]) => {
+        if (data.length > 0) {
+          setColumns(Object.keys(data[0])); // Extract columns dynamically
+        }
+        setRecords(data);
+      })
       .catch((error: Error) => console.error("Error fetching records:", error));
   }, [model]);
 
@@ -54,28 +55,41 @@ const RecordTable = () => {
   return (
     <div className="record-table">
       <h1>{model.charAt(0).toUpperCase() + model.slice(1)} Records</h1>
-      <button className="add-button" onClick={() => {setIsModalOpen(true);}}  >
+      <button className="add-button" onClick={() => { setIsModalOpen(true); }}>
         + Add Record
       </button>
 
       <table>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Created At</th>
-            <th>Updated At</th>
+            {columns.map((col) => (
+              <th key={col}>{col.replace(/_/g, " ").toUpperCase()}</th>
+            ))}
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {records.map((record) => (
             <tr key={record.id}>
-              <td>{record.id}</td>
-              <td>{new Date(record.created_at).toLocaleString()}</td>
-              <td>{record.updated_at ? new Date(record.updated_at).toLocaleString() : "N/A"}</td>
+              {columns.map((col) => (
+                <td key={col}>
+                  {Array.isArray(record[col])
+                    ? record[col].join(", ")
+                    : isDateString(record[col]) && record[col]
+                      ? new Date(record[col] as string).toLocaleString()
+                      : record[col] || "N/A"}
+                </td>
+              ))}
               <td>
-                <Link to={`/dashboard/${model}/edit/${record.id}`} className="edit-button" onClick={() => {setIsModalOpen(true); setSelectedRecord(record)}}>
+                <button
+                  className="edit-button"
+                  onClick={() => {
+                    setIsModalOpen(true);
+                    setSelectedRecord(record);
+                  }}
+                >
                   ✏️ Edit
-                </Link>
+                </button>
                 <button onClick={() => handleDelete(record.id)} className="delete-button">
                   ❌ Delete
                 </button>
@@ -84,8 +98,14 @@ const RecordTable = () => {
           ))}
         </tbody>
       </table>
+
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <DynamicForm model={model} record={selectedRecord as FormData} onClose={() => setIsModalOpen(false)} onSuccess={() => window.location.reload()} />
+        <DynamicForm
+          model={model}
+          record={selectedRecord as FormData}
+          onClose={() => setIsModalOpen(false)}
+          onSuccess={() => window.location.reload()}
+        />
       </Modal>
     </div>
   );

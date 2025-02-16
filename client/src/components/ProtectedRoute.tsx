@@ -14,7 +14,7 @@ const ProtectedRoute = () => {
       }
       
       try {
-        const user = await validateToken(token);
+        const user = await validateToken();
         setIsValid(!!user.id);  // Convert to boolean based on user existence
       } catch (error) {
         console.error('Token validation failed:', error);
