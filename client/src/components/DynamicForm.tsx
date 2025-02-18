@@ -33,22 +33,54 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ model, record, onClose, onSuc
     setFormData({ ...formData, [name]: type === "number" ? parseInt(value) : value });
   };
 
+  // Handle changes for multi-input fields
+  const handleArrayChange = (fieldName: string, index: number, value: string) => {
+    const newArray = Array.isArray(formData[fieldName]) ? [...(formData[fieldName] as string[])] : [];
+    newArray[index] = value;
+    setFormData({ ...formData, [fieldName]: newArray });
+  };
+
+  // Add new input to multi-input fields
+  const handleAddItem = (fieldName: string) => {
+    const newArray = Array.isArray(formData[fieldName]) ? [...(formData[fieldName] as string[]), ""] : [""];
+    setFormData({ ...formData, [fieldName]: newArray });
+  };
+
+  // Remove input from multi-input fields
+  const handleRemoveItem = (fieldName: string, index: number) => {
+    const newArray = Array.isArray(formData[fieldName]) ? [...(formData[fieldName] as string[])] : [];
+    newArray.splice(index, 1);
+    setFormData({ ...formData, [fieldName]: newArray });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const url = `/${model}/upsert`;
+    const processedData = { ...formData };
+
+    schema.forEach((field) => {
+        const value = processedData[field.name];
+
+        if (field.processing === "array" && typeof value === "string") {
+            processedData[field.name] = value.split("-").map((v) => Number(v.trim()));
+        }
+
+        if (field.processing === "array-string" && typeof value === "string") {
+            processedData[field.name] = value.split("-");
+        }
+    });
 
     try {
-      await apiClient.post(url, {
-        ...formData,
-        user_create_id: JSON.parse(localStorage.getItem("user") || "{}").id,
-        user_update_id: JSON.parse(localStorage.getItem("user") || "{}").id,
-      });
-      onSuccess();
-      onClose();
+        await apiClient.post(`/${model}/upsert`, {
+            ...processedData,
+            user_create_id: JSON.parse(localStorage.getItem("user") || "{}").id,
+            user_update_id: JSON.parse(localStorage.getItem("user") || "{}").id
+        });
+        onSuccess();
+        onClose();
     } catch (error) {
-      console.error("Error saving data:", error);
+        console.error("Error saving data:", error);
     }
-  };
+};
 
   return (
     <div className="modal">
@@ -58,15 +90,40 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ model, record, onClose, onSuc
           {schema.map((field) => (
             <div key={field.name} className="form-group">
               <label>{field.label}</label>
+
               {field.processing === "enum" && Array.isArray(field.options) ? (
-              
-                <select name={field.name} value={formData[field.name]?.toString() || ""} onChange={handleChange} required={field.required}>
+                // Dropdown for Enum Fields
+                <select 
+                  name={field.name} 
+                  value={Array.isArray(formData[field.name]) 
+                    ? (formData[field.name] as (string | number)[]).join(',') 
+                    : formData[field.name]?.toString() || ""
+                  } 
+                  onChange={handleChange} 
+                  required={field.required}
+                >
                   <option value="" disabled>Select {field.label}</option>
                   {field.options.map((option: string) => (
                     <option key={option} value={option}>{option}</option>
                   ))}
                 </select>
+              ) : field.processing === "multi-input" ? (
+                // Multi-Input Array Fields
+                <div>
+                  {(formData[field.name] as string[] || []).map((value, index) => (
+                    <div key={index} className="array-input-group">
+                      <input
+                        type="text"
+                        value={value}
+                        onChange={(e) => handleArrayChange(field.name, index, e.target.value)}
+                      />
+                      <button type="button" onClick={() => handleRemoveItem(field.name, index)}>Remove</button>
+                    </div>
+                  ))}
+                  <button type="button" onClick={() => handleAddItem(field.name)}>Add More</button>
+                </div>
               ) : (
+                // Standard Input Fields
                 <input
                   type={field.type}
                   name={field.name}
