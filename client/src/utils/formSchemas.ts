@@ -3,7 +3,7 @@ interface FormField {
   type: "text" | "date" | "number";
   label: string;
   required: boolean;
-  processing?: "array" | "object" | undefined;
+  processing?: "array" | "object" | "array-string" | "multi-input" | undefined;
 }
 
 export const formSchemas: Record<string, FormField[]> = {
@@ -22,13 +22,13 @@ export const formSchemas: Record<string, FormField[]> = {
     { name: "artist_id", type: "number", label: "Artist ID", required: false },
   ],
   letra: [
-    { name: "estilo_id", type: "number", label: "Estilo ID", required: true },
+    { name: "estilo_id", type: "number", label: "Estilo ID", required: false },
     {
       name: "verses",
       type: "text",
       label: "Verses",
       required: true,
-      processing: "array",
+      processing: "multi-input",
     },
     {
       name: "rhyme_scheme",
@@ -68,7 +68,7 @@ export const formSchemas: Record<string, FormField[]> = {
       type: "text",
       label: "Time Signatures (comma-separated)",
       required: true,
-      processing: "array",
+      processing: "array-string",
     },
     { name: "bpm", type: "number", label: "BPM", required: true },
   ],
