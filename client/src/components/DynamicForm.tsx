@@ -29,28 +29,8 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ model, record, onClose, onSuc
   }, [record]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    if (e.target.type === "number") {
-      setFormData({ ...formData, [e.target.name]: parseInt(e.target.value) });
-    } else {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
-    }
-  };
-
-  const handleArrayChange = (fieldName: string, index: number, value: string) => {
-    const newArray = Array.isArray(formData[fieldName]) ? [...(formData[fieldName] as string[])] : [];
-    newArray[index] = value;
-    setFormData({ ...formData, [fieldName]: newArray });
-  };
-
-  const handleAddItem = (fieldName: string) => {
-    const newArray = Array.isArray(formData[fieldName]) ? [...(formData[fieldName] as string[]), ""] : [""];
-    setFormData({ ...formData, [fieldName]: newArray });
-  };
-
-  const handleRemoveItem = (fieldName: string, index: number) => {
-    const newArray = Array.isArray(formData[fieldName]) ? [...(formData[fieldName] as string[])] : [];
-    newArray.splice(index, 1);
-    setFormData({ ...formData, [fieldName]: newArray });
+    const { name, value, type } = e.target;
+    setFormData({ ...formData, [name]: type === "number" ? parseInt(value) : value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,19 +38,8 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ model, record, onClose, onSuc
     const url = `/${model}/upsert`;
 
     try {
-      const processedData = { ...formData };
-      schema.forEach((field) => {
-        const value = processedData[field.name];
-        if (field.processing === "array" && value) {
-          processedData[field.name] = value.toString().split("-").map(Number);
-        }
-        if (field.processing === "array-string" && value) {
-          processedData[field.name] = value.toString().split("-");
-        }
-      });
-
       await apiClient.post(url, {
-        ...processedData,
+        ...formData,
         user_create_id: JSON.parse(localStorage.getItem("user") || "{}").id,
         user_update_id: JSON.parse(localStorage.getItem("user") || "{}").id,
       });
@@ -89,21 +58,14 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ model, record, onClose, onSuc
           {schema.map((field) => (
             <div key={field.name} className="form-group">
               <label>{field.label}</label>
-
-              {field.processing === "multi-input" ? (
-                <div>
-                  {(formData[field.name] as string[] || []).map((value, index) => (
-                    <div key={index} className="array-input-group">
-                      <input
-                        type="text"
-                        value={value}
-                        onChange={(e) => handleArrayChange(field.name, index, e.target.value)}
-                      />
-                      <button type="button" onClick={() => handleRemoveItem(field.name, index)}>Remove</button>
-                    </div>
+              {field.processing === "enum" && Array.isArray(field.options) ? (
+              
+                <select name={field.name} value={formData[field.name]?.toString() || ""} onChange={handleChange} required={field.required}>
+                  <option value="" disabled>Select {field.label}</option>
+                  {field.options.map((option: string) => (
+                    <option key={option} value={option}>{option}</option>
                   ))}
-                  <button type="button" onClick={() => handleAddItem(field.name)}>Add More</button>
-                </div>
+                </select>
               ) : (
                 <input
                   type={field.type}

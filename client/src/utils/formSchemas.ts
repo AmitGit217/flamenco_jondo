@@ -1,9 +1,18 @@
+import { tonalities, keys } from "@common/index";
+
 interface FormField {
   name: string;
-  type: "text" | "date" | "number";
+  type: "text" | "date" | "number" | "select";
   label: string;
   required: boolean;
-  processing?: "array" | "object" | "array-string" | "multi-input" | undefined;
+  processing?:
+    | "array"
+    | "object"
+    | "array-string"
+    | "multi-input"
+    | "enum"
+    | undefined;
+  options?: string[];
 }
 
 export const formSchemas: Record<string, FormField[]> = {
@@ -14,8 +23,22 @@ export const formSchemas: Record<string, FormField[]> = {
   ],
   estilo: [
     { name: "name", type: "text", label: "Estilo Name", required: true },
-    { name: "tonality", type: "text", label: "Tonality", required: true },
-    { name: "key", type: "text", label: "Key", required: true },
+    {
+      name: "tonality",
+      type: "select",
+      label: "Tonality",
+      required: true,
+      processing: "enum",
+      options: Object.values(tonalities),
+    },
+    {
+      name: "key",
+      type: "select",
+      label: "Key",
+      required: true,
+      processing: "enum",
+      options: Object.values(keys),
+    },
     { name: "origin", type: "text", label: "Origin", required: true },
     { name: "origin_date", type: "date", label: "Origin Date", required: true },
     { name: "palo_id", type: "number", label: "Palo ID", required: false },
