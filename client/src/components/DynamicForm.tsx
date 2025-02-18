@@ -87,7 +87,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ model, record, onClose, onSuc
             </div>
           ))}
           <button type="submit" className="save-button">Save</button>
-          <button type="button" className="close-button" onClick={onClose}>Cancel</button>
+          <button type="button" className="close-button" onClick={onClose}>X</button>
         </form>
       </div>
     </div>
