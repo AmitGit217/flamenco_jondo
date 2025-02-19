@@ -62,14 +62,14 @@ export class EstiloService {
           ...upsertData,
           created_at: timestamp,
           user_estilo_user_create_idTouser: {
-            connect: { id: dto.user_created_id || -1 },
+            connect: { id: dto.user_create_id || -1 },
           },
           palo_estilo: dto.palo_id
             ? {
                 create: {
                   palo: { connect: { id: dto.palo_id } },
                   user_palo_estilo_user_create_idTouser: {
-                    connect: { id: dto.user_created_id || -1 },
+                    connect: { id: dto.user_create_id || -1 },
                   },
                   created_at: timestamp,
                   updated_at: timestamp,

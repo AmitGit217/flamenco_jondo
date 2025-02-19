@@ -1,0 +1,153 @@
+.modal-overlay {
+    position: fixed;
+    top: 0; 
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6); // Slightly darker overlay for better contrast
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px); // Subtle blur effect for modern feel
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    min-width: 350px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); // Soft shadow for a lifted effect
+    animation: slideIn 0.3s ease-in-out;
+  
+    h2 {
+      text-align: center;
+      font-size: 1.6rem;
+      color: #333;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+  
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 12px;
+  
+      label {
+        font-size: 0.9rem;
+        color: #555;
+        margin-bottom: 5px;
+      }
+  
+      input, select {
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+        transition: border-color 0.3s ease-in-out;
+        outline: none;
+  
+        &:focus {
+          border-color: #007bff;
+        }
+      }
+    }
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #555;
+    transition: color 0.2s ease-in-out;
+  
+    &:hover {
+      color: #ff4d4d;
+    }
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+  }
+  
+  .save-button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background 0.3s ease-in-out;
+  
+    &:hover {
+      background: #0056b3;
+    }
+  }
+  
+  .cancel-button {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background 0.3s ease-in-out;
+  
+    &:hover {
+      background: #545b62;
+    }
+  }
+  
+  .add-button {
+    display: inline-block;
+    margin-bottom: 15px;
+    padding: 12px 16px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background 0.3s ease-in-out;
+  
+    &:hover {
+      background: #218838;
+    }
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  

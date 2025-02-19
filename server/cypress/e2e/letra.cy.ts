@@ -54,7 +54,7 @@ describe('Letra Upsert API', () => {
     const newArtist = {
       name: faker.person.fullName(),
       type: 'CANTE', // Replace with a valid enum value
-      user_created_id: 1,
+      user_create_id: 1,
     };
 
     cy.request({
@@ -78,7 +78,7 @@ describe('Letra Upsert API', () => {
       name: faker.music.genre() + ' Palo',
       origin: faker.location.city(),
       origin_date: faker.date.past().toISOString(),
-      user_created_id: 1,
+      user_create_id: 1,
     };
 
     cy.request({
@@ -106,7 +106,7 @@ describe('Letra Upsert API', () => {
       origin_date: faker.date.past().toISOString(),
       palo_id: createdPaloId,
       artist_id: null,
-      user_created_id: 1, // Assume admin user ID
+      user_create_id: 1, // Assume admin user ID
     };
 
     cy.request({
@@ -139,7 +139,7 @@ describe('Letra Upsert API', () => {
       rhyme_scheme: [1, 3, 2, 4],
       repetition_pattern: [1, 2, 1, 3],
       structure: 'ABCB',
-      user_created_id: 1,
+      user_create_id: 1,
     };
 
     cy.request<UpsrtLetraResponseDto>({
