@@ -1,23 +1,12 @@
-// Common API functions
-import { API_URL } from "./env";
-import { user } from "@common/index";
+import apiClient from "./Api";
+
 export const login = async (email: string, password: string) => {
-  const response = await fetch(`${API_URL}/auth/login`, {
-    method: "POST",
-    body: JSON.stringify({ email, password }),
-    headers: { "Content-Type": "application/json" }, // Ensures proper JSON request
-  });
-
-  if (!response.ok) {
-    throw new Error("Login failed");
-  }
-
-  return response.json();
+  return apiClient.post("/auth/login", { email, password });
 };
 
-export const validateToken = async (token: string): Promise<user> => {
-  const response = await fetch(`${API_URL}/auth/validate-token`, {
-    headers: { Authorization: `Bearer ${token}` },
+export const validateToken = async () => {
+  return apiClient.get("/auth/validate-token").then((res) => {
+    localStorage.setItem("user", JSON.stringify(res));
+    return res;
   });
-  return response.json();
 };

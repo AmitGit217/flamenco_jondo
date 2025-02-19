@@ -45,7 +45,7 @@ export class UpsertLetraRequestDto {
 
   @IsOptional()
   @IsInt()
-  user_created_id?: number;
+  user_create_id?: number;
 
   @IsOptional()
   @IsInt()

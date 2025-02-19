@@ -70,7 +70,7 @@ describe('Artist Upsert API', () => {
       death_year: faker.number.int({ min: 2023, max: 2025 }),
       origin: faker.location.city(),
       type: 'GUITARRA', // Replace with valid enum value from Prisma
-      user_created_id: 1, // Assume admin user ID
+      user_create_id: 1, // Assume admin user ID
     };
 
     cy.request<UpsertArtistResponseDto>({

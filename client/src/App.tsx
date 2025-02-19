@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
-
+import RecordTable from './components/RecordTable';
 function App() {
   return (
     <BrowserRouter>
@@ -28,6 +28,7 @@ function App() {
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/:model" element={<RecordTable />} />
             {/* Add other protected routes here */}
           </Route>
         </Routes>

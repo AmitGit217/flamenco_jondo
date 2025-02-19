@@ -13,7 +13,7 @@ export class ArtistService {
 
   async upsert(dto: UpsertArtistRequestDto): Promise<UpsertArtistResponseDto> {
     try {
-      const { id, user_created_id, user_update_id, ...artistData } = dto;
+      const { id, user_create_id, user_update_id, ...artistData } = dto;
 
       const artist = await this.prisma.artist.upsert({
         where: { id: id || -1 },
@@ -33,9 +33,9 @@ export class ArtistService {
           ...artistData,
           created_at: new Date(),
           updated_at: new Date(),
-          // ✅ Only connect if user_created_id is defined
+          // ✅ Only connect if user_create_id is defined
           user_artist_user_create_idTouser: {
-            connect: { id: user_created_id || -1 },
+            connect: { id: user_create_id || -1 },
           },
         },
       });
@@ -49,7 +49,7 @@ export class ArtistService {
         type: artist.type,
         created_at: artist.created_at?.toISOString() || null,
         updated_at: artist.updated_at?.toISOString() || null,
-        user_created_id: artist.user_create_id,
+        user_create_id: artist.user_create_id,
         user_update_id: artist.user_update_id || null,
       };
     } catch (error) {
@@ -61,7 +61,6 @@ export class ArtistService {
 
   async delete(dto: DeleteArtistRequestDto): Promise<DeleteArtistResponseDto> {
     try {
-      
       await this.prisma.artist.delete({
         where: { id: dto.id },
       });
