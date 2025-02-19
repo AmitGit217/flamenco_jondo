@@ -23,8 +23,17 @@ export class StaticDataService {
 
   async getTableByType(
     type: string,
-  ): Promise<{ [key: string]: StaticDataResponseDto }> {
-    const data = await this.prisma[type].findMany();
+    query?: string,
+  ): Promise<{ [key: string]: StaticDataResponseDto[] }> {
+    const whereCondition = query
+      ? { name: { contains: query, mode: 'insensitive' } }
+      : {}; // If no query, return all records
+
+    const data = await this.prisma[type].findMany({
+      where: whereCondition, // Apply where condition only if query exists
+    });
+    console.log(data);
+
     return { [type]: data };
   }
 }

@@ -9,7 +9,8 @@ export class StaticDataController {
   getTableByType(
     @Query('type')
     type: 'palo' | 'estilo' | 'artist' | 'compas' | 'letra' | 'letra_artist',
+    @Query('query') query?: string, // Optional search query
   ) {
-    return this.staticDataService.getTableByType(type);
+    return this.staticDataService.getTableByType(type, query);
   }
 }
