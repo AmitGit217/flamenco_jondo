@@ -13,4 +13,9 @@ export class StaticDataController {
   ) {
     return this.staticDataService.getTableByType(type, query);
   }
+
+  @Get('universalSearch')
+  universalSearch(@Query('query') query: string) {
+    return this.staticDataService.universalSearch(query);
+  }
 }

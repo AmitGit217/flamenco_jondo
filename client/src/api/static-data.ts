@@ -6,3 +6,10 @@ export const getStaticDataByType = async (type: string, query?: string) => {
   );
   return response[type];
 };
+
+export const universalSearch = async (query: string) => {
+  const response = await apiClient.get(
+    `/static-data/universalSearch?query=${query}`
+  );
+  return response;
+};

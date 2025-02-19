@@ -10,6 +10,7 @@ datasource db {
 model letra {
   id                              Int            @id @default(autoincrement())
   estilo_id                       Int
+  name                            String         @unique @db.VarChar(255)
   verses                          String[]
   rhyme_scheme                    Int[]
   repetition_pattern              Int[]
@@ -29,6 +30,7 @@ model letra {
 
 model letra_artist {
   id                                     Int       @id @default(autoincrement())
+  name                                   String    @unique @db.VarChar(255)
   letra_id                               Int
   artist_id                              Int
   recording_url                          String?   @db.VarChar(255)
@@ -68,6 +70,7 @@ model palo {
 
 model palo_compas {
   id                                    Int       @id @default(autoincrement())
+  name                                  String    @unique @db.VarChar(255)
   palo_id                               Int
   compas_id                             Int
   user_create_id                        Int
@@ -86,6 +89,7 @@ model palo_compas {
 
 model palo_estilo {
   id                                    Int       @id @default(autoincrement())
+  name                                  String    @unique @db.VarChar(255)
   palo_id                               Int
   estilo_id                             Int
   user_create_id                        Int
@@ -194,6 +198,7 @@ model user {
 
 model artist_estilo {
   id                                      Int       @id @default(autoincrement())
+  name                                    String    @unique @db.VarChar(255)
   artist_id                               Int
   estilo_id                               Int
   user_create_id                          Int
@@ -212,6 +217,7 @@ model artist_estilo {
 
 model letra_palo {
   id                                   Int       @id @default(autoincrement())
+  name                                 String    @unique @db.VarChar(255)
   letra_id                             Int
   palo_id                              Int
   user_create_id                       Int

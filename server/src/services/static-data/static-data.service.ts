@@ -36,4 +36,21 @@ export class StaticDataService {
 
     return { [type]: data };
   }
+
+  async universalSearch(query: string) {
+    const tables = ['palo', 'estilo', 'artist', 'compas', 'letra'];
+
+    const results = await Promise.all(
+      tables.map(async (table) => {
+        const data = await this.prisma[table].findMany({
+          where: {
+            name: { contains: query, mode: 'insensitive' },
+          },
+        });
+        return { category: table, data };
+      }),
+    );
+
+    return results.filter((section) => section.data.length > 0); // Remove empty categories
+  }
 }

@@ -43,14 +43,13 @@ export class EstiloService {
         update: {
           ...upsertData,
           palo_estilo: {
-            deleteMany: {}, // ✅ Ensures existing palo_estilo relations are reset
+            deleteMany: {},
             ...(dto.palo_id
               ? {
                   create: {
-                    palo: { connect: { id: dto.palo_id } },
-                    user_palo_estilo_user_create_idTouser: {
-                      connect: { id: dto.user_update_id || -1 },
-                    },
+                    name: `${dto.name}_${dto.palo_id}`,
+                    palo_id: dto.palo_id,
+                    user_create_id: dto.user_update_id || -1,
                     created_at: timestamp,
                     updated_at: timestamp,
                   },
@@ -67,10 +66,9 @@ export class EstiloService {
           palo_estilo: dto.palo_id
             ? {
                 create: {
-                  palo: { connect: { id: dto.palo_id } },
-                  user_palo_estilo_user_create_idTouser: {
-                    connect: { id: dto.user_create_id || -1 },
-                  },
+                  name: `${dto.name}_${dto.palo_id}`,
+                  palo_id: dto.palo_id,
+                  user_create_id: dto.user_update_id || -1,
                   created_at: timestamp,
                   updated_at: timestamp,
                 },

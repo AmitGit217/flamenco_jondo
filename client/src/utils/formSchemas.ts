@@ -1,4 +1,4 @@
-import { tonalities, keys } from "@common/index";
+import { tonalities, keys, artisttype } from "@common/index";
 
 interface FormField {
   name: string;
@@ -110,7 +110,14 @@ export const formSchemas: Record<string, FormField[]> = {
       required: false,
     },
     { name: "origin", type: "text", label: "Origin", required: false },
-    { name: "type", type: "text", label: "Artist Type", required: true },
+    {
+      name: "type",
+      type: "select",
+      label: "Artist Type",
+      required: true,
+      processing: "enum",
+      options: Object.values(artisttype),
+    },
   ],
   feedback: [
     { name: "user_id", type: "number", label: "User ID", required: false },

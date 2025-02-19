@@ -15,6 +15,8 @@ export class UpsertLetraRequestDto {
   estilo_id?: number;
 
   @IsOptional()
+  name?: string;
+  @IsOptional()
   artist_id?: number;
 
   @IsOptional()

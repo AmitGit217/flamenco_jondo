@@ -1,50 +1,43 @@
 import { useState, useEffect } from "react";
-import { getStaticDataByType } from "../api/static-data";
+import { universalSearch } from "../api/static-data";
 import "../style/Explore.scss";
 
 function ExplorePage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedType, setSelectedType] = useState("palo");
   const [results, setResults] = useState([]);
 
   useEffect(() => {
     if (searchTerm.length > 1) {
-      getStaticDataByType(selectedType, searchTerm)
+     universalSearch(searchTerm)
         .then((data) => setResults(data))
         .catch((error) => console.error("Error fetching data:", error));
     } else {
-      setResults([]); // Clear results when input is empty
+      setResults([]);
     }
-  }, [searchTerm, selectedType]);
+  }, [searchTerm]);
 
   return (
     <div className="explore-container">
-      <h2>Explore Flamenco</h2>
-      
-      {/* Search Input */}
+      <h2>Search Flamenco</h2>
       <input
         type="text"
-        placeholder="Search for Palos, Estilos, Artists..."
+        placeholder="Search anything about Flamenco..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-
-      {/* Type Filter Dropdown */}
-      <select value={selectedType} onChange={(e) => setSelectedType(e.target.value)}>
-        <option value="palo">Palo</option>
-        <option value="estilo">Estilo</option>
-        <option value="artist">Artist</option>
-        <option value="compas">Compás</option>
-        <option value="letra">Letra</option>
-        <option value="letra_artist">Letra Artist</option>
-      </select>
-
-      {/* Search Results */}
-      <ul>
-        {results.map((item: {name?: string, title?: string}, index) => (
-          <li key={index}>{item.name || item.title}</li>
+      
+      <div className="search-results">
+        {results.map((section: { category: string, data: { name?: string, title?: string }[] }, index) => (
+          <div key={index}>
+            <h3>{section.category}</h3>
+            <ul>
+              {section.data.map((item: { name?: string, title?: string }, i) => (
+                <li key={i}>{item.name || item.title}</li>
+              ))}
+            </ul>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
