@@ -1,4 +1,4 @@
-import { PrismaClient, tonalities } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 
 const prisma = new PrismaClient({
@@ -55,7 +55,7 @@ async function main() {
   const soleaEstilo = await prisma.estilo.create({
     data: {
       name: "Soleá por Bulerías",
-      tonality: tonalities.FRIGIO,
+      tonality: "FRIGIO",
       key: "A",
       origin: "Spain",
       origin_date: new Date("1750-01-01"),
@@ -70,6 +70,41 @@ async function main() {
       key: "E",
       origin: "Spain",
       origin_date: new Date("1800-01-01"),
+      user_create_id: masterUser.id,
+    },
+  });
+
+  // Create letras
+  await prisma.letra.create({
+    data: {
+      estilo_id: soleaEstilo.id,
+      name: "Soleá Verse 1",
+      verses: [
+        "Por tu calle yo pasé",
+        "y me encontré tu ventana",
+        "cerrada de par en par,",
+        "como si no pasara nada.",
+      ],
+      rhyme_scheme: [1, 2, 3, 4],
+      repetition_pattern: [1, 1, 2, 2],
+      structure: "ABAB",
+      user_create_id: masterUser.id,
+    },
+  });
+
+  await prisma.letra.create({
+    data: {
+      estilo_id: buleriasEstilo.id,
+      name: "Bulerías Verse 1",
+      verses: [
+        "A la orilla del río",
+        "un lucero se miraba",
+        "quiso tocar su reflejo",
+        "y en el agua se quedaba.",
+      ],
+      rhyme_scheme: [1, 2, 3, 4],
+      repetition_pattern: [1, 1, 2, 2],
+      structure: "ABAB",
       user_create_id: masterUser.id,
     },
   });

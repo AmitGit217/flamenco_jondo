@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml.dbdiagram.io)
 -- Database: PostgreSQL
--- Generated at: 2025-02-20T19:50:08.376Z
+-- Generated at: 2025-02-20T19:55:10.034Z
 
 CREATE TYPE "artisttype" AS ENUM (
   'CANTE',

@@ -32,13 +32,12 @@ export class StaticDataService {
     const data = await this.prisma[type].findMany({
       where: whereCondition, // Apply where condition only if query exists
     });
-    console.log(data);
 
     return { [type]: data };
   }
 
   async universalSearch(query: string) {
-    const tables = ['palo', 'estilo', 'artist', 'compas', 'letra'];
+    const tables = ['palo', 'estilo', 'artist', 'letra'];
 
     const results = await Promise.all(
       tables.map(async (table) => {
@@ -47,7 +46,7 @@ export class StaticDataService {
             name: { contains: query, mode: 'insensitive' },
           },
         });
-        return { category: table, data };
+        return { category: `${table}s`, data };
       }),
     );
 
