@@ -22,7 +22,7 @@ function App() {
               <p>Discover, learn, and contribute to the world of flamenco.</p>
               <div className="button-group">
                 <Link to="/explore" className="button">Explore Now</Link>
-                <Link to="/login" className="button">Login</Link>
+                {/* <Link to="/login" className="button">Login</Link> */}
               </div>
             </main>
           } />
