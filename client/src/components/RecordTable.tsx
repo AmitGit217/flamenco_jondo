@@ -104,7 +104,14 @@ const RecordTable = () => {
           model={model}
           record={selectedRecord as FormData}
           onClose={() => setIsModalOpen(false)}
-          onSuccess={() => window.location.reload()}
+          onSuccess={() => {
+            setIsModalOpen(false);
+            getStaticDataByType(model)
+              .then((data: Record[]) => {
+                setRecords(data);
+              })
+              .catch((error: Error) => console.error("Error fetching records:", error));
+          }}
         />
       </Modal>
     </div>
