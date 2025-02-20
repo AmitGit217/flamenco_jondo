@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml.dbdiagram.io)
 -- Database: PostgreSQL
--- Generated at: 2025-02-18T19:37:26.908Z
+-- Generated at: 2025-02-20T19:55:10.034Z
 
 CREATE TYPE "artisttype" AS ENUM (
   'CANTE',
@@ -102,6 +102,7 @@ CREATE TABLE "compas" (
 CREATE TABLE "letra" (
   "id" serial PRIMARY KEY,
   "estilo_id" int NOT NULL,
+  "name" varchar(255) UNIQUE NOT NULL,
   "verses" text[] NOT NULL,
   "rhyme_scheme" int[] NOT NULL,
   "repetition_pattern" int[] NOT NULL,
@@ -114,6 +115,7 @@ CREATE TABLE "letra" (
 
 CREATE TABLE "palo_estilo" (
   "id" serial PRIMARY KEY,
+  "name" varchar(255) UNIQUE NOT NULL,
   "palo_id" int NOT NULL,
   "estilo_id" int NOT NULL,
   "user_create_id" int NOT NULL,
@@ -124,6 +126,7 @@ CREATE TABLE "palo_estilo" (
 
 CREATE TABLE "artist_estilo" (
   "id" serial PRIMARY KEY,
+  "name" varchar(255) UNIQUE NOT NULL,
   "artist_id" int NOT NULL,
   "estilo_id" int NOT NULL,
   "user_create_id" int NOT NULL,
@@ -134,6 +137,7 @@ CREATE TABLE "artist_estilo" (
 
 CREATE TABLE "palo_compas" (
   "id" serial PRIMARY KEY,
+  "name" varchar(255) UNIQUE NOT NULL,
   "palo_id" int NOT NULL,
   "compas_id" int NOT NULL,
   "user_create_id" int NOT NULL,
@@ -144,6 +148,7 @@ CREATE TABLE "palo_compas" (
 
 CREATE TABLE "letra_artist" (
   "id" serial PRIMARY KEY,
+  "name" varchar(255) UNIQUE NOT NULL,
   "letra_id" int NOT NULL,
   "artist_id" int NOT NULL,
   "recording_url" varchar(255),
@@ -157,6 +162,7 @@ CREATE TABLE "letra_artist" (
 
 CREATE TABLE "letra_palo" (
   "id" serial PRIMARY KEY,
+  "name" varchar(255) UNIQUE NOT NULL,
   "letra_id" int NOT NULL,
   "palo_id" int NOT NULL,
   "user_create_id" int NOT NULL,
