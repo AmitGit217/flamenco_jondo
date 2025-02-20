@@ -26,6 +26,7 @@ model letra {
   letra_palo                      letra_palo[]
 
   @@index([estilo_id], map: "idx_letra_estilo_id")
+  @@index([name], map: "unique_letra_estilo_name")
 }
 
 model letra_artist {

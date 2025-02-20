@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml.dbdiagram.io)
 -- Database: PostgreSQL
--- Generated at: 2025-02-20T19:55:10.034Z
+-- Generated at: 2025-02-20T20:25:16.235Z
 
 CREATE TYPE "artisttype" AS ENUM (
   'CANTE',
@@ -184,13 +184,23 @@ CREATE INDEX "unique_user_email" ON "user" ("email");
 
 CREATE INDEX "unique_palo_name" ON "palo" ("name");
 
+CREATE INDEX "idx_palo_name_trgm" ON "palo" USING GIN ("name");
+
 CREATE INDEX "unique_estilo_name" ON "estilo" ("name");
+
+CREATE INDEX "idx_estilo_name_trgm" ON "estilo" USING GIN ("name");
 
 CREATE INDEX "unique_artist_name" ON "artist" ("name");
 
+CREATE INDEX "idx_artist_name_trgm" ON "artist" USING GIN ("name");
+
 CREATE INDEX "unique_compas_name" ON "compas" ("name");
 
+CREATE INDEX "unique_letra_estilo_name" ON "letra" ("name");
+
 CREATE INDEX "idx_letra_estilo_id" ON "letra" ("estilo_id");
+
+CREATE INDEX "idx_letra_estilo_name_trgm" ON "letra" USING GIN ("name");
 
 CREATE UNIQUE INDEX "unique_palo_estilo" ON "palo_estilo" ("palo_id", "estilo_id");
 
