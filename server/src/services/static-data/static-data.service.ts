@@ -23,8 +23,33 @@ export class StaticDataService {
 
   async getTableByType(
     type: string,
-  ): Promise<{ [key: string]: StaticDataResponseDto }> {
-    const data = await this.prisma[type].findMany();
+    query?: string,
+  ): Promise<{ [key: string]: StaticDataResponseDto[] }> {
+    const whereCondition = query
+      ? { name: { contains: query, mode: 'insensitive' } }
+      : {}; // If no query, return all records
+
+    const data = await this.prisma[type].findMany({
+      where: whereCondition, // Apply where condition only if query exists
+    });
+
     return { [type]: data };
+  }
+
+  async universalSearch(query: string) {
+    const tables = ['palo', 'estilo', 'artist', 'letra'];
+
+    const results = await Promise.all(
+      tables.map(async (table) => {
+        const data = await this.prisma[table].findMany({
+          where: {
+            name: { contains: query, mode: 'insensitive' },
+          },
+        });
+        return { category: `${table}s`, data };
+      }),
+    );
+
+    return results.filter((section) => section.data.length > 0); // Remove empty categories
   }
 }

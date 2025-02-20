@@ -41,6 +41,7 @@ export class LetraService {
             : {}),
         },
         create: {
+          name: dto.name,
           verses: dto.verses,
           rhyme_scheme: dto.rhyme_scheme,
           repetition_pattern: dto.repetition_pattern,
@@ -153,6 +154,7 @@ export class LetraService {
           updated_at: timestamp_date,
         },
         create: {
+          name: `letra_${dto.letra_id}_artist_${dto.artist_id}`,
           recording_url: recording_url,
           created_at: timestamp_date,
           updated_at: timestamp_date,
@@ -163,7 +165,7 @@ export class LetraService {
             connect: { id: dto.artist_id },
           },
           user_letra_artist_user_create_idTouser: {
-            connect: { id: 1 }, // Replace with actual user ID from your auth context
+            connect: { id: 1 },
           },
         },
       });
