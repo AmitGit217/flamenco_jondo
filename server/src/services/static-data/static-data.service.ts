@@ -50,9 +50,10 @@ export class StaticDataService {
     const results = await Promise.all(
       tables.map(async (table) => {
         const data = await this.prisma.$queryRawUnsafe(
+          // The 0.3 is the threshold for the similarity
           `
-          SELECT * FROM "${table}"
-          WHERE SIMILARITY(LOWER(UNACCENT(name)), UNACCENT($1)) > 0.3
+          SELECT * FROM "${table}" 
+          WHERE SIMILARITY(LOWER(UNACCENT(name)), UNACCENT($1)) > 0.3 
           OR UNACCENT(name) ILIKE UNACCENT($2)
           ORDER BY SIMILARITY(LOWER(UNACCENT(name)), UNACCENT($1)) DESC
           LIMIT 10
