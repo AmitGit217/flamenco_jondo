@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getStaticDataByType } from "../api/static-data";
+import { deleteRecord, getStaticDataByType } from "../api/common";
 import "../style/RecordTable.scss";
 import AddRecordButton from '../components/AddRecordButton';
 import TableHeader from "../components/TableHeader";
@@ -37,11 +37,13 @@ const RecordTable = () => {
 
   const handleDelete = (id: number) => {
     if (!window.confirm("Are you sure you want to delete this record?")) return;
-    fetch(`/${model}/${id}`, { method: "DELETE" })
-      .then((res) => res.json())
-      .then(() => setRecords(records.filter((record) => record.id !== id)))
-      .catch((error) => console.error("Error deleting record:", error));
+    deleteRecord(model, id)
+      .then(() => {
+        setRecords(records.filter((record) => record.id !== id));
+      })
+      .catch((error: Error) => console.error("Error deleting record:", error));
   };
+
 
   return (
     <div className="record-table">

@@ -2,7 +2,7 @@ import React from "react";
 import Modal from "./Modal";
 import DynamicForm from "./DynamicForm";
 import { FormData } from "./DynamicForm";
-import { getStaticDataByType } from "../api/static-data";
+import { getStaticDataByType } from "../api/common";
 
 interface RecordModalProps {
   isOpen: boolean;

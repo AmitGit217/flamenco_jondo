@@ -1,4 +1,11 @@
-import { Controller, Body, Post, UseGuards, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Body,
+  Post,
+  UseGuards,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { PaloService } from './palo.service';
 import {
   DeletePaloRequestDto,
@@ -23,9 +30,9 @@ export class PaloController {
     return this.paloService.upsertPalo(dto, user.id);
   }
 
-  @Delete('delete')
+  @Delete(':id')
   @Roles('MASTER')
-  async deletePalo(@Body() dto: DeletePaloRequestDto) {
-    return this.paloService.deletePalo(dto);
+  async deletePalo(@Param('id') id: string) {
+    return this.paloService.deletePalo(parseInt(id));
   }
 }
