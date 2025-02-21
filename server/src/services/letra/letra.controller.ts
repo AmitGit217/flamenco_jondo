@@ -6,6 +6,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  Param,
 } from '@nestjs/common';
 import { LetraService } from './letra.service';
 import {
@@ -32,10 +33,10 @@ export class LetraController {
     return this.letraService.upsert(dto);
   }
 
-  @Delete('delete')
+  @Delete(':id')
   @Roles('MASTER')
-  async delete(@Body() dto: DeleteLetraRequestDto) {
-    return this.letraService.delete(dto);
+  async delete(@Param('id') id: string) {
+    return this.letraService.delete(parseInt(id));
   }
 
   @Post('upsert-artist')

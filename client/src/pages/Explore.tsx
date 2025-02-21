@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { universalSearch } from "../api/static-data";
+import { universalSearch } from "../api/common";
 import "../style/Explore.scss";
 
 function ExplorePage() {

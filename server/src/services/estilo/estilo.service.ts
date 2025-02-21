@@ -92,19 +92,19 @@ export class EstiloService {
     }
   }
 
-  async delete(dto: DeleteEstiloRequestDto): Promise<DeleteEstiloResponseDto> {
+  async delete(id: number): Promise<DeleteEstiloResponseDto> {
     try {
       await this.prisma.palo_estilo.deleteMany({
         where: {
-          estilo_id: dto.id,
+          estilo_id: id,
         },
       });
       await this.prisma.estilo.delete({
-        where: { id: dto.id },
+        where: { id: id },
       });
 
       return {
-        id: dto.id,
+        id: id,
       };
     } catch (error) {
       throw new BadRequestException(

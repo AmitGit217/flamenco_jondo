@@ -96,6 +96,7 @@ describe('Estilo Upsert API', () => {
       palo_id: createdPaloId,
       artist_id: null,
       user_create_id: 1, // Assume admin user ID
+      user_update_id: 1, // Assume admin user ID
     };
 
     cy.request({
@@ -206,8 +207,7 @@ describe('Estilo Upsert API', () => {
   it('should delete a Estilo', () => {
     cy.request({
       method: 'DELETE',
-      url: '/estilo/delete',
-      body: { id: createdEstiloId },
+      url: `/estilo/${createdEstiloId}`,
       headers: {
         Authorization: `Bearer ${authToken}`,
         'Content-Type': 'application/json',
