@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { DeletePaloResponseDto } from '../../../../common/dto/palo.dto';
+import { EstiloDto } from '../../../../common/dto/palo.dto';
 import {
+  DeletePaloResponseDto,
+  GetPaloResponseDto,
   UpsertPaloRequestDto,
   UpsertPaloResponseDto,
-  DeletePaloRequestDto,
 } from '@common/dto/palo.dto';
 
 @Injectable()
@@ -61,5 +62,48 @@ export class PaloService {
     } catch (error) {
       throw new Error(`Failed to delete Palo: ${error.message}`);
     }
+  }
+
+  async getPalo(id: number): Promise<GetPaloResponseDto> {
+    const palo = await this.prismaService.palo.findUnique({
+      where: { id: id },
+      include: {
+        palo_estilo: {
+          include: {
+            estilo: {
+              include: {
+                letra: {
+                  include: {
+                    letra_artist: {
+                      include: {
+                        artist: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const mappedEstilos = palo.palo_estilo.map((pe) => ({
+      id: pe.estilo.id,
+      name: pe.estilo.name,
+      origin: pe.estilo.origin || '',
+      letras: pe.estilo.letra.map((letra) => ({
+        id: letra.id,
+        content: letra.verses.join('\n'),
+        artist: letra.letra_artist[0]?.artist.name || '',
+      })),
+    }));
+
+    return {
+      id: palo.id,
+      name: palo.name,
+      description: palo.origin || '',
+      estilos: mappedEstilos,
+    };
   }
 }

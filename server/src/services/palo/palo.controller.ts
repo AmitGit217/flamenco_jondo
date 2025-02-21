@@ -5,6 +5,7 @@ import {
   UseGuards,
   Delete,
   Param,
+  Get,
 } from '@nestjs/common';
 import { PaloService } from './palo.service';
 import {
@@ -34,5 +35,10 @@ export class PaloController {
   @Roles('MASTER')
   async deletePalo(@Param('id') id: string) {
     return this.paloService.deletePalo(parseInt(id));
+  }
+
+  @Get(':id')
+  async getPalo(@Param('id') id: string) {
+    return this.paloService.getPalo(parseInt(id));
   }
 }

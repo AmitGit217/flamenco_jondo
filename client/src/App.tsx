@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import RecordTable from './pages/RecordTable';
 import ExplorePage from './pages/Explore';
+import DataPage from "./pages/DataPage";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/dashboard/:model" element={<RecordTable />} />
             <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/palo/:id" element={<DataPage />} />
             {/* Add other protected routes here */}
           </Route>
         </Routes>

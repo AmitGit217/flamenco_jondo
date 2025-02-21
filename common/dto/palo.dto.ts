@@ -96,3 +96,23 @@ export class GetPalosResponseDto {
   @Type(() => Palo)
   palos: Palo[];
 }
+
+export class GetPaloResponseDto {
+  id: number;
+  name: string;
+  description: string;
+  estilos: EstiloDto[];
+}
+
+export class EstiloDto {
+  id: number;
+  name: string;
+  origin: string;
+  letras: LetraDto[];
+}
+
+export class LetraDto {
+  id: number;
+  content: string;
+  artist: string;
+}
