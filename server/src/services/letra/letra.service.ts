@@ -91,26 +91,26 @@ export class LetraService {
     }
   }
 
-  async delete(dto: DeleteLetraRequestDto): Promise<DeleteLetraResponseDto> {
+  async delete(id: number): Promise<DeleteLetraResponseDto> {
     try {
       // Get all recording URLs before deletion
       const letraArtists = await this.prisma.letra_artist.findMany({
-        where: { letra_id: dto.id },
+        where: { letra_id: id },
         select: { recording_url: true },
       });
 
       // Delete all database records
       await Promise.all([
         this.prisma.letra_palo.deleteMany({
-          where: { letra_id: dto.id },
+          where: { letra_id: id },
         }),
         this.prisma.letra_artist.deleteMany({
-          where: { letra_id: dto.id },
+          where: { letra_id: id },
         }),
       ]);
 
       await this.prisma.letra.delete({
-        where: { id: dto.id },
+        where: { id: id },
       });
 
       // Delete all associated files
@@ -121,7 +121,7 @@ export class LetraService {
       );
 
       return {
-        id: dto.id,
+        id: id,
       };
     } catch (error) {
       throw new BadRequestException(`Failed to delete Letra: ${error.message}`);

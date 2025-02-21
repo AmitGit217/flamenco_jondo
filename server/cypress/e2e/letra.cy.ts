@@ -107,6 +107,7 @@ describe('Letra Upsert API', () => {
       palo_id: createdPaloId,
       artist_id: null,
       user_create_id: 1, // Assume admin user ID
+      user_update_id: 1, // Assume admin user ID
     };
 
     cy.request({
@@ -128,6 +129,7 @@ describe('Letra Upsert API', () => {
   it('should create a new Letra', () => {
     const newLetra: UpsertLetraRequestDto = {
       estilo_id: createdEstiloId,
+      name: faker.music.genre() + ' Letra',
       artist_id: createdArtistId,
       palo_id: createdPaloId,
       verses: [
@@ -140,6 +142,7 @@ describe('Letra Upsert API', () => {
       repetition_pattern: [1, 2, 1, 3],
       structure: 'ABCB',
       user_create_id: 1,
+      user_update_id: 1, // Assume admin user ID
     };
 
     cy.request<UpsrtLetraResponseDto>({
@@ -163,6 +166,7 @@ describe('Letra Upsert API', () => {
     const updatedLetra: UpsertLetraRequestDto = {
       id: createdLetraId,
       estilo_id: createdEstiloId,
+      name: faker.music.genre() + ' Letra',
       artist_id: createdArtistId,
       palo_id: createdPaloId,
       verses: [
@@ -174,6 +178,7 @@ describe('Letra Upsert API', () => {
       rhyme_scheme: [2, 4, 1, 3],
       repetition_pattern: [2, 1, 3, 1],
       structure: 'ABAB',
+      user_create_id: 1,
       user_update_id: 1,
     };
 
@@ -224,8 +229,7 @@ describe('Letra Upsert API', () => {
   it('should delete a Letra', () => {
     cy.request({
       method: 'DELETE',
-      url: '/letra/delete',
-      body: { id: createdLetraId },
+      url: `/letra/${createdLetraId}`,
       headers: {
         Authorization: `Bearer ${authToken}`,
         'Content-Type': 'application/json',

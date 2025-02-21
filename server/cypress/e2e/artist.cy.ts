@@ -181,8 +181,7 @@ describe('Artist Upsert API', () => {
   it('should delete a Artist', () => {
     cy.request({
       method: 'DELETE',
-      url: '/artist/delete',
-      body: { id: createdArtistId },
+      url: `/artist/${createdArtistId}`,
       headers: {
         Authorization: `Bearer ${authToken}`,
         'Content-Type': 'application/json',

@@ -75,14 +75,14 @@ export class CompasService {
     }
   }
 
-  async delete(dto: DeleteCompasRequestDto): Promise<DeleteCompasResponseDto> {
+  async delete(id: number): Promise<DeleteCompasResponseDto> {
     try {
       await this.prisma.compas.delete({
-        where: { id: dto.id },
+        where: { id: id },
       });
 
       return {
-        id: dto.id,
+        id: id,
       };
     } catch (error) {
       throw new BadRequestException(

@@ -59,14 +59,14 @@ export class ArtistService {
     }
   }
 
-  async delete(dto: DeleteArtistRequestDto): Promise<DeleteArtistResponseDto> {
+  async delete(id: number): Promise<DeleteArtistResponseDto> {
     try {
       await this.prisma.artist.delete({
-        where: { id: dto.id },
+        where: { id: id },
       });
 
       return {
-        id: dto.id,
+        id: id,
       };
     } catch (error) {
       throw new BadRequestException(
