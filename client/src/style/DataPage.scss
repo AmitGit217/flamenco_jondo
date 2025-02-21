@@ -1,7 +1,110 @@
-// DataPage.scss
-
 .data-page {
+  max-width: 800px;
+  margin: 40px auto;
   padding: 20px;
+  font-family: "Arial", sans-serif;
+  background-color: #fffaf0;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+.loading {
+  text-align: center;
+  font-size: 18px;
+  margin-top: 50px;
+  color: #a93226;
+}
 
+.origins-list {
+  margin-top: 20px;
+}
+
+.origin-section {
+  margin-bottom: 15px;
+  border-left: 4px solid #c0392b;
+  background: #fff5e6;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.origin-header {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 10px;
+  font-size: 22px;
+  color: #c0392b;
+  font-weight: bold;
+  border-bottom: 2px solid #e74c3c;
+}
+
+.origin-header span {
+  font-size: 18px;
+}
+
+.estilos-list {
+  padding: 10px;
+}
+
+.estilo-card {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 6px;
+  background: #ffe6b3;
+  border-left: 3px solid #d35400;
+  transition: all 0.3s ease-in-out;
+}
+
+.estilo-header {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #d35400;
+  border-bottom: 1px solid #e67e22;
+}
+
+.estilo-header span {
+  font-size: 16px;
+}
+
+.letras-list {
+  margin-top: 5px;
+  padding: 10px;
+}
+
+.letra-item {
+  padding: 10px;
+  background: #fff;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.letra-item:hover {
+  background: #ffe6e6;
+}
+
+.letra-content {
+  font-style: italic;
+  font-size: 16px;
+  color: #8e44ad;
+}
+
+.letra-artist {
+  display: block;
+  text-align: right;
+  color: #555;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.no-letras {
+  font-size: 14px;
+  color: #777;
+  text-align: center;
+}
