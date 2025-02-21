@@ -37,6 +37,10 @@ export class StaticDataService {
     const data = await this.prisma[type].findMany({
       where: whereCondition, // Apply where condition only if query exists
     });
+    data.forEach((item) => {
+      delete item.user_create_id;
+      delete item.user_update_id;
+    });
 
     return { [type]: data };
   }
