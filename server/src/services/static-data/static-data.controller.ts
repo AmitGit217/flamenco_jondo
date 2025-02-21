@@ -1,5 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { StaticDataService } from './static-data.service';
+import { SearchResult } from './static-data.service';
 
 @Controller('static-data')
 export class StaticDataController {
@@ -15,7 +16,7 @@ export class StaticDataController {
   }
 
   @Get('universalSearch')
-  universalSearch(@Query('query') query: string) {
+  universalSearch(@Query('query') query: string): Promise<SearchResult[]> {
     return this.staticDataService.universalSearch(query);
   }
 }

@@ -189,8 +189,7 @@ describe('Compas Upsert API', () => {
   it('should delete a Compas', () => {
     cy.request({
       method: 'DELETE',
-      url: '/compas/delete',
-      body: { id: createdCompasId },
+      url: `/compas/${createdCompasId}`,
       headers: {
         Authorization: `Bearer ${authToken}`,
         'Content-Type': 'application/json',

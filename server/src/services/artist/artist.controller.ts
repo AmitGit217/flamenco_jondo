@@ -1,4 +1,11 @@
-import { Controller, Post, Body, UseGuards, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { ArtistService } from './artist.service';
 import {
   DeleteArtistRequestDto,
@@ -18,9 +25,9 @@ export class ArtistController {
     return this.ArtistaService.upsert(dto);
   }
 
-  @Delete('delete')
+  @Delete(':id')
   @Roles('MASTER')
-  async delete(@Body() dto: DeleteArtistRequestDto) {
-    return this.ArtistaService.delete(dto);
+  async delete(@Param('id') id: string) {
+    return this.ArtistaService.delete(parseInt(id));
   }
 }

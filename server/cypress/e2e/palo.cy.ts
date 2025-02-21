@@ -172,8 +172,7 @@ describe('Palo Upsert API', () => {
   it('should delete a Palo', () => {
     cy.request({
       method: 'DELETE',
-      url: '/palo/delete',
-      body: { id: createdPaloId },
+      url: `/palo/${createdPaloId}`,
       headers: {
         Authorization: `Bearer ${authToken}`,
         'Content-Type': 'application/json',

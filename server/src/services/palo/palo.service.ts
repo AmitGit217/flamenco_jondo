@@ -49,14 +49,14 @@ export class PaloService {
     }
   }
 
-  async deletePalo(dto: DeletePaloRequestDto): Promise<DeletePaloResponseDto> {
+  async deletePalo(id: number): Promise<DeletePaloResponseDto> {
     try {
       await this.prismaService.palo.delete({
-        where: { id: dto.id },
+        where: { id: id },
       });
 
       return {
-        id: dto.id,
+        id: id,
       };
     } catch (error) {
       throw new Error(`Failed to delete Palo: ${error.message}`);

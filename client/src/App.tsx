@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
-import RecordTable from './components/RecordTable';
+import RecordTable from './pages/RecordTable';
 import ExplorePage from './pages/Explore';
 
 function App() {

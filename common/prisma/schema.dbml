@@ -60,6 +60,8 @@ Table palo {
 
   Indexes {
     (name) [name: "unique_palo_name"]
+    (name) [type: gin, name: "idx_palo_name_trgm"]
+
   }
 }
 
@@ -77,6 +79,8 @@ Table estilo {
 
   Indexes {
     (name) [name: "unique_estilo_name"]
+    (name) [type: gin, name: "idx_estilo_name_trgm"]
+
   }
 }
 
@@ -94,6 +98,8 @@ Table artist {
 
   Indexes {
     (name) [name: "unique_artist_name"]
+    (name) [type: gin, name: "idx_artist_name_trgm"]
+
   }
 }
 
@@ -129,7 +135,10 @@ Table letra {
   updated_at timestamp 
 
   Indexes {
+    (name) [name: "unique_letra_estilo_name"]
     (estilo_id) [name: "idx_letra_estilo_id"]
+    (name) [type: gin, name: "idx_letra_estilo_name_trgm"]
+
   }
 }
 

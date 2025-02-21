@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   db:
@@ -12,6 +12,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
 
   minio:
     image: minio/minio
@@ -25,7 +26,6 @@ services:
       - "9001:9001"
     volumes:
       - minio_data:/data
-
 
   ###  COMMENTED FOR A REASON
   # nestjs-server:
