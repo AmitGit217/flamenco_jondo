@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "../style/LetrasList.scss"; // Ensure you create this stylesheet
 
 interface Letra {
   id: number;
@@ -13,18 +14,21 @@ interface LetrasListProps {
 const LetrasList: React.FC<LetrasListProps> = ({ letras }) => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
+  const toggleLetra = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
   return (
     <div className="letras-list">
       {letras.map((letra, index) => (
-        <div key={letra.id} className="letra-item">
-          <div
-            className="letra-header"
-            onClick={() => setOpenIndex(openIndex === index ? null : index)}
-          >
+        <div key={letra.id} className={`letra-item ${openIndex === index ? "open" : ""}`}>
+          <div className="letra-header" onClick={() => toggleLetra(index)}>
             <strong>{letra.artist}</strong>
-            <span>{openIndex === index ? "▲" : "▼"}</span>
+            <span className="icon">{openIndex === index ? "▲" : "▼"}</span>
           </div>
-          {openIndex === index && <p className="letra-content">{letra.content}</p>}
+          <div className={`letra-content ${openIndex === index ? "visible" : "hidden"}`}>
+            <p>"{letra.content}"</p>
+          </div>
         </div>
       ))}
     </div>

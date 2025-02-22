@@ -4,6 +4,7 @@ interface Letra {
   id: number;
   content: string;
   artist: string;
+  recording: string;
 }
 
 interface Props {
@@ -18,6 +19,9 @@ const LetraModal = ({ letra, onClose }: Props) => {
         <button className="close-button" onClick={onClose}>✖</button>
         <h2>{letra.artist}</h2>
         <p className="letra-text">"{letra.content}"</p>
+        {!letra.recording && (
+          <audio className="audio-player" src={letra.recording} controls />
+        )}
       </div>
     </div>
   );

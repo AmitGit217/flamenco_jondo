@@ -5,18 +5,13 @@ import OriginSection from "../components/OriginSection";
 import LetraModal from "../components/LetraModal";
 import "../style/DataPage.scss";
 import { getPalo } from "../api/palo";
+import { Letra } from '../types/letra';
 
 interface Estilo {
   id: number;
   name: string;
   origin: string;
   letras: Letra[];
-}
-
-interface Letra {
-  id: number;
-  content: string;
-  artist: string;
 }
 
 interface Palo {
@@ -44,7 +39,10 @@ const DataPage = () => {
     <div className="data-page">
       <PaloHeader name={palo.name} description={palo.description} />
       <div className="origins-list">
-        <OriginSection estilos={palo.estilos} onSelectLetra={setSelectedLetra} />
+        <OriginSection 
+          estilos={palo.estilos} 
+          onSelectLetra={(letra: Letra) => setSelectedLetra(letra)} 
+        />
       </div>
       
       {/* Modal for Letra */}

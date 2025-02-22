@@ -1,14 +1,12 @@
+import { Letra } from "../types/letra";
+
 interface Estilo {
   id: number;
   name: string;
   letras: Letra[];
 }
 
-interface Letra {
-  id: number;
-  content: string;
-  artist: string;
-}
+
 
 interface Props {
   estilo: Estilo;
