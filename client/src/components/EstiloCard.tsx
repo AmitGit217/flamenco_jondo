@@ -1,6 +1,3 @@
-import React, { useState } from "react";
-import LetrasList from "./LetraList";
-
 interface Estilo {
   id: number;
   name: string;
@@ -13,20 +10,26 @@ interface Letra {
   artist: string;
 }
 
-interface EstiloCardProps {
+interface Props {
   estilo: Estilo;
+  onSelectLetra: (letra: Letra) => void;
 }
 
-const EstiloCard: React.FC<EstiloCardProps> = ({ estilo }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
+const EstiloCard = ({ estilo, onSelectLetra }: Props) => {
   return (
     <div className="estilo-card">
-      <div className="estilo-header" onClick={() => setIsOpen(!isOpen)}>
-        <h3>{estilo.name}</h3>
-        <span>{isOpen ? "▲" : "▼"}</span>
-      </div>
-      {isOpen && <LetrasList letras={estilo.letras} />}
+      <h3>{estilo.name}</h3>
+      <ul>
+        {estilo.letras.length > 0 ? (
+          estilo.letras.map((letra) => (
+            <li key={letra.id} className="letra-item" onClick={() => onSelectLetra(letra)}>
+              "{letra.content.slice(0, 20)}..." {/* Show preview */}
+            </li>
+          ))
+        ) : (
+          <p className="no-letras">No letras available.</p>
+        )}
+      </ul>
     </div>
   );
 };
