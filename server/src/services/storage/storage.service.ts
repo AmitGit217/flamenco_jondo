@@ -45,13 +45,23 @@ export class StorageService {
     return (await file).Location;
   }
 
-  async getFile(key: string): Promise<AWS.S3.GetObjectOutput> {
-    return this.s3
-      .getObject({
-        Bucket: this.bucketName,
-        Key: key,
-      })
-      .promise();
+  async getFile(key: string): Promise<string> {
+    try {
+      // if key includes http, remove it
+      key = this.extractRelativePath(key);
+      console.log('key', key);
+      const response = await this.s3
+        .getObject({
+          Bucket: this.bucketName,
+          Key: key,
+        })
+        .promise();
+
+      return response.Body?.toString('base64') || '';
+    } catch (error) {
+      console.error('Error getting file:', error);
+      return '';
+    }
   }
 
   async deleteFile(key: string): Promise<AWS.S3.DeleteObjectOutput> {
@@ -73,4 +83,15 @@ export class StorageService {
   async listBuckets(): Promise<AWS.S3.ListBucketsOutput> {
     return this.s3.listBuckets().promise();
   }
+
+  extractRelativePath = (url: string) => {
+    try {
+      const urlObj = new URL(url);
+      return urlObj.pathname.startsWith('/')
+        ? urlObj.pathname.substring(1).replace(`${this.bucketName}`, '')
+        : urlObj.pathname.replace(`${this.bucketName}`, '');
+    } catch {
+      return url.replace(`${this.bucketName}`, '');
+    }
+  };
 }

@@ -22,6 +22,9 @@ export class UpsertLetraRequestDto {
   @IsOptional()
   palo_id?: number;
 
+  @IsOptional()
+  recording?: string;
+
   @IsNotEmpty()
   @IsArray()
   verses: string[];
@@ -63,6 +66,9 @@ export class UpsrtLetraResponseDto {
 
   @IsOptional()
   artist_id?: number;
+
+  @IsOptional()
+  recording?: string;
 
   @IsOptional()
   palo_id?: number;

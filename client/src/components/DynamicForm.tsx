@@ -6,7 +6,7 @@ import { UpsertPaloRequestDto } from "@common/dto/palo.dto";
 import { UpsertEstiloRequestDto } from "@common/dto/estilo.dto";
 import { UpsertLetraRequestDto } from "@common/dto/letra.dto";
 import { UpsertCompasRequestDto } from "@common/dto/compas.dto";
-import { TextInput, NumberInput, SelectInput, MultiInput, DateInput } from "./Input";
+import { TextInput, NumberInput, SelectInput, MultiInput, DateInput, FileInput } from "./Input";
 
 export type FormData = (UpsertArtistRequestDto | UpsertCompasRequestDto | UpsertEstiloRequestDto | UpsertLetraRequestDto | UpsertPaloRequestDto) & {
   [key: string]: string | number | string[] | number[] | undefined;
@@ -31,8 +31,24 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ model, record, onClose, onSuc
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    setFormData({ ...formData, [name]: type === "number" ? parseInt(value) : value });
+  
+    if (type === "file") {
+      const fileInput = e.target as HTMLInputElement;
+      const file = fileInput.files?.[0];
+  
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setFormData((prev) => ({ ...prev, [name]: reader.result as string })); // Store as Base64
+        };
+        reader.readAsDataURL(file);
+      }
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: type === "number" ? parseInt(value) : value }));
+    }
   };
+  
+  
 
   const handleArrayChange = (fieldName: string, index: number, value: string) => {
     const newArray = Array.isArray(formData[fieldName]) ? [...(formData[fieldName] as string[])] : [];
@@ -53,18 +69,21 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ model, record, onClose, onSuc
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+  
     try {
       await apiClient.post(`/${model}/upsert`, {
         ...formData,
         user_create_id: JSON.parse(localStorage.getItem("user") || "{}").id,
         user_update_id: JSON.parse(localStorage.getItem("user") || "{}").id
       });
+  
       onSuccess();
       onClose();
     } catch (error) {
       console.error("Error saving data:", error);
     }
   };
+  
 
   return (
     <div className="modal">
@@ -73,7 +92,14 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ model, record, onClose, onSuc
         <form onSubmit={handleSubmit}>
           {schema.map((field) => (
             <div key={field.name} className="form-group">
-              {field.processing === "enum" ? (
+              {field.type === "file" ? (
+                <FileInput
+                  name={field.name}
+                  onChange={(file: string | null) => {
+                    if (file) setFormData(prev => ({ ...prev, [field.name]: file }));
+                  }}
+                />
+              ) : field.processing === "enum" ? (
                 <SelectInput 
                   label={field.label} 
                   name={field.name} 

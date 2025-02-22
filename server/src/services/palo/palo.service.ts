@@ -7,10 +7,13 @@ import {
   UpsertPaloRequestDto,
   UpsertPaloResponseDto,
 } from '@common/dto/palo.dto';
-
+import { StorageService } from '../storage/storage.service';
 @Injectable()
 export class PaloService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly storageService: StorageService,
+  ) {}
 
   async upsertPalo(
     dto: UpsertPaloRequestDto,
@@ -88,17 +91,30 @@ export class PaloService {
       },
     });
 
-    const mappedEstilos = palo.palo_estilo.map((pe) => ({
-      id: pe.estilo.id,
-      name: pe.estilo.name,
-      origin: pe.estilo.origin || '',
-      letras: pe.estilo.letra.map((letra) => ({
-        id: letra.id,
-        content: letra.verses.join('\n'),
-        artist: letra.letra_artist[0]?.artist.name || '',
-        recording: letra.letra_artist[0]?.recording_url || '',
-      })),
-    }));
+    const mappedEstilos = await Promise.all(
+      palo.palo_estilo.map(async (pe) => {
+        const letras = await Promise.all(
+          pe.estilo.letra.map(async (letra) => {
+            const recording_base64 = await this.storageService.getFile(
+              letra.letra_artist[0]?.recording_url,
+            );
+            return {
+              id: letra.id,
+              content: letra.verses.join('\n'),
+              artist: letra.letra_artist[0]?.artist.name || '',
+              recording: recording_base64 || '',
+            };
+          }),
+        );
+
+        return {
+          id: pe.estilo.id,
+          name: pe.estilo.name,
+          origin: pe.estilo.origin || '',
+          letras,
+        };
+      }),
+    );
 
     return {
       id: palo.id,

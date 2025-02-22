@@ -30,20 +30,12 @@ export class LetraController {
   async upsert(
     @Body() dto: UpsertLetraRequestDto,
   ): Promise<UpsrtLetraResponseDto> {
-    return this.letraService.upsert(dto);
+    return this.letraService.upsertLetraWithArtist(dto);
   }
 
   @Delete(':id')
   @Roles('MASTER')
   async delete(@Param('id') id: string) {
     return this.letraService.delete(parseInt(id));
-  }
-
-  @Post('upsert-artist')
-  @Roles('MASTER')
-  async upsertArtist(
-    @Body() dto: UpsertLetraArtistRequestDto,
-  ): Promise<UpsertLetraArtistResponseDto> {
-    return this.letraService.upsertArtist(dto);
   }
 }

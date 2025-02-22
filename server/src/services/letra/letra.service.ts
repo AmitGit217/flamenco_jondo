@@ -17,10 +17,13 @@ export class LetraService {
     private readonly storageService: StorageService,
   ) {}
 
-  async upsert(dto: UpsertLetraRequestDto): Promise<UpsrtLetraResponseDto> {
+  async upsertLetraWithArtist(
+    dto: UpsertLetraRequestDto,
+  ): Promise<UpsrtLetraResponseDto> {
     try {
       const timestamp = new Date();
 
+      // Step 1: Upsert Letra (Main record)
       const letra = await this.prisma.letra.upsert({
         where: { id: dto.id || -1 },
         update: {
@@ -29,9 +32,7 @@ export class LetraService {
           repetition_pattern: dto.repetition_pattern,
           structure: dto.structure,
           updated_at: timestamp,
-          estilo: {
-            connect: { id: dto.estilo_id || -1 },
-          },
+          estilo: { connect: { id: dto.estilo_id || -1 } },
           ...(dto.user_update_id
             ? {
                 user_letra_user_update_idTouser: {
@@ -48,9 +49,7 @@ export class LetraService {
           structure: dto.structure,
           created_at: timestamp,
           updated_at: timestamp,
-          estilo: {
-            connect: { id: dto.estilo_id || -1 },
-          },
+          estilo: { connect: { id: dto.estilo_id || -1 } },
           user_letra_user_create_idTouser: {
             connect: { id: dto.user_create_id || -1 },
           },
@@ -64,11 +63,45 @@ export class LetraService {
         },
       });
 
+      let recording_url: string | null = null;
+
+      // Step 2: Handle Optional Artist & Recording (if provided)
+      if (dto.artist_id && dto.recording) {
+        const recording_file = Buffer.from(dto.recording, 'base64');
+        const timestampStr = new Date().getTime();
+        const filename = `recording_${timestampStr}.mp3`;
+
+        recording_url = await this.storageService.uploadFile(
+          `letra_artist/${letra.id}/${dto.artist_id}/${filename}`,
+          recording_file,
+        );
+
+        // Upsert Artist with Recording
+        await this.prisma.letra_artist.upsert({
+          where: {
+            letra_id_artist_id: {
+              letra_id: letra.id,
+              artist_id: dto.artist_id,
+            },
+          },
+          update: { recording_url, updated_at: timestamp },
+          create: {
+            name: `letra_${letra.id}_artist_${dto.artist_id}`,
+            recording_url,
+            created_at: timestamp,
+            updated_at: timestamp,
+            letra: { connect: { id: letra.id } },
+            artist: { connect: { id: dto.artist_id } },
+            user_letra_artist_user_create_idTouser: { connect: { id: 1 } },
+          },
+        });
+      }
+
+      // Step 3: Fetch Related Data (Palos & Artists)
       const letraPalos = await this.prisma.letra_palo.findMany({
         where: { letra_id: letra.id },
         select: { palo_id: true },
       });
-
       const letraArtists = await this.prisma.letra_artist.findMany({
         where: { letra_id: letra.id },
         select: { artist_id: true },
@@ -83,6 +116,7 @@ export class LetraService {
         rhyme_scheme: letra.rhyme_scheme,
         repetition_pattern: letra.repetition_pattern,
         structure: letra.structure,
+        recording: recording_url,
         created_at: letra.created_at?.toISOString() || null,
         updated_at: letra.updated_at?.toISOString() || null,
       };
@@ -125,59 +159,6 @@ export class LetraService {
       };
     } catch (error) {
       throw new BadRequestException(`Failed to delete Letra: ${error.message}`);
-    }
-  }
-
-  async upsertArtist(
-    dto: UpsertLetraArtistRequestDto,
-  ): Promise<UpsertLetraArtistResponseDto> {
-    try {
-      const recording_file = Buffer.from(dto.recording_file, 'base64');
-      const timestamp = new Date().getTime();
-      const filename = `recording_${timestamp}.mp3`;
-
-      const recording_url = await this.storageService.uploadFile(
-        `letra_artist/${dto.letra_id}/${dto.artist_id}/${filename}`,
-        recording_file,
-      );
-
-      const timestamp_date = new Date();
-      await this.prisma.letra_artist.upsert({
-        where: {
-          letra_id_artist_id: {
-            letra_id: dto.letra_id,
-            artist_id: dto.artist_id,
-          },
-        },
-        update: {
-          recording_url: recording_url,
-          updated_at: timestamp_date,
-        },
-        create: {
-          name: `letra_${dto.letra_id}_artist_${dto.artist_id}`,
-          recording_url: recording_url,
-          created_at: timestamp_date,
-          updated_at: timestamp_date,
-          letra: {
-            connect: { id: dto.letra_id },
-          },
-          artist: {
-            connect: { id: dto.artist_id },
-          },
-          user_letra_artist_user_create_idTouser: {
-            connect: { id: 1 },
-          },
-        },
-      });
-
-      return {
-        letra_id: dto.letra_id,
-        artist_id: dto.artist_id,
-      };
-    } catch (error) {
-      throw new BadRequestException(
-        `Failed to upsert Letra Artist: ${error.message}`,
-      );
     }
   }
 }
