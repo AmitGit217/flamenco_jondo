@@ -96,6 +96,7 @@ export class PaloService {
         id: letra.id,
         content: letra.verses.join('\n'),
         artist: letra.letra_artist[0]?.artist.name || '',
+        recording: letra.letra_artist[0]?.recording_url || '',
       })),
     }));
 

@@ -115,4 +115,5 @@ export class LetraDto {
   id: number;
   content: string;
   artist: string;
+  recording: string;
 }
