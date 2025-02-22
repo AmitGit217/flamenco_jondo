@@ -1,29 +1,34 @@
-import { useState, useEffect } from "react";
+import {  useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { universalSearch } from "../api/common";
 import "../style/Explore.scss";
 
 function ExplorePage() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [query, setQuery] = useState(""); // Holds the term that will be searched
   const [results, setResults] = useState([]);
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (searchTerm.length > 1) {
-      universalSearch(searchTerm)
+
+
+   useEffect(() => {
+    if (query.length > 1) {
+      universalSearch(query)
         .then((data) => setResults(data))
         .catch((error) => console.error("Error fetching data:", error));
     } else {
       setResults([]);
     }
-  }, [searchTerm]);
+  }, [query]); // Runs only when `query` changes
+
+  const handleSearch = () => {
+    setQuery(searchTerm); // Updates `query`, triggering `useEffect`
+  };
 
   const handleResultClick = (category: string, item: { id?: number }) => {
     if (!item.id) return;
-
     let path = "";
 
-    // Generic navigation based on category
     switch (category.toLowerCase()) {
       case "palos":
         path = `/palo/${item.id}`;
@@ -33,7 +38,7 @@ function ExplorePage() {
         return;
     }
 
-    navigate(path); // Redirect to the correct page
+    navigate(path);
   };
 
   return (
@@ -47,6 +52,9 @@ function ExplorePage() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+        <button className="search-button" onClick={() => { setQuery(searchTerm); handleSearch(); }}>
+          Search
+        </button>
       </div>
 
       <div className="search-results">
@@ -70,7 +78,7 @@ function ExplorePage() {
             )
           )
         ) : (
-          searchTerm.length > 1 && <p className="no-results">No results found. Try another search.</p>
+          query.length > 1 && <p className="no-results">No results found. Try another search.</p>
         )}
       </div>
     </div>
