@@ -114,13 +114,14 @@ def extract_letras(soup, estilo_name):
             unique_name = f"{artist_name} - {estilo_name} ({year})"
 
             if unique_name in seen_entries:
-                continue
+                continue  # Skip duplicates
             seen_entries.add(unique_name)
 
+            # Collect verses until the next artist entry
             verses = []
             for j in range(i + 1, len(paragraphs)):
                 if re.match(r"^(.+?)\s\(\d{4}\)", paragraphs[j]):
-                    break
+                    break  # Stop at the next artist
                 verses.append(paragraphs[j])
 
             letras.append({
@@ -135,18 +136,32 @@ def extract_letras(soup, estilo_name):
 
 
 def extract_audio_links(soup, base_url):
-    """Find and return audio file URLs from the page"""
+    """Find and return audio file URLs from the page with the correct year"""
     audio_urls = {}
+
     for link in soup.find_all("a", href=True):
         if link["href"].endswith(".mp3"):
             artist_name = link.text.strip()
 
-            match = re.search(rf"{artist_name}\s\((\d{4})\)", soup.text)
-            year = match.group(1) if match else "Unknown"
+            # Find the closest year in the text
+            year = "Unknown"
+            parent_text = link.find_parent().text  # Get surrounding text
+            match = re.search(rf"{artist_name}\s\((\d{4})\)", parent_text)
+            if match:
+                year = match.group(1)
+            else:
+                # Look in the previous paragraph if not found
+                prev_paragraph = link.find_previous("p")
+                if prev_paragraph:
+                    match = re.search(r"\((\d{4})\)", prev_paragraph.text)
+                    if match:
+                        year = match.group(1)
 
+            # Find the closest preceding h3 (which represents the estilo name)
             estilo_tag = link.find_previous("h3")
             estilo_name = estilo_tag.text.strip() if estilo_tag else "Unknown Estilo"
 
+            # Construct the correct key
             unique_audio_key = f"{artist_name} - {estilo_name} ({year})"
             audio_urls[unique_audio_key] = urljoin(base_url, link["href"])
 
@@ -154,10 +169,13 @@ def extract_audio_links(soup, base_url):
 
 
 def download_audio(audio_urls):
-    """Download and store audio files locally"""
+    """Download and store audio files locally with correct naming"""
     local_files = {}
-    for artist, url in audio_urls.items():
-        filename = os.path.basename(urlparse(url).path)
+    for unique_audio_key, url in audio_urls.items():
+        # Create filename based on our naming logic
+        # Remove invalid characters
+        safe_filename = re.sub(r'[<>:"/\\|?*]', '', unique_audio_key)
+        filename = f"{safe_filename}.mp3"
         local_path = os.path.join(LOCAL_AUDIO_FOLDER, filename)
 
         response = requests.get(url, stream=True)
@@ -165,7 +183,7 @@ def download_audio(audio_urls):
             for chunk in response.iter_content(chunk_size=8192):
                 file.write(chunk)
 
-        local_files[artist] = (filename, local_path)
+        local_files[unique_audio_key] = (filename, local_path)
 
     return local_files
 
