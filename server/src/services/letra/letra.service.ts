@@ -28,9 +28,7 @@ export class LetraService {
         where: { id: dto.id || -1 },
         update: {
           verses: dto.verses,
-          rhyme_scheme: dto.rhyme_scheme,
-          repetition_pattern: dto.repetition_pattern,
-          structure: dto.structure,
+          comment: dto.comment,
           updated_at: timestamp,
           estilo: { connect: { id: dto.estilo_id || -1 } },
           ...(dto.user_update_id
@@ -44,9 +42,7 @@ export class LetraService {
         create: {
           name: dto.name,
           verses: dto.verses,
-          rhyme_scheme: dto.rhyme_scheme,
-          repetition_pattern: dto.repetition_pattern,
-          structure: dto.structure,
+          comment: dto.comment,
           created_at: timestamp,
           updated_at: timestamp,
           estilo: { connect: { id: dto.estilo_id || -1 } },
@@ -113,10 +109,8 @@ export class LetraService {
         artist_id: letraArtists.length > 0 ? letraArtists[0].artist_id : null,
         palo_id: letraPalos.length > 0 ? letraPalos[0].palo_id : null,
         verses: letra.verses,
-        rhyme_scheme: letra.rhyme_scheme,
-        repetition_pattern: letra.repetition_pattern,
-        structure: letra.structure,
         recording: recording_url,
+        comment: letra.comment,
         created_at: letra.created_at?.toISOString() || null,
         updated_at: letra.updated_at?.toISOString() || null,
       };

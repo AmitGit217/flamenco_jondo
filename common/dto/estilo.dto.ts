@@ -23,6 +23,9 @@ export class UpsertEstiloRequestDto {
   @IsEnum(tonalities)
   tonality: tonalities;
 
+  @IsOptional()
+  structure?: string;
+
   @IsNotEmpty()
   @IsEnum(keys)
   key: keys;

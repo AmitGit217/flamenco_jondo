@@ -12,9 +12,7 @@ model letra {
   estilo_id                       Int
   name                            String         @unique @db.VarChar(255)
   verses                          String[]
-  rhyme_scheme                    Int[]
-  repetition_pattern              Int[]
-  structure                       String         @db.VarChar(255)
+  comment                         String?
   user_create_id                  Int
   user_update_id                  Int?
   created_at                      DateTime?      @db.Timestamp(6)
@@ -149,7 +147,8 @@ model estilo {
   id                               Int             @id @default(autoincrement())
   name                             String          @unique @db.VarChar(255)
   tonality                         tonalities
-  key                              keys
+  key                              keys?
+  structure                        String          @db.VarChar(255)
   origin                           String          @db.VarChar(255)
   origin_date                      DateTime        @db.Timestamp(6)
   user_create_id                   Int

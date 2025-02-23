@@ -69,7 +69,8 @@ Table estilo {
   id serial [primary key] 
   name varchar(255) [not null, unique]  
   tonality tonalities [not null]  
-  key keys [not null]  
+  key keys  
+  structure varchar(255) [not null]  
   origin varchar(255) [not null]
   origin_date timestamp [not null]
   user_create_id int [not null, ref: > user.id]
@@ -126,9 +127,7 @@ Table letra {
   estilo_id int [not null, ref: > estilo.id]  
   name varchar(255) [not null, unique] 
   verses text[] [not null]
-  rhyme_scheme int[] [not null]  
-  repetition_pattern int[] [not null]  
-  structure varchar(255) [not null]  
+  comment text
   user_create_id int [not null, ref: > user.id]
   user_update_id int [ref: > user.id]
   created_at timestamp 

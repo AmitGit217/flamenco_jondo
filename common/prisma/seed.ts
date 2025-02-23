@@ -60,6 +60,7 @@ async function main() {
       origin: "Spain",
       origin_date: new Date("1750-01-01"),
       user_create_id: masterUser.id,
+      structure: "ABAB",
     },
   });
 
@@ -71,6 +72,7 @@ async function main() {
       origin: "Spain",
       origin_date: new Date("1800-01-01"),
       user_create_id: masterUser.id,
+      structure: "ABAB",
     },
   });
 
@@ -85,9 +87,6 @@ async function main() {
         "cerrada de par en par,",
         "como si no pasara nada.",
       ],
-      rhyme_scheme: [1, 2, 3, 4],
-      repetition_pattern: [1, 1, 2, 2],
-      structure: "ABAB",
       user_create_id: masterUser.id,
     },
   });
@@ -102,9 +101,6 @@ async function main() {
         "quiso tocar su reflejo",
         "y en el agua se quedaba.",
       ],
-      rhyme_scheme: [1, 2, 3, 4],
-      repetition_pattern: [1, 1, 2, 2],
-      structure: "ABAB",
       user_create_id: masterUser.id,
     },
   });

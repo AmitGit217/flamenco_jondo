@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml.dbdiagram.io)
 -- Database: PostgreSQL
--- Generated at: 2025-02-22T18:42:46.225Z
+-- Generated at: 2025-02-23T18:12:45.954Z
 
 CREATE TYPE "artisttype" AS ENUM (
   'CANTE',
@@ -63,7 +63,8 @@ CREATE TABLE "estilo" (
   "id" serial PRIMARY KEY,
   "name" varchar(255) UNIQUE NOT NULL,
   "tonality" tonalities NOT NULL,
-  "key" keys NOT NULL,
+  "key" keys,
+  "structure" varchar(255) NOT NULL,
   "origin" varchar(255) NOT NULL,
   "origin_date" timestamp NOT NULL,
   "user_create_id" int NOT NULL,
@@ -104,9 +105,7 @@ CREATE TABLE "letra" (
   "estilo_id" int NOT NULL,
   "name" varchar(255) UNIQUE NOT NULL,
   "verses" text[] NOT NULL,
-  "rhyme_scheme" int[] NOT NULL,
-  "repetition_pattern" int[] NOT NULL,
-  "structure" varchar(255) NOT NULL,
+  "comment" text,
   "user_create_id" int NOT NULL,
   "user_update_id" int,
   "created_at" timestamp,
