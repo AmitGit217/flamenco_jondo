@@ -15,6 +15,8 @@ export class UpsertLetraRequestDto {
   estilo_id?: number;
 
   @IsOptional()
+  verses?: string[];
+  @IsOptional()
   name?: string;
 
   @IsOptional()
@@ -28,18 +30,6 @@ export class UpsertLetraRequestDto {
 
   @IsOptional()
   recording?: string;
-
-  @IsNotEmpty()
-  @IsArray()
-  verses: string[];
-
-  @IsNotEmpty()
-  @IsArray()
-  rhyme_scheme: number[];
-
-  @IsNotEmpty()
-  @IsArray()
-  repetition_pattern: number[];
 
   @IsNotEmpty()
   structure: string;

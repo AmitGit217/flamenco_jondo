@@ -94,24 +94,27 @@ export class PaloService {
     const mappedEstilos = await Promise.all(
       palo.palo_estilo.map(async (pe) => {
         const letras = await Promise.all(
-          pe.estilo.letra.map(async (letra) => {
-            const recording_base64 = await this.storageService.getFile(
-              letra.letra_artist[0]?.recording_url,
-            );
-            return {
-              id: letra.id,
-              content: letra.verses.join('\n'),
-              artist: letra.letra_artist[0]?.artist.name || '',
-              recording: recording_base64 || '',
-            };
-          }),
+          pe.estilo.letra
+            .filter((letra) => letra.letra_artist.length > 0) // ✅ Exclude letras without recordings
+            .map(async (letra) => {
+              const recording_base64 = await this.storageService.getFile(
+                letra.letra_artist[0]?.recording_url,
+              );
+
+              return {
+                id: letra.id,
+                content: letra.verses.join('\n'),
+                artist: letra.letra_artist[0]?.artist.name || '',
+                recording: recording_base64 || '',
+              };
+            }),
         );
 
         return {
           id: pe.estilo.id,
           name: pe.estilo.name,
           origin: pe.estilo.origin || '',
-          letras,
+          letras, // This will now **only contain letras with recordings**
         };
       }),
     );

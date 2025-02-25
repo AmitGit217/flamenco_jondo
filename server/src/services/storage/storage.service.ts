@@ -49,7 +49,7 @@ export class StorageService {
     try {
       // if key includes http, remove it
       key = this.extractRelativePath(key);
-      console.log('key', key);
+      console.log(key);
       const response = await this.s3
         .getObject({
           Bucket: this.bucketName,
@@ -87,11 +87,18 @@ export class StorageService {
   extractRelativePath = (url: string) => {
     try {
       const urlObj = new URL(url);
-      return urlObj.pathname.startsWith('/')
-        ? urlObj.pathname.substring(1).replace(`${this.bucketName}`, '')
-        : urlObj.pathname.replace(`${this.bucketName}`, '');
+      let relativePath = urlObj.pathname.startsWith('/')
+        ? urlObj.pathname.substring(1)
+        : urlObj.pathname;
+
+      // Remove bucket name if it's included in the path
+      relativePath = relativePath.replace(`${this.bucketName}/`, '');
+
+      // Decode any encoded characters (like %20 for spaces)
+      return decodeURIComponent(relativePath);
     } catch {
-      return url.replace(`${this.bucketName}`, '');
+      // Fallback if URL parsing fails
+      return decodeURIComponent(url.replace(`${this.bucketName}/`, ''));
     }
   };
 }

@@ -100,35 +100,57 @@ def get_or_create_artist(cur, artist_name):
 
 
 def extract_letras(soup, estilo_name):
-    """Extract unique lyrics, artists, and comments"""
+    """Extract unique letras, grouping all verses under the same artist and year."""
     letras = []
     seen_entries = set()
-    paragraphs = [p.text.strip() for p in soup.find_all("p")]
+    paragraphs = soup.find_all("p")
 
-    for i, para in enumerate(paragraphs):
-        match = re.match(r"^(.+?)\s\((\d{4})\)\.\s*(.+)", para)
+    current_artist = None
+    current_year = None
+    current_comment = None
+    current_verses = []
+
+    for para in paragraphs:
+        text = para.text.strip()
+
+        # Match artist name, year, and comment
+        match = re.match(r"^(.+?)\s\((\d{4})\)\.\s*(.+)", text)
         if match:
-            artist_name = match.group(1).strip()
-            year = match.group(2).strip()
-            comment = match.group(3).strip()
-            unique_name = f"{artist_name} - {estilo_name} ({year})"
+            # If we already collected verses, save the previous letra
+            if current_artist and current_verses:
+                unique_name = f"{current_artist} - {estilo_name} ({current_year})".lower(
+                ).strip()
+                if unique_name not in seen_entries:
+                    letras.append({
+                        "artist_name": current_artist,
+                        "year": current_year,
+                        "comment": current_comment,
+                        "verses": current_verses,
+                        "unique_name": unique_name
+                    })
+                    seen_entries.add(unique_name)
 
-            if unique_name in seen_entries:
-                continue  # Skip duplicates
-            seen_entries.add(unique_name)
+            # Start a new letra
+            current_artist = match.group(1).strip()
+            current_year = match.group(2).strip()
+            current_comment = match.group(3).strip()
+            current_verses = []
 
-            # Collect verses until the next artist entry
-            verses = []
-            for j in range(i + 1, len(paragraphs)):
-                if re.match(r"^(.+?)\s\(\d{4}\)", paragraphs[j]):
-                    break  # Stop at the next artist
-                verses.append(paragraphs[j])
+        else:
+            # If not a new artist-year entry, treat it as a verse
+            if current_artist:
+                current_verses.append(text)
 
+    # Save the last collected letra
+    if current_artist and current_verses:
+        unique_name = f"{current_artist} - {estilo_name} ({current_year})".lower(
+        ).strip()
+        if unique_name not in seen_entries:
             letras.append({
-                "artist_name": artist_name,
-                "year": year,
-                "comment": comment,
-                "verses": verses,
+                "artist_name": current_artist,
+                "year": current_year,
+                "comment": current_comment,
+                "verses": current_verses,
                 "unique_name": unique_name
             })
 
@@ -136,33 +158,28 @@ def extract_letras(soup, estilo_name):
 
 
 def extract_audio_links(soup, base_url):
-    """Find and return audio file URLs from the page with the correct year"""
+    """Find and return audio file URLs from the page, ensuring proper name formatting."""
     audio_urls = {}
 
     for link in soup.find_all("a", href=True):
         if link["href"].endswith(".mp3"):
             artist_name = link.text.strip()
 
-            # Find the closest year in the text
+            # Find the closest year (search backward in the document)
             year = "Unknown"
-            parent_text = link.find_parent().text  # Get surrounding text
-            match = re.search(rf"{artist_name}\s\((\d{4})\)", parent_text)
-            if match:
-                year = match.group(1)
-            else:
-                # Look in the previous paragraph if not found
-                prev_paragraph = link.find_previous("p")
-                if prev_paragraph:
-                    match = re.search(r"\((\d{4})\)", prev_paragraph.text)
-                    if match:
-                        year = match.group(1)
+            prev_text = link.find_previous("p")
+            if prev_text:
+                match = re.search(r"\((\d{4})\)", prev_text.text)
+                if match:
+                    year = match.group(1)
 
-            # Find the closest preceding h3 (which represents the estilo name)
+            # Find the closest preceding <h3> (which represents the estilo name)
             estilo_tag = link.find_previous("h3")
             estilo_name = estilo_tag.text.strip() if estilo_tag else "Unknown Estilo"
 
-            # Construct the correct key
-            unique_audio_key = f"{artist_name} - {estilo_name} ({year})"
+            # Normalize the key to avoid mismatches
+            unique_audio_key = f"{artist_name} - {estilo_name} ({year})".lower(
+            ).strip()
             audio_urls[unique_audio_key] = urljoin(base_url, link["href"])
 
     return audio_urls
@@ -212,7 +229,7 @@ def insert_into_db(estilos, audio_links):
     cur = conn.cursor()
 
     for estilo_info in estilos:
-        # Insert Palo (if not exists)
+        # Insert Palo
         cur.execute("SELECT id FROM palo WHERE name = %s",
                     (estilo_info["palo"],))
         palo = cur.fetchone()
@@ -245,20 +262,29 @@ def insert_into_db(estilos, audio_links):
         for letra in letras:
             artist_id = get_or_create_artist(cur, letra["artist_name"])
 
-            cur.execute(
-                "INSERT INTO letra (estilo_id, name, verses, comment, user_create_id) VALUES (%s, %s, %s, %s, 1) RETURNING id",
-                (estilo_id, letra["unique_name"],
-                 letra["verses"], letra["comment"])
-            )
-            letra_id = cur.fetchone()[0]
+            cur.execute("SELECT id FROM letra WHERE name = %s",
+                        (letra["unique_name"],))
+            letra_result = cur.fetchone()
+            if letra_result:
+                letra_id = letra_result[0]
+            else:
+                cur.execute(
+                    "INSERT INTO letra (estilo_id, name, verses, comment, user_create_id) VALUES (%s, %s, %s, %s, 1) RETURNING id",
+                    (estilo_id, letra["unique_name"],
+                     letra["verses"], letra["comment"])
+                )
+                letra_id = cur.fetchone()[0]
 
-            unique_audio_key = f"{letra['artist_name']} - {estilo_info['name']} ({letra['year']})"
+            # Make sure audio file exists before inserting `letra_artist`
+            unique_audio_key = letra["unique_name"].lower().strip()
             if unique_audio_key in audio_links:
                 cur.execute(
                     "INSERT INTO letra_artist (letra_id, artist_id, recording_url, name, user_create_id) VALUES (%s, %s, %s, %s, 1)",
                     (letra_id, artist_id,
                      audio_links[unique_audio_key], unique_audio_key)
                 )
+            else:
+                print(f"⚠️ Missing audio for: {unique_audio_key}")
 
     conn.commit()
     cur.close()

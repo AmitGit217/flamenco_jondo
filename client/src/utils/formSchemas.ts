@@ -65,20 +65,7 @@ export const formSchemas: Record<string, FormField[]> = {
       label: "Artist ID",
       required: false,
     },
-    {
-      name: "rhyme_scheme",
-      type: "text",
-      label: "Rhyme Scheme",
-      required: true,
-      processing: "array",
-    },
-    {
-      name: "repetition_pattern",
-      type: "text",
-      label: "Repetition Pattern",
-      required: true,
-      processing: "array",
-    },
+
     { name: "structure", type: "text", label: "Structure", required: true },
   ],
   compas: [
