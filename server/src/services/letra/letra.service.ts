@@ -93,21 +93,20 @@ export class LetraService {
         });
       }
 
-      // Step 3: Fetch Related Data (Palos & Artists)
-      const letraPalos = await this.prisma.letra_palo.findMany({
-        where: { letra_id: letra.id },
-        select: { palo_id: true },
-      });
       const letraArtists = await this.prisma.letra_artist.findMany({
         where: { letra_id: letra.id },
         select: { artist_id: true },
+      });
+
+      const palo_estilo = await this.prisma.palo_estilo.findFirst({
+        where: { estilo_id: dto.estilo_id },
       });
 
       return {
         id: letra.id,
         estilo_id: dto.estilo_id,
         artist_id: letraArtists.length > 0 ? letraArtists[0].artist_id : null,
-        palo_id: letraPalos.length > 0 ? letraPalos[0].palo_id : null,
+        palo_id: palo_estilo ? palo_estilo.palo_id : null,
         verses: letra.verses,
         recording: recording_url,
         comment: letra.comment,
@@ -128,14 +127,10 @@ export class LetraService {
       });
 
       // Delete all database records
-      await Promise.all([
-        this.prisma.letra_palo.deleteMany({
-          where: { letra_id: id },
-        }),
-        this.prisma.letra_artist.deleteMany({
-          where: { letra_id: id },
-        }),
-      ]);
+
+      await this.prisma.letra_artist.deleteMany({
+        where: { letra_id: id },
+      });
 
       await this.prisma.letra.delete({
         where: { id: id },

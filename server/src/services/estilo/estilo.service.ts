@@ -80,9 +80,6 @@ export class EstiloService {
 
       return {
         ...estilo,
-        origin_date: estilo.origin_date
-          ? estilo.origin_date.toISOString()
-          : null,
         created_at: estilo.created_at ? estilo.created_at.toISOString() : null,
         updated_at: estilo.updated_at ? estilo.updated_at.toISOString() : null,
       };

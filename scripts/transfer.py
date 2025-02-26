@@ -28,17 +28,19 @@ s3_client = boto3.client(
     aws_secret_access_key=MINIO_SECRET_KEY,
 )
 
-PALOS_NAME = "Soleá"
-
-FLAMENCO_KEYS_MAP = {
-    "I": "A", "II": "Bb", "III": "B", "IV": "C", "V": "D", "VI": "E", "VII": "F"
-}
+LOCAL_AUDIO_FOLDER = "audio_files"
+os.makedirs(LOCAL_AUDIO_FOLDER, exist_ok=True)
 
 
 def fetch_page(url):
     """Fetch HTML content from the given URL"""
     response = requests.get(url)
     return BeautifulSoup(response.content, "html.parser")
+
+
+FLAMENCO_KEYS_MAP = {
+    "I": "A", "II": "Bb", "III": "B", "IV": "C", "V": "D", "VI": "E", "VII": "F"
+}
 
 
 def extract_audio_links(soup, base_url):
@@ -59,8 +61,11 @@ def extract_audio_links(soup, base_url):
             estilo_tag = link.find_previous("h3")
             estilo_name = estilo_tag.text.strip() if estilo_tag else "Unknown Estilo"
 
+            palo_tag = link.find_previous("h2")
+            palo_name = palo_tag.text.strip() if palo_tag else "Soleá"
+
             # Normalized naming: palo-origin-estilo-artist-year.mp3
-            normalized_name = f"{PALOS_NAME}-Spain-{estilo_name}-{artist_name}-{year}".replace(
+            normalized_name = f"{palo_name}-Spain-{estilo_name}-{artist_name}-{year}".replace(
                 " ", "_").lower()
             audio_urls[normalized_name] = urljoin(base_url, link["href"])
 
@@ -71,31 +76,36 @@ def extract_estilos(soup):
     """Extract multiple estilos and associate them with the correct palo (h2)"""
     estilos = []
     seen_estilos = set()
+    current_palo = "Soleá"
 
-    for tag in soup.find_all("h3"):
-        estilo_name = tag.text.strip()
-        if estilo_name in seen_estilos:
-            continue
-        seen_estilos.add(estilo_name)
+    for tag in soup.find_all(["h2", "h3"]):
+        if tag.name == "h2":
+            current_palo = tag.text.strip()
+        elif tag.name == "h3":
+            estilo_name = tag.text.strip()
+            if estilo_name in seen_estilos:
+                continue
+            seen_estilos.add(estilo_name)
 
-        paragraphs = [p.text.strip() for p in tag.find_all_next("p")]
+            paragraphs = [p.text.strip() for p in tag.find_all_next("p")]
 
-        structure, flamenco_key = None, None
-        for para in paragraphs:
-            match = re.search(r"Verse/accompaniment:\s*(.+?)\s*/\s*(.+)", para)
-            if match:
-                structure = match.group(1).strip()
-                flamenco_key = convert_to_keys(match.group(2).strip())
-                break
+            structure, flamenco_key = None, None
+            for para in paragraphs:
+                match = re.search(
+                    r"Verse/accompaniment:\s*(.+?)\s*/\s*(.+)", para)
+                if match:
+                    structure = match.group(1).strip()
+                    flamenco_key = convert_to_keys(match.group(2).strip())
+                    break
 
-        estilos.append({
-            "name": estilo_name,
-            "structure": structure or "Unknown",
-            "flamenco_key": flamenco_key or "A",
-            "palo": PALOS_NAME,
-            "description": "\n\n".join(paragraphs),
-            "soup": soup
-        })
+            estilos.append({
+                "name": estilo_name,
+                "structure": structure or "Unknown",
+                "flamenco_key": flamenco_key or "A",
+                "palo": current_palo,
+                "description": "\n\n".join(paragraphs),
+                "soup": soup
+            })
 
     return estilos
 
@@ -107,40 +117,93 @@ def convert_to_keys(grados):
 
 
 def extract_letras(soup, estilo_name, audio_links):
-    """Extract letras only if they have a matching recording"""
+    """Extract letras **only if audio exists**"""
     letras = []
     seen_entries = set()
     paragraphs = soup.find_all("p")
 
-    current_artist, current_year, current_comment, current_verses = None, None, None, []
+    current_artist = None
+    current_year = None
+    current_comment = None
+    current_verses = []
 
     for para in paragraphs:
         text = para.text.strip()
+
         match = re.match(r"^(.+?)\s\((\d{4})\)\.\s*(.+)", text)
         if match:
             if current_artist and current_verses:
-                normalized_name = f"{PALOS_NAME}-Spain-{estilo_name}-{current_artist}-{current_year}".replace(
+                unique_name = f"{current_artist}-{estilo_name}-{current_year}".replace(
                     " ", "_").lower()
-                if normalized_name in audio_links and normalized_name not in seen_entries:
+                if unique_name in audio_links and unique_name not in seen_entries:
                     letras.append({
                         "artist_name": current_artist,
                         "year": current_year,
                         "comment": current_comment,
                         "verses": current_verses,
-                        "unique_name": normalized_name,
-                        "recording_url": audio_links[normalized_name]
+                        "unique_name": unique_name,
+                        "recording_url": audio_links[unique_name]
                     })
-                    seen_entries.add(normalized_name)
+                    seen_entries.add(unique_name)
 
             current_artist = match.group(1).strip()
             current_year = match.group(2).strip()
             current_comment = match.group(3).strip()
             current_verses = []
+
         else:
             if current_artist:
                 current_verses.append(text)
 
+    if current_artist and current_verses:
+        unique_name = f"{current_artist}-{estilo_name}-{current_year}".replace(
+            " ", "_").lower()
+        if unique_name in audio_links and unique_name not in seen_entries:
+            letras.append({
+                "artist_name": current_artist,
+                "year": current_year,
+                "comment": current_comment,
+                "verses": current_verses,
+                "unique_name": unique_name,
+                "recording_url": audio_links[unique_name]
+            })
+
     return letras
+
+
+def download_audio(audio_urls):
+    """Download and store audio files locally"""
+    local_files = {}
+    for normalized_name, url in audio_urls.items():
+        filename = f"{normalized_name}.mp3"
+        local_path = os.path.join(LOCAL_AUDIO_FOLDER, filename)
+
+        response = requests.get(url, stream=True)
+        with open(local_path, "wb") as file:
+            for chunk in response.iter_content(chunk_size=8192):
+                file.write(chunk)
+
+        local_files[normalized_name] = (filename, local_path)
+
+    return local_files
+
+
+def upload_to_minio(local_files):
+    """Uploads MP3 files to MinIO and returns correct URLs"""
+    minio_links = {}
+
+    existing_buckets = [b["Name"] for b in s3_client.list_buckets()["Buckets"]]
+    if MINIO_BUCKET_NAME not in existing_buckets:
+        s3_client.create_bucket(Bucket=MINIO_BUCKET_NAME)
+
+    for normalized_name, (filename, local_path) in local_files.items():
+        object_name = filename
+
+        s3_client.upload_file(local_path, MINIO_BUCKET_NAME, object_name)
+
+        minio_links[normalized_name] = f"{MINIO_ENDPOINT}/{MINIO_BUCKET_NAME}/{object_name}"
+
+    return minio_links
 
 
 def insert_into_db(estilos, audio_links):
@@ -148,54 +211,39 @@ def insert_into_db(estilos, audio_links):
     conn = psycopg2.connect(**DB_PARAMS)
     cur = conn.cursor()
 
-    cur.execute("SELECT id FROM palo WHERE name = %s", (PALOS_NAME,))
-    palo = cur.fetchone()
-    if not palo:
-        cur.execute(
-            "INSERT INTO palo (name, origin, origin_date, user_create_id) VALUES (%s, 'Spain', NOW(), 1) RETURNING id",
-            (PALOS_NAME,)
-        )
-        palo_id = cur.fetchone()[0]
-    else:
-        palo_id = palo[0]
-
     for estilo_info in estilos:
-        letras = extract_letras(
-            estilo_info["soup"], estilo_info["name"], audio_links)
-
-        if not letras:
-            continue
+        palo_name = estilo_info["palo"]
+        cur.execute("SELECT id FROM palo WHERE name = %s", (palo_name,))
+        palo = cur.fetchone()
+        if not palo:
+            cur.execute(
+                "INSERT INTO palo (name, origin, origin_date, user_create_id, created_at) VALUES (%s, 'Spain', NOW(), 1, NOW()) RETURNING id",
+                (palo_name,)
+            )
+            palo_id = cur.fetchone()[0]
+        else:
+            palo_id = palo[0]
 
         cur.execute(
             "INSERT INTO estilo (name, structure, origin, user_create_id, created_at) VALUES (%s, %s, %s, 1, NOW()) RETURNING id",
-            (estilo_info["name"], estilo_info["structure"], "Spain")
+            (estilo_info["name"], estilo_info["structure"], palo_name)
         )
+
         estilo_id = cur.fetchone()[0]
 
-        for letra in letras:
-            cur.execute("SELECT id FROM artist WHERE name = %s",
-                        (letra["artist_name"],))
-            artist = cur.fetchone()
-            if not artist:
-                cur.execute(
-                    "INSERT INTO artist (name, type, user_create_id, created_at) VALUES (%s, 'CANTE', 1, NOW()) RETURNING id",
-                    (letra["artist_name"],)
-                )
-                artist_id = cur.fetchone()[0]
-            else:
-                artist_id = artist[0]
+        cur.execute(
+            "INSERT INTO palo_estilo (palo_id, estilo_id, name, user_create_id, created_at) VALUES (%s, %s, %s, 1, NOW()) ON CONFLICT DO NOTHING",
+            (palo_id, estilo_id, f"{palo_name}-{estilo_info['name']}")
+        )
 
+        letras = extract_letras(
+            estilo_info["soup"], estilo_info["name"], audio_links)
+
+        for letra in letras:
             cur.execute(
                 "INSERT INTO letra (estilo_id, name, verses, comment, user_create_id, created_at) VALUES (%s, %s, %s, %s, 1, NOW()) RETURNING id",
                 (estilo_id, letra["unique_name"],
                  letra["verses"], letra["comment"])
-            )
-            letra_id = cur.fetchone()[0]
-
-            cur.execute(
-                "INSERT INTO letra_artist (letra_id, artist_id, recording_url, name, user_create_id, created_at) VALUES (%s, %s, %s, %s, 1, NOW())",
-                (letra_id, artist_id,
-                 letra["recording_url"], letra["unique_name"])
             )
 
     conn.commit()
@@ -208,9 +256,13 @@ def main():
 
     soup = fetch_page(url)
     audio_urls = extract_audio_links(soup, url)
-    estilos = extract_estilos(soup)
 
-    insert_into_db(estilos, audio_urls)
+    local_files = download_audio(audio_urls)
+    minio_links = upload_to_minio(local_files)
+
+    estilos = extract_estilos(soup)
+    insert_into_db(estilos, minio_links)
+
     print("✅ Data scraping and insertion complete!")
 
 
