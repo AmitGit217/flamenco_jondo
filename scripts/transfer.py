@@ -177,7 +177,7 @@ def extract_letras(soup, estilo_name, audio_links):
                         "artist_name": current_artist,
                         "year": current_year,
                         "comment": current_comment,
-                        "verses": current_verses,
+                        "verses": [''],
                         "unique_name": unique_name
                     })
                     seen_entries.add(unique_name)
