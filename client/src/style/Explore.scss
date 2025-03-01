@@ -23,6 +23,7 @@
   .search-box {
     display: flex;
     justify-content: center;
+    align-items: center;
     margin-bottom: 20px;
 
     input {
@@ -42,6 +43,23 @@
       }
     }
   }
+
+  .search-button {
+    background-color: #c0392b;
+    margin: 0;
+    color: #fff;
+    border: none;
+    margin-left: 10px;
+    padding: 14px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+
+    &:hover {
+      background-color: #8e1e13;
+    }
+  }
+  
 
   .search-results {
     text-align: left;

@@ -5,6 +5,7 @@ import {
   UseGuards,
   Delete,
   Param,
+  Get,
 } from '@nestjs/common';
 import { PaloService } from './palo.service';
 import {
@@ -17,12 +18,12 @@ import { user } from '@prisma/client';
 import { Roles, RolesGuard } from '../../gurads/role.guard';
 
 @Controller('palo')
-@UseGuards(JwtAuthGuard, RolesGuard)
 export class PaloController {
   constructor(private readonly paloService: PaloService) {}
 
   @Post('upsert')
   @Roles('MASTER')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async upsertPalo(
     @Body() dto: UpsertPaloRequestDto,
     @GetCurrentUser() user: user,
@@ -32,7 +33,13 @@ export class PaloController {
 
   @Delete(':id')
   @Roles('MASTER')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async deletePalo(@Param('id') id: string) {
     return this.paloService.deletePalo(parseInt(id));
+  }
+
+  @Get(':id')
+  async getPalo(@Param('id') id: string) {
+    return this.paloService.getPalo(parseInt(id));
   }
 }

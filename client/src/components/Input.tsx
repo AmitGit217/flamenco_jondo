@@ -105,3 +105,36 @@ export const DateInput: React.FC<DateInputProps> = ({ label, name, value, onChan
       />
     </div>
   );
+
+
+
+
+  interface FileInputProps {
+    name: string;
+    onChange: (base64: string | null) => void;
+  }
+  
+   export const FileInput: React.FC<FileInputProps> = ({ name, onChange }) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+  
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          onChange(reader.result as string); // Send Base64 string to parent
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+  
+    return (
+      <input
+        type="file"
+        name={name}
+        accept="audio/*"
+        onChange={handleFileChange}
+      />
+    );
+  };
+  
+  

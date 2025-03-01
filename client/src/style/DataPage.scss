@@ -1,0 +1,121 @@
+.data-page {
+  width: 100%;
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: "Arial", sans-serif;
+  background-color: #000000; /* Warm background */
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  
+}
+
+.loading {
+  text-align: center;
+  font-size: 18px;
+  margin-top: 50px;
+  color: #b22222; /* Deep red */
+}
+
+.origins-list {
+  margin-top: 20px;
+}
+
+/* 🔴 Origin Section */
+.origin-section {
+  margin-bottom: 15px;
+  border-left: 4px solid #8b0000; /* Dark red */
+  background: #000000; /* Soft warm background */
+  padding: 12px;
+  border-radius: 6px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.origin-header {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 12px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #8b0000; /* Deep red */
+  border-bottom: 2px solid #b22222; /* Slightly lighter red */
+  transition: all 0.3s ease-in-out;
+}
+
+.origin-header:hover {
+  color: #b22222; /* Brighter on hover */
+}
+
+/* 🔥 Estilo Section */
+.estilos-list {
+  padding: 10px;
+}
+
+.estilo-card {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 6px;
+  background: #000000; /* Soft golden hue */
+  border-left: 3px solid #d35400; /* Burnt orange */
+  transition: all 0.3s ease-in-out;
+}
+
+
+.estilo-header {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #b04c00; /* Deep burnt orange */
+  border-bottom: 1px solid #e67e22; /* Lighter orange */
+  transition: all 0.3s ease-in-out;
+}
+
+
+
+/* 🎵 Letras Section */
+.letras-list {
+  margin-top: 5px;
+  padding: 10px;
+  list-style: none;
+}
+
+.letra-item {
+  padding: 12px;
+  background: #000000;
+  border: 1px solid #d35400;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s ease-in-out;
+  list-style: none;
+}
+
+.letra-item:hover {
+  transform: scale(1.02);
+  cursor: pointer;
+}
+
+.letra-content {
+  font-style: italic;
+  font-size: 16px;
+  color: #6a1b9a; /* Deep purple (better contrast) */
+}
+
+.letra-artist {
+  display: block;
+  text-align: right;
+  color: #444;
+  font-size: 14px;
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+.no-letras {
+  font-size: 14px;
+  color: #777;
+  text-align: center;
+}

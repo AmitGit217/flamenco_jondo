@@ -1,15 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { DeletePaloResponseDto } from '../../../../common/dto/palo.dto';
+import { EstiloDto } from '../../../../common/dto/palo.dto';
 import {
+  DeletePaloResponseDto,
+  GetPaloResponseDto,
   UpsertPaloRequestDto,
   UpsertPaloResponseDto,
-  DeletePaloRequestDto,
 } from '@common/dto/palo.dto';
-
+import { StorageService } from '../storage/storage.service';
 @Injectable()
 export class PaloService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly storageService: StorageService,
+  ) {}
 
   async upsertPalo(
     dto: UpsertPaloRequestDto,
@@ -61,5 +65,65 @@ export class PaloService {
     } catch (error) {
       throw new Error(`Failed to delete Palo: ${error.message}`);
     }
+  }
+
+  async getPalo(id: number): Promise<GetPaloResponseDto> {
+    const palo = await this.prismaService.palo.findUnique({
+      where: { id: id },
+      include: {
+        palo_estilo: {
+          include: {
+            estilo: {
+              include: {
+                letra: {
+                  include: {
+                    letra_artist: {
+                      include: {
+                        artist: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const mappedEstilos = await Promise.all(
+      palo.palo_estilo.map(async (pe) => {
+        const letras = await Promise.all(
+          pe.estilo.letra
+            .filter((letra) => letra.letra_artist.length > 0) // ✅ Exclude letras without recordings
+            .map(async (letra) => {
+              const recording_base64 = await this.storageService.getFile(
+                letra.letra_artist[0]?.recording_url,
+              );
+
+              return {
+                id: letra.id,
+                content: letra.verses.join('\n'),
+                artist: letra.letra_artist[0]?.artist.name || '',
+                recording: recording_base64 || '',
+              };
+            }),
+        );
+
+        return {
+          id: pe.estilo.id,
+          name: pe.estilo.name,
+          origin: pe.estilo.origin || '',
+          letras, // This will now **only contain letras with recordings**
+        };
+      }),
+    );
+
+    return {
+      id: palo.id,
+      name: palo.name,
+      description: palo.origin || '',
+      estilos: mappedEstilos,
+    };
   }
 }

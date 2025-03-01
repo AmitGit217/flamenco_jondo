@@ -23,6 +23,9 @@ export class UpsertEstiloRequestDto {
   @IsEnum(tonalities)
   tonality: tonalities;
 
+  @IsOptional()
+  structure?: string;
+
   @IsNotEmpty()
   @IsEnum(keys)
   key: keys;
@@ -66,13 +69,7 @@ export class UpsertEstiloResponseDto {
   @IsNotEmpty()
   name: string;
 
-  @IsNotEmpty()
-  @IsEnum(tonalities)
-  tonality: tonalities;
-
-  @IsNotEmpty()
-  @IsEnum(keys)
-  key: keys;
+ 
 
   @IsOptional()
   @IsString()
@@ -84,10 +81,6 @@ export class UpsertEstiloResponseDto {
 
   @IsNotEmpty()
   origin: string;
-
-  @IsNotEmpty()
-  @IsDateString()
-  origin_date: string;
 
   @IsOptional()
   @IsDateString()

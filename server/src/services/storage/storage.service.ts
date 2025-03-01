@@ -45,13 +45,23 @@ export class StorageService {
     return (await file).Location;
   }
 
-  async getFile(key: string): Promise<AWS.S3.GetObjectOutput> {
-    return this.s3
-      .getObject({
-        Bucket: this.bucketName,
-        Key: key,
-      })
-      .promise();
+  async getFile(key: string): Promise<string> {
+    try {
+      // if key includes http, remove it
+      key = this.extractRelativePath(key);
+      console.log(key);
+      const response = await this.s3
+        .getObject({
+          Bucket: this.bucketName,
+          Key: key,
+        })
+        .promise();
+
+      return response.Body?.toString('base64') || '';
+    } catch (error) {
+      console.error('Error getting file:', error);
+      return '';
+    }
   }
 
   async deleteFile(key: string): Promise<AWS.S3.DeleteObjectOutput> {
@@ -73,4 +83,22 @@ export class StorageService {
   async listBuckets(): Promise<AWS.S3.ListBucketsOutput> {
     return this.s3.listBuckets().promise();
   }
+
+  extractRelativePath = (url: string) => {
+    try {
+      const urlObj = new URL(url);
+      let relativePath = urlObj.pathname.startsWith('/')
+        ? urlObj.pathname.substring(1)
+        : urlObj.pathname;
+
+      // Remove bucket name if it's included in the path
+      relativePath = relativePath.replace(`${this.bucketName}/`, '');
+
+      // Decode any encoded characters (like %20 for spaces)
+      return decodeURIComponent(relativePath);
+    } catch {
+      // Fallback if URL parsing fails
+      return decodeURIComponent(url.replace(`${this.bucketName}/`, ''));
+    }
+  };
 }

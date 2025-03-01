@@ -15,24 +15,21 @@ export class UpsertLetraRequestDto {
   estilo_id?: number;
 
   @IsOptional()
+  verses?: string[];
+  @IsOptional()
   name?: string;
+
+  @IsOptional()
+  comment?: string;
+
   @IsOptional()
   artist_id?: number;
 
   @IsOptional()
   palo_id?: number;
 
-  @IsNotEmpty()
-  @IsArray()
-  verses: string[];
-
-  @IsNotEmpty()
-  @IsArray()
-  rhyme_scheme: number[];
-
-  @IsNotEmpty()
-  @IsArray()
-  repetition_pattern: number[];
+  @IsOptional()
+  recording?: string;
 
   @IsNotEmpty()
   structure: string;
@@ -61,26 +58,21 @@ export class UpsrtLetraResponseDto {
   @IsNotEmpty()
   estilo_id: number;
 
-  @IsOptional()
-  artist_id?: number;
-
-  @IsOptional()
-  palo_id?: number;
-
   @IsNotEmpty()
   @IsArray()
   verses: string[];
 
-  @IsNotEmpty()
-  @IsArray()
-  rhyme_scheme: number[];
+  @IsOptional()
+  comment?: string;
 
-  @IsNotEmpty()
-  @IsArray()
-  repetition_pattern: number[];
+  @IsOptional()
+  artist_id?: number;
 
-  @IsNotEmpty()
-  structure: string;
+  @IsOptional()
+  recording?: string;
+
+  @IsOptional()
+  palo_id?: number;
 
   @IsOptional()
   @IsDateString()

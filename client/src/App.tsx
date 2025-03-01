@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import RecordTable from './pages/RecordTable';
 import ExplorePage from './pages/Explore';
+import DataPage from "./pages/DataPage";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
               <p>Discover, learn, and contribute to the world of flamenco.</p>
               <div className="button-group">
                 <Link to="/explore" className="button">Explore Now</Link>
+                
                 {/* <Link to="/login" className="button">Login</Link> */}
               </div>
             </main>
@@ -31,9 +33,11 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/dashboard/:model" element={<RecordTable />} />
-            <Route path="/explore" element={<ExplorePage />} />
+           
             {/* Add other protected routes here */}
           </Route>
+          <Route path="/explore" element={<ExplorePage />} />
+          <Route path="/palo/:id" element={<DataPage />} />
         </Routes>
 
         <footer>

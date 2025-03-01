@@ -46,7 +46,7 @@ export class StaticDataService {
   }
 
   async universalSearch(query: string): Promise<SearchResult[]> {
-    const tables = ['palo', 'estilo', 'artist', 'letra'];
+    const tables = ['palo']; // TODO: add more tables
 
     // Normalize query: remove accents and convert to lowercase
     const normalizedQuery = this.removeAccents(query.toLowerCase());

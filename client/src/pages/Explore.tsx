@@ -1,20 +1,45 @@
-import { useState, useEffect } from "react";
+import {  useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { universalSearch } from "../api/common";
 import "../style/Explore.scss";
 
 function ExplorePage() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [query, setQuery] = useState(""); // Holds the term that will be searched
   const [results, setResults] = useState([]);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (searchTerm.length > 1) {
-      universalSearch(searchTerm)
+
+
+   useEffect(() => {
+    if (query.length > 1) {
+      universalSearch(query)
         .then((data) => setResults(data))
         .catch((error) => console.error("Error fetching data:", error));
     } else {
       setResults([]);
     }
-  }, [searchTerm]);
+  }, [query]); // Runs only when `query` changes
+
+  const handleSearch = () => {
+    setQuery(searchTerm); // Updates `query`, triggering `useEffect`
+  };
+
+  const handleResultClick = (category: string, item: { id?: number }) => {
+    if (!item.id) return;
+    let path = "";
+
+    switch (category.toLowerCase()) {
+      case "palos":
+        path = `/palo/${item.id}`;
+        break;
+      default:
+        console.warn(`No route defined for category: ${category}`);
+        return;
+    }
+
+    navigate(path);
+  };
 
   return (
     <div className="explore-container">
@@ -27,26 +52,33 @@ function ExplorePage() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+        <button className="search-button" onClick={() => { setQuery(searchTerm); handleSearch(); }}>
+          Search
+        </button>
       </div>
 
       <div className="search-results">
         {results.length > 0 ? (
           results.map(
-            (section: { category: string; data: { name?: string; title?: string }[] }, index) => (
+            (section: { category: string; data: { id?: number; name?: string; title?: string }[] }, index) => (
               <div key={index} className="result-section">
                 <h3>{section.category}</h3>
                 <ul>
-                  {section.data.map((item: { name?: string; title?: string }, i) => (
-                    <li key={i}>{item.name || item.title}</li>
+                  {section.data.map((item, i) => (
+                    <li 
+                      key={i} 
+                      className="search-item"
+                      onClick={() => handleResultClick(section.category, item)}
+                    >
+                      {item.name || item.title}
+                    </li>
                   ))}
                 </ul>
               </div>
             )
           )
         ) : (
-          searchTerm.length > 1 && (
-            <p className="no-results">No results found. Try another search.</p>
-          )
+          query.length > 1 && <p className="no-results">No results found. Try another search.</p>
         )}
       </div>
     </div>
