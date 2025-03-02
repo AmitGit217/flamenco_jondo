@@ -8,6 +8,7 @@ import RecordTable from './pages/RecordTable';
 import ExplorePage from './pages/Explore';
 import DataPage from "./pages/DataPage";
 import GuessGame from "./pages/GuessGame";
+import FeedbackForm from "./pages/FeedBack";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
               <div className="button-group">
                 {/* <Link to="/explore" className="button">Explore Now</Link> */}
                 <Link to="/guess-the-estilo" className="button">Guess the Estilo</Link>
+                <Link to="/feedback" className="button">Feedback</Link>
                 
                 {/* <Link to="/login" className="button">Login</Link> */}
               </div>
@@ -41,6 +43,8 @@ function App() {
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="/palo/:id" element={<DataPage />} />
           <Route path="/guess-the-estilo" element={<GuessGame />} />
+          <Route path="/feedback" element={<FeedbackForm />} />
+          <Route path="*" element={<h1>Not Found</h1>} />
         </Routes>
 
         <footer>
