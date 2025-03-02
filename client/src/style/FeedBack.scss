@@ -1,0 +1,207 @@
+// Flamenco-inspired color palette
+$primary-color: #E74C3C; // Flamenco red
+$primary-dark: darken($primary-color, 10%);
+$secondary-color: #34495E; // Dark blue slate
+$text-color: #2C3E50;
+$light-bg: #F9F9F9;
+$white: #FFFFFF;
+$border-color: #E2E8F0;
+$success-color: #2ECC71;
+$error-color: #E74C3C;
+
+.feedback-page {
+  min-height: 100vh;
+  padding: 3rem 1rem;
+  background: $light-bg;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.feedback-container {
+  width: 100%;
+  max-width: 600px;
+  background: $white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+  
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
+}
+
+.feedback-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.feedback-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: $secondary-color;
+  margin-bottom: 0.5rem;
+  
+  @media (max-width: 768px) {
+    font-size: 1.75rem;
+  }
+}
+
+.feedback-subtitle {
+  color: lighten($text-color, 20%);
+  font-size: 1rem;
+}
+
+.feedback-alert {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  
+  &--success {
+    background-color: rgba($success-color, 0.1);
+    border-left: 4px solid $success-color;
+  }
+  
+  &--error {
+    background-color: rgba($error-color, 0.1);
+    border-left: 4px solid $error-color;
+  }
+  
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin-right: 12px;
+    font-weight: bold;
+    
+    .feedback-alert--success & {
+      background: $success-color;
+      color: $white;
+    }
+    
+    .feedback-alert--error & {
+      background: $error-color;
+      color: $white;
+    }
+  }
+  
+  &__content {
+    flex: 1;
+    font-size: 0.95rem;
+    
+    .feedback-alert--success & {
+      color: darken($success-color, 20%);
+    }
+    
+    .feedback-alert--error & {
+      color: darken($error-color, 10%);
+    }
+  }
+}
+
+.feedback-form {
+  margin-bottom: 1.5rem;
+  
+  &__group {
+    margin-bottom: 1.5rem;
+  }
+  
+  &__label {
+    display: block;
+    font-weight: 600;
+    color: $secondary-color;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+  }
+  
+  &__input,
+  &__textarea {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid $border-color;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    background: $white;
+    color: $text-color;
+    
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    }
+    
+    &::placeholder {
+      color: lighten($text-color, 40%);
+    }
+  }
+  
+  &__textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+  
+  &__submit {
+    display: block;
+    width: 100%;
+    padding: 0.875rem;
+    background: $primary-color;
+    color: $white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1.05rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    
+    &:hover {
+      background: $primary-dark;
+    }
+    
+    &:disabled {
+      background: lighten($secondary-color, 40%);
+      cursor: not-allowed;
+    }
+    
+    &--loading {
+      cursor: wait;
+    }
+  }
+  
+  &__loading-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  &__spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba($white, 0.3);
+    border-radius: 50%;
+    border-top-color: $white;
+    animation: spin 0.8s linear infinite;
+    margin-right: 8px;
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  }
+}
+
+.feedback-footer {
+  text-align: center;
+  color: lighten($text-color, 30%);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  border-top: 1px solid $border-color;
+  padding-top: 1.5rem;
+}
