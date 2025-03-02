@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getPalo } from '../api/palo';
 import { Spinner } from '../components/Spinner';
+import '../style/GuessGame.scss';
 
 // Types
 interface Letra {
@@ -201,20 +202,20 @@ const GuessGame: React.FC = () => {
           };
         }
       });
-    }, 750); // 0.75 seconds delay
+    }, 1000); // 0.75 seconds delay
   };
 
   // Toggle game mode
-  const toggleGameMode = () => {
-    setGameState(prev => ({
-      ...prev,
-      gameMode: prev.gameMode === 'estilo' ? 'origin' : 'estilo',
-      currentRoundIndex: 0,
-      score: 0,
-      showResult: false,
-      selectedOptionId: null
-    }));
-  };
+//   const toggleGameMode = () => {
+//     setGameState(prev => ({
+//       ...prev,
+//       gameMode: prev.gameMode === 'estilo' ? 'origin' : 'estilo',
+//       currentRoundIndex: 0,
+//       score: 0,
+//       showResult: false,
+//       selectedOptionId: null
+//     }));
+//   };
 
   // Restart game
   const restartGame = () => {
@@ -229,7 +230,7 @@ const GuessGame: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="guess-game__loading">
         <Spinner size="lg" />
       </div>
     );
@@ -237,13 +238,10 @@ const GuessGame: React.FC = () => {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <h1 className="text-2xl font-bold text-red-600 mb-4">Error</h1>
-        <p className="text-gray-700 mb-4">{error}</p>
-        <button 
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => window.location.reload()}
-        >
+      <div className="guess-game__error">
+        <h1>Error</h1>
+        <p>{error}</p>
+        <button onClick={() => window.location.reload()}>
           Retry
         </button>
       </div>
@@ -251,107 +249,106 @@ const GuessGame: React.FC = () => {
   }
 
   if (!paloData || gameState.rounds.length === 0) {
-    return <div className="p-4">No game data available</div>;
+    return <div className="guess-game__empty">No game data available</div>;
   }
 
   const currentRound = gameState.rounds[gameState.currentRoundIndex];
   const isGameOver = gameState.currentRoundIndex === gameState.rounds.length - 1 && gameState.showResult;
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold text-center mb-8">
-        Flamenco Guess Game - {paloData.name}
-      </h1>
-      
-      {/* Game mode toggle */}
-      <div className="flex justify-center mb-8">
-        <button
-          className={`px-4 py-2 rounded-l-md ${
-            gameState.gameMode === 'estilo' 
-              ? 'bg-blue-600 text-white' 
-              : 'bg-gray-200'
-          }`}
-          onClick={() => gameState.gameMode !== 'estilo' && toggleGameMode()}
-        >
-          Guess Estilo
-        </button>
-        <button
-          className={`px-4 py-2 rounded-r-md ${
-            gameState.gameMode === 'origin' 
-              ? 'bg-blue-600 text-white' 
-              : 'bg-gray-200'
-          }`}
-          onClick={() => gameState.gameMode !== 'origin' && toggleGameMode()}
-        >
-          Guess Origin
-        </button>
-      </div>
-
-      {/* Game stats */}
-      <div className="bg-gray-100 p-4 rounded-md mb-6 text-center">
-        <div className="text-lg">
-          Round: {gameState.currentRoundIndex + 1} / {gameState.rounds.length}
-        </div>
-        <div className="text-lg">
-          Score: {gameState.score}
-        </div>
-      </div>
-
-      {/* Game area */}
-      <div className="max-w-2xl mx-auto">
-        {/* Audio player */}
-        <div className="mb-8 flex justify-center">
-          <audio 
-            controls
-            src={`data:audio/mp3;base64,${currentRound.recording}`}
-            className="w-full"
-          >
-            Your browser does not support the audio element.
-          </audio>
-        </div>
-
-        {/* Options */}
-        <div className="grid grid-cols-2 gap-4">
-          {currentRound.options.map((option) => (
-            <button
-              key={option.id}
-              onClick={() => handleOptionSelect(option.id)}
-              disabled={gameState.showResult}
-              className={`
-                p-4 rounded-md text-center font-medium transition-colors
-                ${gameState.showResult
-                  ? option.id === currentRound.correctOptionId
-                    ? 'bg-green-500 text-white'
-                    : option.id === gameState.selectedOptionId
-                    ? 'bg-red-500 text-white'
-                    : 'bg-gray-200'
-                  : 'bg-blue-100 hover:bg-blue-200'
-                }
-              `}
-            >
-              {option.name}
-            </button>
-          ))}
-        </div>
-
-        {/* Game over screen */}
-        {isGameOver && (
-          <div className="mt-8 p-6 bg-gray-100 rounded-md text-center">
-            <h2 className="text-2xl font-bold mb-4">Game Over!</h2>
-            <p className="text-xl mb-6">
-              Your Score: {gameState.score} / {gameState.rounds.length}
-              <span className="block mt-2 text-lg">
-                ({Math.round((gameState.score / gameState.rounds.length) * 100)}%)
-              </span>
-            </p>
-            <button
-              onClick={restartGame}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-md"
-            >
-              Play Again
-            </button>
+    <div className="guess-game">
+      <div className="guess-game__container">
+        <h1 className="guess-game__title">
+          <span className="guess-game__title-main">Flamenco Guess Game</span>
+          <span className="guess-game__title-palo">{paloData.name}</span>
+        </h1>
+        
+        {/* Game stats */}
+        <div className="guess-game__stats">
+          <div className="guess-game__stat">
+            <span className="guess-game__stat-label">Round</span>
+            <span className="guess-game__stat-value">{gameState.currentRoundIndex + 1} / {gameState.rounds.length}</span>
           </div>
-        )}
+          <div className="guess-game__stat">
+            <span className="guess-game__stat-label">Score</span>
+            <span className="guess-game__stat-value">{gameState.score}</span>
+          </div>
+        </div>
+  
+        {/* Game area */}
+        <div className="guess-game__area">
+          {/* Audio player */}
+          <div className="guess-game__audio-container">
+            <div className="guess-game__audio-label">Listen to the recording</div>
+            <audio 
+              controls
+              src={`data:audio/mp3;base64,${currentRound.recording}`}
+              className="guess-game__audio-player"
+            >
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+  
+          {/* Options */}
+          <div className="guess-game__question">
+            <h3 className="guess-game__question-text">What estilo is this?</h3>
+            <div className="guess-game__options">
+              {currentRound.options.map((option) => (
+                <button
+                  key={option.id}
+                  onClick={() => handleOptionSelect(option.id)}
+                  disabled={gameState.showResult}
+                  className={`
+                    guess-game__option
+                    ${gameState.showResult ? 'guess-game__option--result-shown' : ''}
+                    ${gameState.showResult && option.id === currentRound.correctOptionId ? 'guess-game__option--correct' : ''}
+                    ${gameState.showResult && option.id === gameState.selectedOptionId && 
+                      option.id !== currentRound.correctOptionId ? 'guess-game__option--incorrect' : ''}
+                  `}
+                >
+                  <span className="guess-game__option-text">{option.name}</span>
+                  {gameState.showResult && option.id === currentRound.correctOptionId && (
+                    <span className="guess-game__option-icon guess-game__option-icon--correct">✓</span>
+                  )}
+                  {gameState.showResult && option.id === gameState.selectedOptionId && 
+                    option.id !== currentRound.correctOptionId && (
+                    <span className="guess-game__option-icon guess-game__option-icon--incorrect">×</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+  
+          {/* Game over screen */}
+          {isGameOver && (
+            <div className="guess-game__overlay">
+              <div className="guess-game__game-over">
+                <h2 className="guess-game__game-over-title">Game Complete!</h2>
+                <div className="guess-game__result">
+                  <div className="guess-game__result-score">
+                    <span className="guess-game__result-label">Your Score</span>
+                    <span className="guess-game__result-value">{gameState.score} / {gameState.rounds.length}</span>
+                  </div>
+                  <div className="guess-game__result-percentage">
+                    {Math.round((gameState.score / gameState.rounds.length) * 100)}%
+                  </div>
+                  <div className="guess-game__result-message">
+                    {gameState.score === gameState.rounds.length ? 'Perfect! You know your flamenco!' : 
+                     gameState.score > gameState.rounds.length * 0.7 ? 'Great job! You have good flamenco knowledge!' :
+                     gameState.score > gameState.rounds.length * 0.4 ? 'Well done! Keep learning about flamenco!' :
+                     'Keep practicing to improve your flamenco knowledge!'}
+                  </div>
+                </div>
+                <button
+                  onClick={restartGame}
+                  className="guess-game__restart-button"
+                >
+                  Play Again
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
