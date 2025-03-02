@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { getPalo } from '../api/palo';
 import { Spinner } from '../components/Spinner';
 import '../style/GuessGame.scss';
+import { useLoading } from '../hooks/useLoading';
+
 
 // Types
 interface Letra {
@@ -42,10 +44,8 @@ interface GameState {
 }
 
 const GuessGame: React.FC = () => {
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [paloData, setPaloData] = useState<PaloResponse | null>(null);
-  
   const [gameState, setGameState] = useState<GameState>({
     paloId: 1, // Default palo ID
     currentRoundIndex: 0,
@@ -55,24 +55,37 @@ const GuessGame: React.FC = () => {
     selectedOptionId: null,
     gameMode: 'estilo'
   });
+  const { setIsLoading } = useLoading();
 
-  // Initial data fetch
+  const [loading, setLoading] = useState(true);
+  
+  // Update the global loading state based on component loading state
+  useEffect(() => {
+    setIsLoading(loading);
+    return () => {
+      setIsLoading(false); // Clean up when component unmounts
+    };
+  }, [loading, setIsLoading]);
+  
+  // Rest of your component code...
+  
   useEffect(() => {
     const fetchPaloData = async () => {
       try {
-        setLoading(true);
+        setLoading(true); // This will now also set the global loading state
         const response = await getPalo(gameState.paloId);
         setPaloData(response);
       } catch (err) {
         console.error('Failed to fetch palo data:', err);
         setError('Failed to load game data. Please try again.');
       } finally {
-        setLoading(false);
+        setLoading(false); // This will now also update the global loading state
       }
     };
 
     fetchPaloData();
   }, [gameState.paloId]);
+
 
   // Setup game rounds when palo data is loaded
   useEffect(() => {

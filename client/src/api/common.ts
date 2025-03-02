@@ -18,3 +18,5 @@ export const deleteRecord = async (model: string, id: number) => {
   const response = await apiClient.delete(`/${model}/${id}`);
   return response;
 };
+
+
