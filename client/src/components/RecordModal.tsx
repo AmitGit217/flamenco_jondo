@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import Modal from "./Modal";
 import DynamicForm from "./DynamicForm";
 import { FormData } from "./DynamicForm";
@@ -13,12 +13,14 @@ interface RecordModalProps {
 }
 
 const RecordModal: React.FC<RecordModalProps> = ({ isOpen, model, record, onClose, setRecords }) => {
-  const handleSuccess = () => {
+  // ✅ useCallback prevents unnecessary function re-creation on each render
+  const handleSuccess = useCallback(() => {
     onClose();
+
     getStaticDataByType(model)
-      .then((data) => setRecords(data))
+      .then(setRecords) // Directly pass data to setRecords
       .catch((error) => console.error("Error fetching records:", error));
-  };
+  }, [model, onClose, setRecords]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

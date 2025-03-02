@@ -2,7 +2,7 @@ import { tonalities, keys, artisttype } from "@common/index";
 
 interface FormField {
   name: string;
-  type: "text" | "date" | "number" | "select";
+  type: "text" | "date" | "number" | "select" | "file";
   label: string;
   required: boolean;
   processing?:
@@ -54,19 +54,18 @@ export const formSchemas: Record<string, FormField[]> = {
       processing: "multi-input",
     },
     {
-      name: "rhyme_scheme",
-      type: "text",
-      label: "Rhyme Scheme",
-      required: true,
-      processing: "array",
+      name: "recording",
+      type: "file",
+      label: "Recording",
+      required: false,
     },
     {
-      name: "repetition_pattern",
-      type: "text",
-      label: "Repetition Pattern",
-      required: true,
-      processing: "array",
+      name: "artist_id",
+      type: "number",
+      label: "Artist ID",
+      required: false,
     },
+
     { name: "structure", type: "text", label: "Structure", required: true },
   ],
   compas: [

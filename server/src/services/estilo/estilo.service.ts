@@ -21,6 +21,7 @@ export class EstiloService {
         key: dto.key,
         origin: dto.origin,
         origin_date: dto.origin_date ? new Date(dto.origin_date) : null,
+        structure: dto.structure || 'ABAB',
         updated_at: timestamp,
         ...(dto.user_update_id
           ? {
@@ -79,9 +80,6 @@ export class EstiloService {
 
       return {
         ...estilo,
-        origin_date: estilo.origin_date
-          ? estilo.origin_date.toISOString()
-          : null,
         created_at: estilo.created_at ? estilo.created_at.toISOString() : null,
         updated_at: estilo.updated_at ? estilo.updated_at.toISOString() : null,
       };

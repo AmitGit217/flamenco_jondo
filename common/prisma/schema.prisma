@@ -12,9 +12,7 @@ model letra {
   estilo_id                       Int
   name                            String         @unique @db.VarChar(255)
   verses                          String[]
-  rhyme_scheme                    Int[]
-  repetition_pattern              Int[]
-  structure                       String         @db.VarChar(255)
+  comment                         String?
   user_create_id                  Int
   user_update_id                  Int?
   created_at                      DateTime?      @db.Timestamp(6)
@@ -23,7 +21,6 @@ model letra {
   user_letra_user_create_idTouser user           @relation("letra_user_create_idTouser", fields: [user_create_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   user_letra_user_update_idTouser user?          @relation("letra_user_update_idTouser", fields: [user_update_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   letra_artist                    letra_artist[]
-  letra_palo                      letra_palo[]
 
   @@index([estilo_id], map: "idx_letra_estilo_id")
   @@index([name], map: "unique_letra_estilo_name")
@@ -35,7 +32,6 @@ model letra_artist {
   letra_id                               Int
   artist_id                              Int
   recording_url                          String?   @db.VarChar(255)
-  album                                  String?   @db.VarChar(255)
   year                                   Int?
   user_create_id                         Int
   user_update_id                         Int?
@@ -60,32 +56,11 @@ model palo {
   user_update_id                 Int?
   created_at                     DateTime?     @db.Timestamp(6)
   updated_at                     DateTime?     @db.Timestamp(6)
-  letra_palo                     letra_palo[]
   user_palo_user_create_idTouser user          @relation("palo_user_create_idTouser", fields: [user_create_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   user_palo_user_update_idTouser user?         @relation("palo_user_update_idTouser", fields: [user_update_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  palo_compas                    palo_compas[]
   palo_estilo                    palo_estilo[]
 
   @@index([name], map: "unique_palo_name")
-}
-
-model palo_compas {
-  id                                    Int       @id @default(autoincrement())
-  name                                  String    @unique @db.VarChar(255)
-  palo_id                               Int
-  compas_id                             Int
-  user_create_id                        Int
-  user_update_id                        Int?
-  created_at                            DateTime? @db.Timestamp(6)
-  updated_at                            DateTime? @db.Timestamp(6)
-  compas                                compas    @relation(fields: [compas_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  palo                                  palo      @relation(fields: [palo_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user_palo_compas_user_create_idTouser user      @relation("palo_compas_user_create_idTouser", fields: [user_create_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user_palo_compas_user_update_idTouser user?     @relation("palo_compas_user_update_idTouser", fields: [user_update_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@unique([palo_id, compas_id], map: "unique_palo_compas")
-  @@index([compas_id], map: "idx_palo_compas_compas_id")
-  @@index([palo_id], map: "idx_palo_compas_palo_id")
 }
 
 model palo_estilo {
@@ -107,58 +82,35 @@ model palo_estilo {
   @@index([palo_id], map: "idx_palo_estilo_palo_id")
 }
 
-model compas {
-  id                               Int           @id @default(autoincrement())
-  name                             String        @unique @db.VarChar(255)
-  beats                            Int
-  accents                          Int[]
-  silences                         Int[]
-  time_signatures                  String[]
-  bpm                              Int
-  user_create_id                   Int
-  user_update_id                   Int?
-  created_at                       DateTime?     @db.Timestamp(6)
-  updated_at                       DateTime?     @db.Timestamp(6)
-  user_compas_user_create_idTouser user          @relation("compas_user_create_idTouser", fields: [user_create_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user_compas_user_update_idTouser user?         @relation("compas_user_update_idTouser", fields: [user_update_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  palo_compas                      palo_compas[]
-
-  @@index([name], map: "unique_compas_name")
-}
-
 model artist {
-  id                               Int             @id @default(autoincrement())
-  name                             String          @unique @db.VarChar(255)
+  id                               Int            @id @default(autoincrement())
+  name                             String         @unique @db.VarChar(255)
   birth_year                       Int?
   death_year                       Int?
-  origin                           String?         @db.VarChar(255)
+  origin                           String?        @db.VarChar(255)
   type                             artisttype
   user_create_id                   Int
   user_update_id                   Int?
-  created_at                       DateTime?       @db.Timestamp(6)
-  updated_at                       DateTime?       @db.Timestamp(6)
-  user_artist_user_create_idTouser user            @relation("artist_user_create_idTouser", fields: [user_create_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user_artist_user_update_idTouser user?           @relation("artist_user_update_idTouser", fields: [user_update_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  artist_estilo                    artist_estilo[]
+  created_at                       DateTime?      @db.Timestamp(6)
+  updated_at                       DateTime?      @db.Timestamp(6)
+  user_artist_user_create_idTouser user           @relation("artist_user_create_idTouser", fields: [user_create_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user_artist_user_update_idTouser user?          @relation("artist_user_update_idTouser", fields: [user_update_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   letra_artist                     letra_artist[]
 
   @@index([name], map: "unique_artist_name")
 }
 
 model estilo {
-  id                               Int             @id @default(autoincrement())
-  name                             String          @unique @db.VarChar(255)
-  tonality                         tonalities
-  key                              keys
-  origin                           String          @db.VarChar(255)
-  origin_date                      DateTime        @db.Timestamp(6)
+  id                               Int           @id @default(autoincrement())
+  name                             String        @unique @db.VarChar(255)
+  structure                        String        @db.VarChar(255)
+  origin                           String        @db.VarChar(255)
   user_create_id                   Int
   user_update_id                   Int?
-  created_at                       DateTime?       @db.Timestamp(6)
-  updated_at                       DateTime?       @db.Timestamp(6)
-  artist_estilo                    artist_estilo[]
-  user_estilo_user_create_idTouser user            @relation("estilo_user_create_idTouser", fields: [user_create_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user_estilo_user_update_idTouser user?           @relation("estilo_user_update_idTouser", fields: [user_update_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  created_at                       DateTime?     @db.Timestamp(6)
+  updated_at                       DateTime?     @db.Timestamp(6)
+  user_estilo_user_create_idTouser user          @relation("estilo_user_create_idTouser", fields: [user_create_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user_estilo_user_update_idTouser user?         @relation("estilo_user_update_idTouser", fields: [user_update_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   letra                            letra[]
   palo_estilo                      palo_estilo[]
 
@@ -166,73 +118,27 @@ model estilo {
 }
 
 model user {
-  id                                               Int             @id @default(autoincrement())
-  email                                            String          @unique @db.VarChar(255)
-  password                                         String          @db.VarChar(255)
-  role                                             role?           @default(USER)
-  created_at                                       DateTime?       @db.Timestamp(6)
-  updated_at                                       DateTime?       @db.Timestamp(6)
-  artist_artist_user_create_idTouser               artist[]        @relation("artist_user_create_idTouser")
-  artist_artist_user_update_idTouser               artist[]        @relation("artist_user_update_idTouser")
-  artist_estilo_artist_estilo_user_create_idTouser artist_estilo[] @relation("artist_estilo_user_create_idTouser")
-  artist_estilo_artist_estilo_user_update_idTouser artist_estilo[] @relation("artist_estilo_user_update_idTouser")
-  compas_compas_user_create_idTouser               compas[]        @relation("compas_user_create_idTouser")
-  compas_compas_user_update_idTouser               compas[]        @relation("compas_user_update_idTouser")
-  estilo_estilo_user_create_idTouser               estilo[]        @relation("estilo_user_create_idTouser")
-  estilo_estilo_user_update_idTouser               estilo[]        @relation("estilo_user_update_idTouser")
-  feedback                                         feedback[]
-  letra_letra_user_create_idTouser                 letra[]         @relation("letra_user_create_idTouser")
-  letra_letra_user_update_idTouser                 letra[]         @relation("letra_user_update_idTouser")
-  letra_artist_letra_artist_user_create_idTouser   letra_artist[]  @relation("letra_artist_user_create_idTouser")
-  letra_artist_letra_artist_user_update_idTouser   letra_artist[]  @relation("letra_artist_user_update_idTouser")
-  letra_palo_letra_palo_user_create_idTouser       letra_palo[]    @relation("letra_palo_user_create_idTouser")
-  letra_palo_letra_palo_user_update_idTouser       letra_palo[]    @relation("letra_palo_user_update_idTouser")
-  palo_palo_user_create_idTouser                   palo[]          @relation("palo_user_create_idTouser")
-  palo_palo_user_update_idTouser                   palo[]          @relation("palo_user_update_idTouser")
-  palo_compas_palo_compas_user_create_idTouser     palo_compas[]   @relation("palo_compas_user_create_idTouser")
-  palo_compas_palo_compas_user_update_idTouser     palo_compas[]   @relation("palo_compas_user_update_idTouser")
-  palo_estilo_palo_estilo_user_create_idTouser     palo_estilo[]   @relation("palo_estilo_user_create_idTouser")
-  palo_estilo_palo_estilo_user_update_idTouser     palo_estilo[]   @relation("palo_estilo_user_update_idTouser")
+  id                                             Int            @id @default(autoincrement())
+  email                                          String         @unique @db.VarChar(255)
+  password                                       String         @db.VarChar(255)
+  role                                           role?          @default(USER)
+  created_at                                     DateTime?      @db.Timestamp(6)
+  updated_at                                     DateTime?      @db.Timestamp(6)
+  artist_artist_user_create_idTouser             artist[]       @relation("artist_user_create_idTouser")
+  artist_artist_user_update_idTouser             artist[]       @relation("artist_user_update_idTouser")
+  estilo_estilo_user_create_idTouser             estilo[]       @relation("estilo_user_create_idTouser")
+  estilo_estilo_user_update_idTouser             estilo[]       @relation("estilo_user_update_idTouser")
+  feedback                                       feedback[]
+  letra_letra_user_create_idTouser               letra[]        @relation("letra_user_create_idTouser")
+  letra_letra_user_update_idTouser               letra[]        @relation("letra_user_update_idTouser")
+  letra_artist_letra_artist_user_create_idTouser letra_artist[] @relation("letra_artist_user_create_idTouser")
+  letra_artist_letra_artist_user_update_idTouser letra_artist[] @relation("letra_artist_user_update_idTouser")
+  palo_palo_user_create_idTouser                 palo[]         @relation("palo_user_create_idTouser")
+  palo_palo_user_update_idTouser                 palo[]         @relation("palo_user_update_idTouser")
+  palo_estilo_palo_estilo_user_create_idTouser   palo_estilo[]  @relation("palo_estilo_user_create_idTouser")
+  palo_estilo_palo_estilo_user_update_idTouser   palo_estilo[]  @relation("palo_estilo_user_update_idTouser")
 
   @@index([email], map: "unique_user_email")
-}
-
-model artist_estilo {
-  id                                      Int       @id @default(autoincrement())
-  name                                    String    @unique @db.VarChar(255)
-  artist_id                               Int
-  estilo_id                               Int
-  user_create_id                          Int
-  user_update_id                          Int?
-  created_at                              DateTime? @db.Timestamp(6)
-  updated_at                              DateTime? @db.Timestamp(6)
-  artist                                  artist    @relation(fields: [artist_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  estilo                                  estilo    @relation(fields: [estilo_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user_artist_estilo_user_create_idTouser user      @relation("artist_estilo_user_create_idTouser", fields: [user_create_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user_artist_estilo_user_update_idTouser user?     @relation("artist_estilo_user_update_idTouser", fields: [user_update_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@unique([artist_id, estilo_id], map: "unique_artist_estilo")
-  @@index([artist_id], map: "idx_artist_estilo_artist_id")
-  @@index([estilo_id], map: "idx_artist_estilo_estilo_id")
-}
-
-model letra_palo {
-  id                                   Int       @id @default(autoincrement())
-  name                                 String    @unique @db.VarChar(255)
-  letra_id                             Int
-  palo_id                              Int
-  user_create_id                       Int
-  user_update_id                       Int?
-  created_at                           DateTime? @db.Timestamp(6)
-  updated_at                           DateTime? @db.Timestamp(6)
-  letra                                letra     @relation(fields: [letra_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  palo                                 palo      @relation(fields: [palo_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user_letra_palo_user_create_idTouser user      @relation("letra_palo_user_create_idTouser", fields: [user_create_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user_letra_palo_user_update_idTouser user?     @relation("letra_palo_user_update_idTouser", fields: [user_update_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@unique([letra_id, palo_id], map: "unique_letra_palo")
-  @@index([letra_id], map: "idx_letra_palo_letra_id")
-  @@index([palo_id], map: "idx_letra_palo_palo_id")
 }
 
 model feedback {
