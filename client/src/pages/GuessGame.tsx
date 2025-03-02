@@ -158,7 +158,8 @@ const GuessGame: React.FC = () => {
   }, [paloData, gameState.gameMode]);
 
   // Handle option selection
-  const handleOptionSelect = (optionId: number) => {
+// Update the handleOptionSelect function 
+const handleOptionSelect = (optionId: number) => {
     // Don't allow selection if result is already showing
     if (gameState.showResult) return;
     
@@ -187,10 +188,20 @@ const GuessGame: React.FC = () => {
         const isLastRound = prev.currentRoundIndex === prev.rounds.length - 1;
         
         if (isLastRound) {
-          // Game over, stay on the same round but keep showing results
+          // Instead of showing game over, loop back to the first round
+          // But shuffle the options first for variety
+          const shuffledRounds = prev.rounds.map(round => ({
+            ...round,
+            options: [...round.options].sort(() => Math.random() - 0.5)
+          }));
+          
           return {
             ...prev,
-            showResult: true
+            rounds: shuffledRounds,
+            currentRoundIndex: 0, // Reset to first round
+            showResult: false,
+            selectedOptionId: null,
+            // Don't reset the score - it continues accumulating
           };
         } else {
           // Move to next round
@@ -202,7 +213,7 @@ const GuessGame: React.FC = () => {
           };
         }
       });
-    }, 1000); // 0.75 seconds delay
+    }, 1000); // 1 second delay
   };
 
   // Toggle game mode
@@ -267,7 +278,7 @@ const GuessGame: React.FC = () => {
         <div className="guess-game__stats">
           <div className="guess-game__stat">
             <span className="guess-game__stat-label">Round</span>
-            <span className="guess-game__stat-value">{gameState.currentRoundIndex + 1} / {gameState.rounds.length}</span>
+            <span className="guess-game__stat-value">{gameState.currentRoundIndex + 1}</span>
           </div>
           <div className="guess-game__stat">
             <span className="guess-game__stat-label">Score</span>
