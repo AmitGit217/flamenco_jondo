@@ -96,7 +96,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ model, record, onClose, onSuc
                 <FileInput
                   name={field.name}
                   onChange={(file: string | null) => {
-                    if (file) setFormData(prev => ({ ...prev, [field.name]: file }));
+                    if (file) setFormData((prev: FormData) => ({ ...prev, [field.name]: file }));
                   }}
                 />
               ) : field.processing === "enum" ? (

@@ -1,0 +1,52 @@
+# Stage 1: Build Stage
+FROM node:20-alpine AS builder
+
+# Set build arguments for environment variables
+ARG VITE_NODE_ENV=production
+ARG VITE_API_URL=http://localhost:3000
+ARG VITE_JWT_SECRET=your_secret_key
+
+# Set working directory
+WORKDIR /app
+
+# Copy entire project for build
+COPY . .
+
+# Install dependencies
+RUN npm ci
+
+# Build the client application
+RUN cd client && npm run build
+
+# Stage 2: Production Stage
+FROM node:20-alpine AS production
+
+# Set working directory
+WORKDIR /app
+
+# Set environment variables from build args
+ENV VITE_NODE_ENV=$VITE_NODE_ENV
+ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_PORT=80
+ENV VITE_JWT_SECRET=$VITE_JWT_SECRET
+
+# Create .env file with environment variables
+RUN echo "VITE_NODE_ENV=$VITE_NODE_ENV" >> .env && \
+    echo "VITE_API_URL=$VITE_API_URL" >> .env && \
+    echo "VITE_PORT=80" >> .env 
+
+# Copy package files for Vite preview
+COPY --from=builder client/package*.json ./client/
+COPY --from=builder client/vite.config.ts ./client/
+
+# Copy built application 
+COPY --from=builder client/dist ./client/dist
+
+# Install only the dependencies needed for production
+RUN cd client && npm install --omit=dev
+
+# Expose port
+EXPOSE 80
+
+# Start the application using Vite preview
+CMD cd client && npx vite preview --port ${VITE_PORT} --host 0.0.0.0
