@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { getPalo } from '../api/palo';
 import { Spinner } from '../components/Spinner';
 import '../style/GuessGame.scss';
-import { useLoading } from '../hooks/useLoading';
+import gameData from '../data/gameData.json';
+
 
 
 // Types
@@ -44,8 +44,12 @@ interface GameState {
 }
 
 const GuessGame: React.FC = () => {
-  const [error, setError] = useState<string | null>(null);
-  const [paloData, setPaloData] = useState<PaloResponse | null>(null);
+  const [paloData, setPaloData] = useState<PaloResponse | null>({
+    id: gameData.palo.id,
+    name: gameData.palo.name,
+    description: gameData.palo.description,
+    estilos: gameData.estilos
+  });
   const [gameState, setGameState] = useState<GameState>({
     paloId: 1, // Default palo ID
     currentRoundIndex: 0,
@@ -55,37 +59,11 @@ const GuessGame: React.FC = () => {
     selectedOptionId: null,
     gameMode: 'estilo'
   });
-  const { setIsLoading } = useLoading();
 
-  const [loading, setLoading] = useState(true);
   
-  // Update the global loading state based on component loading state
-  useEffect(() => {
-    setIsLoading(loading);
-    return () => {
-      setIsLoading(false); // Clean up when component unmounts
-    };
-  }, [loading, setIsLoading]);
-  
-  // Rest of your component code...
-  
-  useEffect(() => {
-    const fetchPaloData = async () => {
-      try {
-        setLoading(true); // This will now also set the global loading state
-        const response = await getPalo(gameState.paloId);
-        setPaloData(response);
-      } catch (err) {
-        console.error('Failed to fetch palo data:', err);
-        setError('Failed to load game data. Please try again.');
-      } finally {
-        setLoading(false); // This will now also update the global loading state
-      }
-    };
 
-    fetchPaloData();
-  }, [gameState.paloId]);
-
+  
+ 
 
   // Setup game rounds when palo data is loaded
   useEffect(() => {
@@ -252,25 +230,8 @@ const handleOptionSelect = (optionId: number) => {
     }));
   };
 
-  if (loading) {
-    return (
-      <div className="guess-game__loading">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
+ 
 
-  if (error) {
-    return (
-      <div className="guess-game__error">
-        <h1>Error</h1>
-        <p>{error}</p>
-        <button onClick={() => window.location.reload()}>
-          Retry
-        </button>
-      </div>
-    );
-  }
 
   if (!paloData || gameState.rounds.length === 0) {
     return <div className="guess-game__empty">No game data available</div>;
@@ -306,7 +267,7 @@ const handleOptionSelect = (optionId: number) => {
             <div className="guess-game__audio-label">Listen to the recording</div>
             <audio 
               controls
-              src={`data:audio/mp3;base64,${currentRound.recording}`}
+              src={currentRound.recording}
               className="guess-game__audio-player"
             >
               Your browser does not support the audio element.

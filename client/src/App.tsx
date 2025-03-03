@@ -40,7 +40,7 @@ const Header = () => {
           </svg>
         </button>
       )}
-      <h1>Flamenco Jondo</h1>
+      <h1>Guess The Estilo</h1>
     </header>
   );
 };
@@ -64,8 +64,8 @@ function App() {
                       <p>Fun way to learn flamenco</p>
                       <div className="button-group">
                         {/* <Link to="/explore" className="button">Explore Now</Link> */}
-                        <Link to="/guess-the-estilo" className="button">Guess the Estilo</Link>
-                        <Link to="/feedback" className="button">Feedback</Link>
+                        <Link to="/guess-the-estilo" className="button">Play</Link>
+                        {/* <Link to="/feedback" className="button">Feedback</Link> */}
                         {/* <Link to="/login" className="button">Login</Link> */}
                       </div>
                     </main>
